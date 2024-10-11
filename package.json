@@ -2,6 +2,7 @@
     "name": "client",
     "description": "Client for FChat app",
     "version": "0.0.1",
+    "license": "CC BY-NC-ND 4.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
