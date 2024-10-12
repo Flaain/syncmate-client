@@ -1,7 +1,7 @@
 import { Typography } from '@/shared/ui/Typography';
 import { SignupProfile } from '@/widgets/SignupForm/ui/SignupProfile';
 import { OTP } from '@/features/OTP/ui/ui';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { Button } from '@/shared/ui/Button';
 import { LoaderCircle } from 'lucide-react';
 import { SignupCredentials } from './SignupCredentials';

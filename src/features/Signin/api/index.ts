@@ -1,6 +1,6 @@
 import { API } from "@/shared/api/API";
 import { ISigninAPI, SigininSchemaType } from "../model/types";
-import { User } from "@/shared/lib/contexts/profile/types";
+import { Profile } from "@/shared/model/types";
 
 export class SigninAPI extends API implements ISigninAPI {
     signin = async (body: SigininSchemaType) => {
@@ -11,7 +11,7 @@ export class SigninAPI extends API implements ISigninAPI {
             body: JSON.stringify(body)
         };
 
-        return this._checkResponse<User>(await fetch(this._baseUrl + '/auth/signin', request), request);
+        return this._checkResponse<Profile>(await fetch(this._baseUrl + '/auth/signin', request), request);
     };
 }
 
