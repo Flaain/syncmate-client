@@ -164,7 +164,7 @@ export interface BaseTypographyProps {
     align?: TypographyAlign;
 }
 
-export type PolymorphicRef<T extends React.ElementType> = React.ComponentPropsWithRef<T>['ref'];
+export type PolymorphicRef<T extends React.ElementType> = React.Ref<T> | React.RefObject<T>;
 
 export type PropsOf<T extends React.ElementType> = React.ComponentPropsWithRef<T>;
 
