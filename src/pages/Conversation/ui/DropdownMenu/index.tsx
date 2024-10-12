@@ -1,6 +1,6 @@
 import { EllipsisVertical, Lock, Trash } from 'lucide-react';
 import { useConversationDDM } from '../../lib/useConversationDDM';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/DropdownMenu';
 import { useConversation } from '../../model/context';
 import { useShallow } from 'zustand/shallow';
 

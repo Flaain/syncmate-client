@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { useSocket } from '@/shared/model/store';
 import { AppException } from '@/shared/api/error';
 import { redirect } from 'react-router-dom';
-import { SetStateInternal } from 'zustand';
+import { SetStateInternal } from '@/shared/model/types';
 
 export const conversationActions = (set: SetStateInternal<ConversationStore>, get: () => ConversationStore): ConversationStore['actions'] => ({
     getConversation: async (action: 'init' | 'refetch', recipientId: string, setChatState, abortController?: AbortController) => {

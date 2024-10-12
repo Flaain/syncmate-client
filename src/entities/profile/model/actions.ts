@@ -1,10 +1,10 @@
-import { SetStateInternal } from "zustand";
 import { ProfileStore } from "./types";
 import { profileAPI } from "../api";
 import { useSession } from "@/entities/session";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { imageValidators } from "./constants";
 import { toast } from "sonner";
+import { SetStateInternal } from "@/shared/model/types";
 
 export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => ProfileStore): ProfileStore['actions'] => ({
     getProfile: async () => {

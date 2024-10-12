@@ -1,11 +1,10 @@
-import { SetStateInternal } from "zustand";
 import { SidebarStore } from "./types";
 import { sessionAPI, useSession } from "@/entities/session";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
 import { sidebarAPI } from "../api";
 import { AppException } from "@/shared/api/error";
-import { ConversationFeed, GroupFeed } from "@/shared/model/types";
+import { ConversationFeed, GroupFeed, SetStateInternal } from "@/shared/model/types";
 import { getSortedFeedByLastMessage } from "@/shared/lib/utils/getSortedFeedByLastMessage";
 
 export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => SidebarStore): SidebarStore['actions'] => ({

@@ -30,6 +30,15 @@ export enum PartOfCompilerUse {
     MESSAGE_TOP_BAR = 'messageTopBar',
 }
 
+export type SetStateInternal<T> = {
+    _(partial: T | Partial<T> | {
+        _(state: T): T | Partial<T>;
+    }['_'], replace?: false): void;
+    _(state: T | {
+        _(state: T): T;
+    }['_'], replace: true): void;
+}['_'];
+
 export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'presence' | 'status' | 'avatar'>;
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 export type WithParams<T = Record<string, unknown>> = T & { params?: RequestParams; signal?: AbortSignal };

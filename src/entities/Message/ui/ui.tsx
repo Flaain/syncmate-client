@@ -3,7 +3,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { MessageContextMenu } from './ContextMenu';
 import { Check, CheckCheck } from 'lucide-react';
-import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
+import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/ContextMenu';
 import { MessageProps } from '../model/types';
 import { markdownCompiler } from '@/shared/lib/utils/markdownCompiler';
 import { PartOfCompilerUse } from '@/shared/model/types';

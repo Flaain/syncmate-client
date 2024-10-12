@@ -1,4 +1,4 @@
-import { SetStateInternal } from 'zustand';
+import { SetStateInternal } from '@/shared/model/types';
 import { ChatStore } from './types';
 
 export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatStore): ChatStore['actions'] => ({

@@ -1,5 +1,5 @@
-import { Input } from "@/shared/ui/input";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/Input";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/Form";
 import { useFormContext } from "react-hook-form";
 import { SignupSchemaType } from "../../model/types";
 

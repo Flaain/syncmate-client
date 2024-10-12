@@ -1,5 +1,5 @@
 import { Message } from '@/entities/Message/model/types';
-import { SetStateInternal } from 'zustand';
+import { SetStateInternal } from '@/shared/model/types';
 
 export type ChatMode = 'default' | 'selecting';
 
