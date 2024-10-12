@@ -3,11 +3,16 @@ import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { X } from 'lucide-react';
 import { MessageTopBarProps } from '../../model/types';
-import { markdownCompiler } from '@/shared/lib/utils/markdownCompiler';
-import { PartOfCompilerUse } from '@/shared/model/types';
 import { useEvents } from '@/shared/model/store';
 
-export const TopBar = ({ onClose, title, mainIconSlot, closeIconSlot, description, preventClose }: MessageTopBarProps) => {
+export const TopBar = ({
+    onClose,
+    title,
+    mainIconSlot,
+    closeIconSlot,
+    description,
+    preventClose
+}: MessageTopBarProps) => {
     const addEventListener = useEvents((state) => state.addEventListener);
 
     React.useEffect(() => {
@@ -29,7 +34,7 @@ export const TopBar = ({ onClose, title, mainIconSlot, closeIconSlot, descriptio
                 </Typography>
                 {description && (
                     <Typography as='p' variant='secondary' className='line-clamp-1'>
-                        {markdownCompiler(description, PartOfCompilerUse.MESSAGE_TOP_BAR)}
+                        {description}
                     </Typography>
                 )}
             </div>

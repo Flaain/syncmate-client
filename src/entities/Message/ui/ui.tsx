@@ -5,8 +5,6 @@ import { MessageContextMenu } from './ContextMenu';
 import { Check, CheckCheck } from 'lucide-react';
 import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
 import { MessageProps } from '../model/types';
-import { markdownCompiler } from '@/shared/lib/utils/markdownCompiler';
-import { PartOfCompilerUse } from '@/shared/model/types';
 import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
@@ -14,7 +12,7 @@ import { useShallow } from 'zustand/shallow';
 export const Message = React.forwardRef<HTMLLIElement, MessageProps>(
     ({ message, isFirst, isLast, isMessageFromMe, className, ...rest }, ref) => {
         const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
-        
+
         const { createdAt, refPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo } = message;
         const { selectedMessages, isContextActionsBlocked } = useChat(useShallow((state) => ({
             selectedMessages: state.selectedMessages,
@@ -40,7 +38,8 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(
                         className={cn(
                             'flex gap-2 relative w-full z-10',
                             !isMessageFromMe && isFirst && 'flex-col',
-                            isSelected && 'xl:after:-left-1/2 after:-right-1/2 after:w-[200%] after:z-[-1] after:absolute after:-top-1 after:bottom-0 after:dark:bg-primary-dark-50',
+                            isSelected &&
+                                'xl:after:-left-1/2 after:-right-1/2 after:w-[200%] after:z-[-1] after:absolute after:-top-1 after:bottom-0 after:dark:bg-primary-dark-50',
                             className
                         )}
                     >
@@ -51,7 +50,8 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(
                                 viewBox='0 0 11 20'
                                 fill='currentColor'
                                 className={cn('absolute z-10 bottom-0 w-[11px] h-5 block', {
-                                    ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']: isMessageFromMe,
+                                    ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']:
+                                        isMessageFromMe,
                                     ['dark:text-primary-dark-50 text-primary-gray -left-[11px]']: !isMessageFromMe
                                 })}
                                 xmlns='http://www.w3.org/2000/svg'
@@ -101,21 +101,18 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(
                                                     : 'dark:text-primary-white text-primary-dark-50'
                                             )}
                                         >
-                                            {markdownCompiler(replyTo.text, PartOfCompilerUse.REPLY)}
+                                            {replyTo.text}
                                         </Typography>
                                     )}
                                 </Typography>
                             )}
-                            <div className='flex items-center gap-2 flex-wrap'>
-                                <Typography
-                                    as='p'
-                                    className={cn(
-                                        'break-all overflow-y-hidden',
-                                        isMessageFromMe ? 'dark:text-primary-dark-200' : 'text-primary-white'
-                                    )}
-                                >
-                                    {markdownCompiler(text, PartOfCompilerUse.MESSAGE)}
-                                </Typography>
+                            <div
+                                className={cn(
+                                    'flex items-center gap-2 flex-wrap break-all overflow-y-hidden',
+                                    isMessageFromMe ? 'dark:text-primary-dark-200' : 'text-primary-white'
+                                )}
+                            >
+                                {text}
                                 <Typography
                                     size='sm'
                                     className={cn(

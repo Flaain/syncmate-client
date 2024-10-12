@@ -5,8 +5,7 @@ import { Image } from '@/shared/ui/Image';
 import { ProfileIndicator } from '@/shared/ui/ProfileIndicator';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
-import { ConversationFeed, PRESENCE, PartOfCompilerUse } from '@/shared/model/types';
-import { markdownCompiler } from '@/shared/lib/utils/markdownCompiler';
+import { ConversationFeed, PRESENCE } from '@/shared/model/types';
 import { useLayout } from '@/shared/model/store';
 
 export const ConversationItem = ({ conversation }: { conversation: ConversationFeed }) => {
@@ -63,13 +62,16 @@ export const ConversationItem = ({ conversation }: { conversation: ConversationF
                         !!conversation.lastMessage && (
                             <div className='flex items-center w-full gap-5'>
                                 <Typography className='break-all dark:text-primary-white/30 text-primary-gray line-clamp-1'>
-                                    {markdownCompiler(conversation.lastMessage.text, PartOfCompilerUse.FEED)}
+                                    {conversation.lastMessage?.text}
                                 </Typography>
                                 <Typography className='ml-auto' variant='secondary'>
-                                    {new Date(conversation.lastMessage.createdAt).toLocaleTimeString(navigator.language, {
-                                        hour: 'numeric',
-                                        minute: 'numeric'
-                                    })}
+                                    {new Date(conversation.lastMessage.createdAt).toLocaleTimeString(
+                                        navigator.language,
+                                        {
+                                            hour: 'numeric',
+                                            minute: 'numeric'
+                                        }
+                                    )}
                                 </Typography>
                             </div>
                         )

@@ -1,5 +1,4 @@
 import React from 'react';
-import { MarkdownToJSX } from "markdown-to-jsx";
 import { Message } from '@/entities/Message/model/types';
 import { Conversation } from '@/pages/Conversation/model/types';
 import { Socket } from 'socket.io-client';
@@ -21,13 +20,6 @@ export enum OutletDetailsTypes {
     LINK = 'link',
     BIO = 'bio',
     LOGIN = 'login'
-}
-
-export enum PartOfCompilerUse {
-    FEED = 'feed',
-    MESSAGE = 'message',
-    REPLY = 'reply',
-    MESSAGE_TOP_BAR = 'messageTopBar',
 }
 
 export type SetStateInternal<T> = {
@@ -63,10 +55,6 @@ export interface Profile {
     isDeleted: boolean;
     createdAt: string;
     updatedAt: string;
-}
-
-export interface CompilerOptions extends MarkdownToJSX.Options {
-    shouldStayRaw?: Array<keyof HTMLElementTagNameMap>;
 }
 
 export interface OutletDetailsButtonProps {
