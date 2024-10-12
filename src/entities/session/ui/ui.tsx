@@ -4,7 +4,7 @@ import FireFoxLogo from '@/shared/lib/assets/icons/firefox.svg?react';
 import SafariLogo from '@/shared/lib/assets/icons/safari.svg?react';
 import EdgeLogo from '@/shared/lib/assets/icons/edge.svg?react';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { SessionProps } from '../model/types';

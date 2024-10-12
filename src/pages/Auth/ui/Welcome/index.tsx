@@ -1,6 +1,6 @@
 import { useAuth } from '../../model/store';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 
 export const Welcome = () => {
     const changeAuthStage = useAuth((state) => state.changeAuthStage);

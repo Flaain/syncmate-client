@@ -2,7 +2,7 @@ import React from 'react';
 import { routerList } from '@/shared/constants';
 import { RouteObject } from 'react-router-dom';
 import { View } from './model/view';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { ConversationSkeleton } from './ui/Skeleton';
 import { OutletError } from '@/shared/ui/OutletError';
 import { ConversationProvider } from './model/provider';

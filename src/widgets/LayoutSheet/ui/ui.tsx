@@ -3,7 +3,7 @@ import { Switch } from '@/shared/ui/Switch';
 import { Typography } from '@/shared/ui/Typography';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { Archive, Moon, Users, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/cn';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';

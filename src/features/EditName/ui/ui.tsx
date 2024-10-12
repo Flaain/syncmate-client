@@ -1,8 +1,8 @@
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import { useEditName } from '../lib/useEditName';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { useModal } from '@/shared/lib/providers/modal';
 import { useShallow } from 'zustand/shallow';
 

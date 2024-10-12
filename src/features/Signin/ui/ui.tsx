@@ -1,8 +1,8 @@
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
-import { Button } from '@/shared/ui/Button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Button } from '@/shared/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { useSignin } from '../lib/useSignin';
-import { Input } from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/input';
 import { PasswordInput } from '@/shared/ui/PasswordInput';
 import { useAuth } from '@/pages/Auth';
 import { useSigninForm } from '@/widgets/SigninForm/model/store';

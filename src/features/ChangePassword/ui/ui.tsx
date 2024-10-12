@@ -1,7 +1,7 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { useChangePassword } from '../lib/useChangePassword';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
-import { Input } from '@/shared/ui/Input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Input } from '@/shared/ui/input';
 
 export const ChangePassword = () => {
     const { form, onSubmit, step } = useChangePassword();

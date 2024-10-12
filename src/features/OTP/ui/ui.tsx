@@ -3,7 +3,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { getOtpRetryTime } from '../lib/getOtpRetryTime';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/shared/ui/InputOtp';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { OtpProps } from '../model/types';
 import { useOtp } from '../model/store';

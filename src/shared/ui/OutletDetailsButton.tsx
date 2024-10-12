@@ -1,5 +1,5 @@
 import { Link, LucideIcon, Mail, Phone, Info, AtSign } from 'lucide-react';
-import { Button } from './Button';
+import { Button } from './button';
 import { toast } from 'sonner';
 import { OutletDetailsButtonProps, OutletDetailsTypes } from '../model/types';
 import { Typography } from './Typography';

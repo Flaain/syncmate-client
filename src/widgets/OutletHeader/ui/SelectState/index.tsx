@@ -2,7 +2,7 @@ import { messageAPI } from "@/entities/Message";
 import { useChat } from "@/shared/lib/providers/chat/context";
 import { useModal } from "@/shared/lib/providers/modal";
 import { selectModalActions } from "@/shared/lib/providers/modal/store";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui/button";
 import { Confirm } from "@/shared/ui/Confirm";
 import { Typography } from "@/shared/ui/Typography";
 import { Trash, X } from "lucide-react";

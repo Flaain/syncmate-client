@@ -1,9 +1,9 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { LoaderCircle } from 'lucide-react';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { useModal } from '@/shared/lib/providers/modal';
 import { steps } from '../model/constants';
-import { Input } from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/input';
 import { Select } from './Select';
 import { useShallow } from 'zustand/shallow';
 import { useCreateGroup } from '../model/context';

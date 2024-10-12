@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { Button, ButtonProps } from '@/shared/ui/Button';
+import { Button, ButtonProps } from '@/shared/ui/button';
 import { useModal } from '@/shared/lib/providers/modal';
 import { Typography } from './Typography';
 

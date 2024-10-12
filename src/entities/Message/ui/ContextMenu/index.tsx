@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@/shared/ui/Typography';
-import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/shared/ui/ContextMenu';
+import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { CircleCheckBig, Copy, Edit2, Reply, Trash2 } from 'lucide-react';
 import { useMessage } from '../../lib/useMessage';
 import { ContextMenuProps } from '../../model/types';

@@ -1,6 +1,6 @@
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils/cn';
 import { LockKeyholeIcon, UserCircle2 } from 'lucide-react';
 import { Image } from '@/shared/ui/Image';

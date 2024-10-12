@@ -4,7 +4,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { OutletHeaderProps } from '../../model/types';
 import { useSocket } from '@/shared/model/store';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...rest }: OutletHeaderProps) => {

@@ -2,7 +2,7 @@ import Group from './ui/ui';
 import { OutletError } from '@/shared/ui/OutletError';
 import { routerList } from '@/shared/constants';
 import { RouteObject } from 'react-router-dom';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 
 export const GroupPage: RouteObject = {
     path: routerList.GROUP,

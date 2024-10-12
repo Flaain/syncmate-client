@@ -1,8 +1,8 @@
 import React from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { Input, InputProps } from './Input';
+import { Input, InputProps } from './input';
 import { cn } from '../lib/utils/cn';
-import { Button } from './Button';
+import { Button } from './button';
 
 const PasswordInput = React.forwardRef<HTMLInputElement, InputProps & { showStrength?: boolean }>(
     ({ className, ...props }, ref) => {

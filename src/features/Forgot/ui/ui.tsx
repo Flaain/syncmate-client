@@ -1,10 +1,10 @@
 import { OTP } from '@/features/OTP/ui/ui';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/Form';
-import { Button } from '@/shared/ui/Button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Button } from '@/shared/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { PasswordInput } from '@/shared/ui/PasswordInput';
 import { useForgot } from '../lib/useForgot';
-import { Input } from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/input';
 import { buttonTitles } from '../model/constants';
 
 export const Forgot = () => {

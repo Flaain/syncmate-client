@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { useSettings } from '@/widgets/Settings';
 import { LockKeyhole, MonitorSmartphone } from 'lucide-react';
 

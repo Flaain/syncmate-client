@@ -1,7 +1,7 @@
 import { Typography } from '@/shared/ui/Typography';
 import { ActiveSessionsSkeleton } from './Skeletons/ActiveSessionsSkeleton';
 import { useActiveSessions } from '../lib/useActiveSessions';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { Hand, Loader2 } from 'lucide-react';
 import { Session } from '@/entities/session/ui/ui';
 import { useModal } from '@/shared/lib/providers/modal';

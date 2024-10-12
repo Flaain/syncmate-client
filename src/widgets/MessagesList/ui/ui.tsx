@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
 import { MessagesListProps } from '../model/types';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';

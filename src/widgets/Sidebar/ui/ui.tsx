@@ -1,6 +1,6 @@
 import { Feed } from '@/widgets/Feed/ui/ui';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import { AlignJustifyIcon, X } from 'lucide-react';
 import { useLayout } from '@/shared/model/store';
 import { useSidebar } from '../model/context';

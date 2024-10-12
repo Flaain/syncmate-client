@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
 import { ConversationStatuses } from '../model/types';
 import { ConversationSkeleton } from './Skeleton';

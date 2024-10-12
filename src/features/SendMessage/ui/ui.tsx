@@ -1,7 +1,7 @@
 import React from 'react';
 import EmojiPickerFallback from '@emoji-mart/react';
 import { TopBar } from './TopBar';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { ArrowDown, Edit2Icon, Paperclip, Reply, SendHorizonal, Smile } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSendMessage } from '../lib/useSendMessage';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { X } from 'lucide-react';
 import { Typography } from '@/shared/ui/Typography';
 import { OutletDetailsProps } from '../model/types';

@@ -5,7 +5,7 @@ import { MyAccount } from '@/features/MyAccount/ui/ui';
 import { ChangePassword } from '@/features/ChangePassword/ui/ui';
 import { Typography } from '@/shared/ui/Typography';
 import { ArrowLeft, X } from 'lucide-react';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button';
 import { SettingMenu } from '../model/types';
 import { titles } from '../model/constants';
 import { useModal } from '@/shared/lib/providers/modal';
