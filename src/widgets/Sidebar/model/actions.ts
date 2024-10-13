@@ -23,11 +23,11 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
         }
     },
     resetSearch: () => {
-        set({ searchValue: '', globalResults: null });
+        set({ searchValue: '', globalResults: [] });
         get().searchRef?.current?.focus();
     },
     handleSearch: ({ target: { value } }) => {
-        if (!value) return set({ searchValue: '', globalResults: null });
+        if (!value) return set({ searchValue: '', globalResults: [] });
         
         const trimmedSearchValue = value.trim();
         
@@ -45,7 +45,7 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
             set({ globalResults: data });
         } catch (error) {
             console.error(error);
-            set({ globalResults: null });
+            set({ globalResults: [] });
         } finally {
             set({ isSearching: false });
         }

@@ -15,7 +15,7 @@ class SidebarAPI extends API {
             url.searchParams.append(key, value);
         });
 
-        return this._checkResponse<Meta<Array<UserFeed | GroupFeed>>>(await fetch(url, request), request);
+        return this._checkResponse<Array<UserFeed | GroupFeed>>(await fetch(url, request), request);
     };
 
     get = async () => {

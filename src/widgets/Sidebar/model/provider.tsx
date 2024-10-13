@@ -12,7 +12,7 @@ const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
     searchRef: React.createRef(),
     localResultsError: null,
-    globalResults: null,
+    globalResults: [],
     isSearching: false,
     searchValue: ''
 };
@@ -77,7 +77,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((item) => {
-                        if (item._id === data._id) {
+                        if (item.type !== FeedTypes.ADS && item._id === data._id) {
                             return {
                                 ...item, 
                                 participantsTyping: item.participantsTyping ? [...item.participantsTyping, data.participant] : [data.participant]
@@ -95,7 +95,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((item) => {
-                        if (item._id === data._id) {
+                        if (item.type !== FeedTypes.ADS && item._id === data._id) {
                             return {
                                 ...item, 
                                 participantsTyping: item.participantsTyping?.filter((participant) => participant._id !== data.participant._id)

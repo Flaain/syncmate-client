@@ -5,16 +5,17 @@ import { useSidebar } from '@/widgets/Sidebar/model/context';
 import { useShallow } from 'zustand/shallow';
 import { feedItems, globalFilters, localFilters } from '@/widgets/Sidebar/model/constants';
 import { MIN_USER_SEARCH_LENGTH } from '@/shared/constants';
+import { FeedTypes } from '@/shared/model/types';
 
 export const Feed = () => {
     const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow((state) => ({
         isSearching: state.isSearching,
         searchValue: state.searchValue,
         localResults: state.localResults.feed,
-        globalResults: state.globalResults?.items
+        globalResults: state.globalResults
     })));
 
-    const filteredLocalResults = localResults.filter((item) => localFilters[item.type](item, searchValue));
+    const filteredLocalResults = localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue));
     const filteredGlobalResults = globalResults?.filter((item) => !globalFilters[item.type](item, localResults));
     const isResultsEmpty = !filteredLocalResults.length && !filteredGlobalResults?.length;
 

@@ -98,8 +98,11 @@ export const LayoutSheet = () => {
                     </Switch>
                 </li>
             </ul>
-            <Typography as='p' variant='secondary' className='mt-auto px-4'>
+            <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
                 FChat Web, {new Date().getFullYear()}
+                <Typography variant='secondary'>
+                    Version {import.meta.env.VITE_APP_VERSION}
+                </Typography>
             </Typography>
         </div>
     );

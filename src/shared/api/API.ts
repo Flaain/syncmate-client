@@ -42,16 +42,16 @@ export abstract class API {
         return data;
     }
 
-    protected _checkResponse = async <T>(response: Response, requestInit?: RequestInit): Promise<APIData<T>> => {
+    protected _checkResponse = async <T>(response: Response, requestInit?: RequestInit, wasRefreshed?: boolean): Promise<APIData<T>> => {
         const url = new URL(response.url);
         const data = await response.json();
         const headers = Object.fromEntries([...response.headers.entries()]);
         
         if (!response.ok) {
-            if (response.status === 401 && !this._noRefreshPaths.includes(url.pathname)) {
+            if (response.status === 401 && !this._noRefreshPaths.includes(url.pathname) && !wasRefreshed) {
                 await this.refreshToken();
 
-                return this._checkResponse<T>(await fetch(response.url, requestInit), requestInit);
+                return this._checkResponse<T>(await fetch(response.url, requestInit), requestInit, true);
             } else {
                 throw new AppException({ ...data, headers });
             }

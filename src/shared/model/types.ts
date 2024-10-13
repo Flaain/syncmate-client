@@ -6,7 +6,8 @@ import { Socket } from 'socket.io-client';
 export enum FeedTypes {
     CONVERSATION = 'Conversation',
     GROUP = 'Group',
-    USER = 'User'
+    USER = 'User',
+    ADS = "ADS"
 }
 
 export enum ChatType {
@@ -188,7 +189,7 @@ export interface UseInfiniteScrollOptions extends IntersectionObserverInit {
 
 export type Feed = Array<ConversationFeed | GroupFeed | UserFeed>;
 
-export type FeedItem = ConversationFeed | GroupFeed | UserFeed;
+export type FeedItem = ConversationFeed | GroupFeed | UserFeed | AdsFeed;
 
 export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
     lastActionAt: string;
@@ -203,6 +204,15 @@ export type GroupFeed = Pick<Group, '_id' | 'lastMessage' | 'isOfficial' | 'name
 };
 
 export type UserFeed = SearchUser & { type: FeedTypes.USER };
+
+export interface AdsFeed {
+    _id: string;
+    link: string;
+    name: string;
+    avatar?: Omit<Avatar, '_id'>;
+    description: string;
+    type: FeedTypes.ADS
+}
 
 export interface Draft {
     value: string;

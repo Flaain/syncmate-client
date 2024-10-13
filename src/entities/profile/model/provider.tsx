@@ -6,7 +6,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
 
     React.useEffect(() => {
         if (!isAuthorized) return;
-
+        
         const errorSubscriber = () => useSession.getState().actions.onSignout();
 
         sessionAPI.subscribeRefreshError(errorSubscriber);

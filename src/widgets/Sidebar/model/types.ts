@@ -1,4 +1,4 @@
-import { ConversationFeed, GroupFeed, Meta, UserFeed } from "@/shared/model/types";
+import { AdsFeed, ConversationFeed, GroupFeed, UserFeed } from "@/shared/model/types";
 
 export interface SidebarAnouncement {
     title: string;
@@ -11,13 +11,13 @@ export interface UseSidebarEventsProps {
 }
 
 export interface LocalResults {
-    feed: Array<ConversationFeed | GroupFeed>;
+    feed: Array<ConversationFeed | GroupFeed | AdsFeed>;
     nextCursor: string | null;
 }
 
 export interface SidebarStore {
     localResults: LocalResults;
-    globalResults: Meta<Array<UserFeed | GroupFeed>> | null;
+    globalResults: Array<UserFeed | GroupFeed>;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
     isSearching: boolean;
