@@ -1,5 +1,7 @@
 import { AdsFeed, ConversationFeed, GroupFeed, UserFeed } from "@/shared/model/types";
 
+export type LocalFeed = ConversationFeed | GroupFeed | AdsFeed;
+
 export interface SidebarAnouncement {
     title: string;
     description: string;
@@ -11,7 +13,7 @@ export interface UseSidebarEventsProps {
 }
 
 export interface LocalResults {
-    feed: Array<ConversationFeed | GroupFeed | AdsFeed>;
+    feed: Array<LocalFeed>;
     nextCursor: string | null;
 }
 

@@ -1,24 +1,23 @@
 import { AdsFeed, ConversationFeed, FeedItem, FeedTypes, GroupFeed, UserFeed } from '@/shared/model/types';
 import { ConversationItem, GroupItem, UserItem } from '@/widgets/Feed';
 import { AdsItem } from '@/widgets/Feed/ui/AdsItem';
+import { LocalResults } from './types';
 
 export const localFilters: Record<Exclude<FeedTypes, 'User' | 'ADS'>, (item: FeedItem, value: string) => boolean> = {
-    Conversation: (item, value) =>
-        (item as ConversationFeed).recipient.name.toLowerCase().includes(value) ||
-        (item as ConversationFeed).recipient.login.toLowerCase().includes(value),
-    Group: (item, value) =>
-        (item as GroupFeed).name.toLowerCase().includes(value) ||
-        (item as GroupFeed).login.toLowerCase().includes(value)
+    Conversation: (item, value) => {
+        const { name, login } = (item as ConversationFeed).recipient;
+
+        return name.toLowerCase().includes(value) || login.toLowerCase().includes(value);
+    },
+    Group: (item, value) => {
+        const { name, login } = (item as GroupFeed);
+
+        return name.toLowerCase().includes(value) || login.toLowerCase().includes(value);
+    }
 };
 
-export const globalFilters: Record<
-    Exclude<FeedTypes, 'Conversation' | 'ADS'>,
-    (item: FeedItem, localResults: Array<ConversationFeed | GroupFeed | AdsFeed>) => boolean
-> = {
-    User: (item, localResults) =>
-        localResults.some(
-            (localItem) => localItem.type === FeedTypes.CONVERSATION && localItem.recipient._id === item._id
-        ),
+export const globalFilters: Record<Exclude<FeedTypes, 'Conversation' | 'ADS'>, (item: FeedItem, localResults: LocalResults['feed']) => boolean> = {
+    User: (item, localResults) => localResults.some((localItem) => localItem.type === FeedTypes.CONVERSATION && localItem.recipient._id === item._id),
     Group: (item, localResults) => localResults.some((localItem) => localItem._id === item._id)
 };
 
