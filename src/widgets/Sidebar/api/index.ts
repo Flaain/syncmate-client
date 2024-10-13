@@ -1,5 +1,5 @@
 import { API } from '@/shared/api/API';
-import { GroupFeed, Meta, Pagination, UserFeed } from '@/shared/model/types';
+import { GroupFeed, Pagination, UserFeed } from '@/shared/model/types';
 import { LocalResults } from '../model/types';
 
 class SidebarAPI extends API {
