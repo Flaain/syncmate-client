@@ -48,12 +48,16 @@ export abstract class API {
         const headers = Object.fromEntries([...response.headers.entries()]);
         
         if (!response.ok) {
-            if (response.status === 401 && !this._noRefreshPaths.includes(url.pathname) && !wasRefreshed) {
+            const isAuthError = response.status === 401;
+
+            if (isAuthError && !this._noRefreshPaths.includes(url.pathname) && !wasRefreshed) {
                 await this.refreshToken();
 
                 return this._checkResponse<T>(await fetch(response.url, requestInit), requestInit, true);
             } else {
-                throw new AppException({ ...data, headers });
+                const error: AppException = { ...data, headers: Object.fromEntries([...response.headers.entries()]) };
+
+                if (isAuthError && wasRefreshed) this.notifyRefreshError(error); else throw new AppException(error);
             }
         }
 
