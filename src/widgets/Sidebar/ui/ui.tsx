@@ -40,7 +40,7 @@ export const Sidebar = () => {
                     </Button>
                 )}
             </div>
-            {/* <Feed /> */}
+            <Feed />
             <div className='mt-auto dark:bg-primary-dark-100 sticky bottom-0 py-4 px-3 max-h-[70px] box-border'>
                 <Button onClick={handleLogout} variant='secondary' className='w-full'>
                     Logout
