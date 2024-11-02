@@ -1,14 +1,7 @@
 import React from 'react';
 import { Message } from '@/entities/Message/model/types';
-import { Conversation } from '@/pages/Conversation/model/types';
 import { Socket } from 'socket.io-client';
-
-export enum FeedTypes {
-    CONVERSATION = 'Conversation',
-    GROUP = 'Group',
-    USER = 'User',
-    ADS = "ADS"
-}
+import { AppException } from '../api/error';
 
 export enum ChatType {
     CONVERSATION = 'conversation',
@@ -61,45 +54,6 @@ export interface Profile {
 export interface OutletDetailsButtonProps {
     type: OutletDetailsTypes;
     data: string;
-}
-
-export interface BasicAPIResponse {
-    status: number;
-    message: string;
-}
-
-export interface RequestParams {
-    cursor: string;
-}
-
-export interface BaseAPI {
-    baseUrl?: string;
-    credentials?: RequestCredentials;
-    headers?: {
-        'Content-Type'?: 'application/json' | (string & object);
-        Authorization?: 'Bearer' | (string & object);
-    };
-}
-
-export interface APIData<T> {
-    data: T;
-    statusCode: Response['status'];
-    headers: Record<string, string>;
-}
-
-export enum AppExceptionCode {
-    INVALID_ACCESS_TOKEN = 'INVALID_ACCESS_TOKEN',
-    FORM = 'FORM'
-}
-
-export interface IAppException {
-    message: string;
-    url: string;
-    statusCode: number;
-    timestamp: Date;
-    headers: Record<string, string>;
-    errors?: Array<{ path: string; message: string }>;
-    errorCode?: AppExceptionCode;
 }
 
 export interface GroupParticipant {
@@ -187,48 +141,10 @@ export interface UseInfiniteScrollOptions extends IntersectionObserverInit {
     deps: React.DependencyList;
 }
 
-export type Feed = Array<ConversationFeed | GroupFeed | UserFeed>;
-
-export type FeedItem = ConversationFeed | GroupFeed | UserFeed | AdsFeed;
-
-export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
-    lastActionAt: string;
-    participantsTyping?: Array<TypingParticipant>;
-    type: FeedTypes.CONVERSATION;
-};
-
-export type GroupFeed = Pick<Group, '_id' | 'lastMessage' | 'isOfficial' | 'name' | 'login'> & {
-    lastActionAt: string;
-    participantsTyping?: Array<TypingParticipant>;
-    type: FeedTypes.GROUP;
-};
-
-export type UserFeed = SearchUser & { type: FeedTypes.USER };
-
-export interface AdsFeed {
-    _id: string;
-    link: string;
-    name: string;
-    avatar?: Omit<Avatar, '_id'>;
-    description: string;
-    type: FeedTypes.ADS
-}
-
 export interface Draft {
     value: string;
     state: MessageFormState;
     selectedMessage?: Message;
-}
-
-export enum FEED_EVENTS {
-    CREATE_MESSAGE = 'feed.create.message',
-    EDIT_MESSAGE = 'feed.edit.message',
-    DELETE_MESSAGE = 'feed.delete.message',
-    CREATE_CONVERSATION = 'feed.create.conversation',
-    DELETE_CONVERSATION = 'feed.delete.conversation',
-    USER_PRESENCE = 'feed.user.presence',
-    START_TYPING = 'feed.start.typing',
-    STOP_TYPING = 'feed.stop.typing'
 }
 
 export enum USER_EVENTS {

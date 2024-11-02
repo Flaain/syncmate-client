@@ -1,6 +1,7 @@
 import { API } from '@/shared/api/API';
-import { GroupFeed, Pagination, UserFeed } from '@/shared/model/types';
+import { Pagination } from '@/shared/model/types';
 import { LocalResults } from '../model/types';
+import { GroupFeed, UserFeed } from '@/widgets/Feed/types';
 
 class SidebarAPI extends API {
     search = async (params: Pagination) => {

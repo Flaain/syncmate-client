@@ -3,10 +3,11 @@ import { createStore } from 'zustand';
 import { SidebarStore } from './types';
 import { sidebarActions } from './actions';
 import { useSocket } from '@/shared/model/store';
-import { ConversationFeed, DeleteMessageEventParams, FEED_EVENTS, FeedTypes, PRESENCE, TypingParticipant } from '@/shared/model/types';
+import { DeleteMessageEventParams, PRESENCE, TypingParticipant } from '@/shared/model/types';
 import { Message } from '@/entities/Message/model/types';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
 import { SidebarContext } from './context';
+import { ConversationFeed, FEED_EVENTS, FeedTypes } from '@/widgets/Feed/types';
 
 const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
@@ -28,11 +29,14 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
 
     React.useEffect(() => {
         socket?.on(FEED_EVENTS.CREATE_CONVERSATION, (conversation: ConversationFeed) => {
-            store.setState((prevState) => ({ 
-                localResults: { 
-                    ...prevState.localResults, 
-                    feed: [{ ...conversation, type: FeedTypes.CONVERSATION }, ...prevState.localResults.feed] 
-                } 
+            store.setState((prevState) => ({
+                localResults: {
+                    ...prevState.localResults,
+                    feed: [
+                        { _id: 'qwerty', lastActionAt: 'a', type: FeedTypes.CONVERSATION, item: conversation },
+                        ...prevState.localResults.feed
+                    ]
+                }
             }));
         });
 

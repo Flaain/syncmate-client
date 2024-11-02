@@ -1,4 +1,4 @@
-import { AdsFeed, ConversationFeed, GroupFeed, UserFeed } from "@/shared/model/types";
+import { AdsFeed, ConversationFeed, FeedWrapper, GroupFeed, UserFeed } from "@/widgets/Feed/types";
 
 export type LocalFeed = ConversationFeed | GroupFeed | AdsFeed;
 
@@ -13,7 +13,7 @@ export interface UseSidebarEventsProps {
 }
 
 export interface LocalResults {
-    feed: Array<LocalFeed>;
+    feed: Array<FeedWrapper<LocalFeed>>;
     nextCursor: string | null;
 }
 
