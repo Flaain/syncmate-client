@@ -1,8 +1,13 @@
 import { cva } from 'class-variance-authority';
 import { cn } from '../lib/utils/cn';
-import { AvatarByNameProps } from '../model/types';
 import { User } from 'lucide-react';
 import { ProfileIndicator }  from './ProfileIndicator';
+
+export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement> {
+    name?: string;
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+    isOnline?: boolean;
+}
 
 const avatarVariants = cva(
     'flex flex-grow-0 flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',

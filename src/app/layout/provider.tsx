@@ -1,7 +1,8 @@
 import React from 'react';
 import { useEvents, useSocket } from '@/shared/model/store';
-import { PRESENCE, USER_EVENTS } from '@/shared/model/types';
+import { USER_EVENTS } from '@/shared/model/types';
 import { io } from 'socket.io-client';
+import { PRESENCE } from '@/entities/profile/model/types';
 
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
     const listeners = useEvents((state) => state.listeners);

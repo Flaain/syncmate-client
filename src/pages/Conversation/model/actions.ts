@@ -27,7 +27,7 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
             console.error(error);
 
             if (error instanceof AppException) {
-                if (error.statusCode === 404) {
+                if (error.response?.status === 404) {
                     redirect('/');
                 } else {
                     set({ error: error.message, status: 'error' });

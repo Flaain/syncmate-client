@@ -1,14 +1,8 @@
 import { Message } from '@/entities/Message/model/types';
+import { Profile } from '@/entities/profile/model/types';
 import { ChatStore } from '@/shared/lib/providers/chat/types';
-import { APIData, Recipient, WithParams, WithRequired } from '@/shared/model/types';
 
 export type ConversationStatuses = 'idle' | 'loading' | 'error';
-
-export interface IConversationAPI {
-    create: (body: { recipientId: string }) => Promise<APIData<Pick<Conversation, '_id' | 'lastMessageSentAt'>>>;
-    get: (body: Omit<WithParams<{ recipientId: string }>, 'params'>) => Promise<APIData<ConversationWithMeta>>;
-    getPreviousMessages: (body: WithRequired<WithParams<{ recipientId: string }>, 'params'>) => Promise<APIData<{ messages: Array<Message>, nextCursor: string | null }>>;
-}
 
 export interface ConversationWithMeta {
     conversation: Pick<Conversation, '_id' | 'recipient' | 'messages' | 'createdAt' | 'isInitiatorBlocked' | 'isRecipientBlocked'>;
@@ -63,3 +57,5 @@ export interface GetDescriptionParams {
     shouldDisplayTypingStatus?: boolean;
     isRecipientTyping: boolean;
 }
+
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'presence' | 'status' | 'avatar'>;

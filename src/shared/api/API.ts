@@ -1,38 +1,41 @@
-import { AppException, AppExceptionCode } from './error';
+import { ApiException, ApiExceptionCode } from './error';
 
+export type RequestBody = Record<string, any> | FormData; 
+export type InterceptorResponseSuccessFunction = <T>(response: ApiBaseResult<T>) => ApiBaseResult<T>['data'] | Promise<ApiBaseResult<T>['data']>
+export type InterceptorResponseFailureFunction = (error: ApiException) => any;
+export type InterceptorRequestSuccessFunction = (options: RequestConfig) => RequestConfig | Promise<RequestConfig>;
+export type InterceptorRequestFailureFunction = (error: ApiException) => any;
+export type ApiSearchParams = Record<string, string | number | boolean | Array<string | number | boolean>>;
 
 export interface BaseApi {
     baseUrl: string;
     headers?: Record<string, string>;
 }
 
-export interface ApiResponseFailureResult {
+export interface ApiBaseResult<T> {
     success: Response['ok'];
     status: Response['status'];
     statusText: Response['statusText'];
-    url: string;
-    data: {
-        message: string;
-        timestamp: string;
-        errorCode?: AppExceptionCode;
-        errors?: Array<{ path: string; message: string }>;
-    }
-}
-
-export interface ApiResponseSuccessResult<T> extends Omit<ApiResponseFailureResult, 'data'> {
+    url: URL;
     data: T;
 }
 
-export type RequestBody = Record<string, any> | FormData; 
-export type InterceptorResponseSuccessFunction = <T>(response: ApiResponseSuccessResult<T>) => ApiResponseSuccessResult<T>['data'] | Promise<ApiResponseSuccessResult<T>['data']>
-export type InterceptorResponseFailureFunction = (error: unknown) => any;
-export type InterceptorRequestSuccessFunction = (options: RequestConfig) => RequestConfig | Promise<RequestConfig>;
-export type InterceptorRequestFailureFunction = (error: unknown) => any;
+export interface ApiBaseSuccessData {}
 
-export type ApiSearchParams = Record<string, string | number | boolean | Array<string | number | boolean>>;
+export interface ApiBaseFailureData {
+    message: string;
+    timestamp: string;
+    errorCode?: ApiExceptionCode;
+    errors?: Array<{ path: string; message: string }>;
+}
+
+export interface ApiResponseFailureResult extends ApiBaseResult<ApiBaseFailureData> {
+    headers: Record<string, string>;
+}
 
 export interface RequestConfig extends RequestInit {
-    url: string;
+    url: URL;
+    timestamp?: string;
     _retry?: boolean;
     headers?: Record<string, string>;
     params?: ApiSearchParams;
@@ -48,7 +51,7 @@ export interface RequestInterceptor {
   onFailure?: InterceptorRequestFailureFunction;
 }
 
-export interface UseInterceptors {
+export interface InterceptorsHandlers {
     request: {
         use: (onSuccess?: InterceptorRequestSuccessFunction, onFailure?: InterceptorRequestFailureFunction) => RequestInterceptor;
         eject: (interceptor: RequestInterceptor) => boolean;
@@ -70,7 +73,7 @@ export interface Interceptors {
 }
 
 export abstract class ApiInterceptors {
-    readonly interceptors: UseInterceptors;
+    readonly interceptors: InterceptorsHandlers;
 
     private readonly _interceptors: Interceptors = { request: new Set(), response: new Set() };
 
@@ -99,37 +102,39 @@ export abstract class ApiInterceptors {
         };
     }
 
-    get requestInterceptorsSize() {
+    protected get requestInterceptorsSize() {
         return this._interceptors.request.size;
     }
 
-    get responseInterceptorsSize() {
+    protected get responseInterceptorsSize() {
         return this._interceptors.response.size;
     }
 
-    readonly invokeResponseInterceptors = async <T>(initialResponse: Response, initialConfig: RequestConfig) => {
+    protected readonly invokeResponseInterceptors = async <T>(initialResponse: Response, initialConfig: RequestConfig) => {
         const data = await initialResponse.json();
+        const url = new URL(initialResponse.url);
 
-        const response: ApiResponseSuccessResult<T>  = {
+        const response: ApiBaseResult<T>  = {
+            url,
+            data,
             status: initialResponse.status,
             statusText: initialResponse.statusText,
             success: initialResponse.ok,
-            url: initialResponse.url,
-            data
         };
 
         for (const { onSuccess, onFailure } of [...this._interceptors.response.values()]) {
             try {
                 if (!initialResponse.ok) {
-                    throw new AppException({
+                    throw new ApiException({
                         message: data.message || initialResponse.statusText,
                         config: initialConfig,
                         response: {
+                            url,
+                            data,
                             success: initialResponse.ok,
                             status: initialResponse.status,
                             statusText: initialResponse.statusText,
-                            url: initialResponse.url,
-                            data
+                            headers: Object.fromEntries([...initialResponse.headers.entries()])
                         }
                     });
                 }
@@ -138,21 +143,23 @@ export abstract class ApiInterceptors {
 
                 response.data = await onSuccess(response);
             } catch (error) {
-                onFailure ? (response.data = await onFailure?.(error)) : Promise.reject(error);
+                error instanceof ApiException && onFailure ? (response.data = await onFailure(error)) : Promise.reject(error);
             }
         }
 
         return response;
     };
 
-    readonly invokeRequestInterceptors = async (config: RequestConfig) => {
+    protected readonly invokeRequestInterceptors = async (config: RequestConfig) => {
+        if (!this.requestInterceptorsSize) return config;
+        
         for (const { onSuccess, onFailure } of [...this._interceptors.request.values()]) {
             try {
                 if (!onSuccess) continue;
 
                 config = await onSuccess(config);
             } catch (error) {
-                (await onFailure?.(error)) ?? Promise.reject(error);
+                error instanceof ApiException && onFailure ? await onFailure(error) : Promise.reject(error);
             }
         }
 
@@ -175,38 +182,33 @@ export class API extends ApiInterceptors {
         Object.assign(this.headers, headers);
     };
 
-    private createSearchParams = (params: ApiSearchParams) => {
-        const searchParams = new URLSearchParams();
+    private request = async <T>(endpoint: string, method: RequestInit['method'], options: RequestOptions = {}): Promise<ApiBaseResult<T>> => {
+        const url = new URL(endpoint, this.baseUrl);
 
-        Object.entries(params).forEach(([key, value]) => {
-            Array.isArray(value) ? value.forEach((query) => searchParams.set(key, query.toString())) : searchParams.set(key, value.toString());
+        options.params && Object.entries(options.params).forEach(([key, value]) => {
+            Array.isArray(value) ? value.forEach((query) => url.searchParams.append(key, query.toString())) : url.searchParams.set(key, value.toString());
         });
 
-        return `?${searchParams.toString()}`;
-    };
-
-    private checkResponse = async <T>(endpoint: string, method: RequestInit['method'], options: RequestOptions = {}): Promise<ApiResponseSuccessResult<T>> => {
-        const initialConfig: RequestConfig = {
+        const config = await this.invokeRequestInterceptors({
             ...options,
-            url: endpoint,
+            url,
             method,
             headers: {
                 ...this.headers,
-                ...(options?.body && !(options.body instanceof FormData) && { 'content-type': 'application/json' }),
+                ...(options?.body && !(options.body instanceof FormData) && { 'Content-type': 'application/json' }),
                 ...(!!options?.headers && options.headers)
             }
-        };
-
-        const url = this.baseUrl + endpoint + options.params ? this.createSearchParams(options.params!) : '';
-        const config = await this.invokeRequestInterceptors(initialConfig);
+        });
+        
         const response = await fetch(url, config);
 
-        if (this.responseInterceptorsSize) return this.invokeResponseInterceptors(response, config);
+        if (this.responseInterceptorsSize) return this.invokeResponseInterceptors<T>(response, config);
 
         const data = await response.json();
+        const responseURL = new URL(response.url);
 
-        if (response.status >= 400) {
-            throw new AppException({
+        if (!response.ok) {
+            throw new ApiException({
                 config,
                 message: response.statusText,
                 response: {
@@ -214,7 +216,8 @@ export class API extends ApiInterceptors {
                     status: response.status,
                     statusText: response.statusText,
                     success: response.ok,
-                    url: response.url
+                    headers: Object.fromEntries([...response.headers.entries()]),
+                    url: responseURL
                 }
             });
         }
@@ -224,36 +227,34 @@ export class API extends ApiInterceptors {
             status: response.status,
             statusText: response.statusText,
             success: response.ok,
-            url: response.url
+            url: responseURL
         };
     };
 
-    get<T>(endpoint: string, options: Omit<RequestOptions, 'body'> = {}) {
-        return this.checkResponse<T>(endpoint, 'GET', options);
-    }
+    get = <T>(endpoint: string, options: Omit<RequestOptions, 'body'> = {}) => this.request<T>(endpoint, 'GET', options);
 
-    delete<T>(endpoint: string, options: Omit<RequestOptions, 'body'> = {}) {
-        return this.checkResponse<T>(endpoint, 'DELETE', options);
-    }
+    delete = <T>(endpoint: string, options: Omit<RequestOptions, 'body'> = {}) => this.request<T>(endpoint, 'DELETE', options);
 
-    post<T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) {
-        return this.checkResponse<T>(endpoint, 'POST', {
+    post = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
+        return this.request<T>(endpoint, 'POST', {
             ...options,
             ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
         });
     }
 
-    put<T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) {
-        return this.checkResponse<T>(endpoint, 'PUT', {
+    put = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
+        return this.request<T>(endpoint, 'PUT', {
             ...options,
             ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
         });
     }
 
-    patch<T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) {
-        return this.checkResponse<T>(endpoint, 'PATCH', {
+    patch = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
+        return this.request<T>(endpoint, 'PATCH', {
             ...options,
             ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
         });
     }
+
+    call = <T>(options: RequestConfig) => this.request<T>(options.url.pathname, options.method, options);
 }

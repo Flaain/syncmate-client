@@ -1,5 +1,7 @@
+import { Avatar, PRESENCE } from "@/entities/profile/model/types";
 import { Conversation } from "@/pages/Conversation/model/types";
-import { Avatar, Group, SearchUser, TypingParticipant } from "@/shared/model/types";
+import { Group } from "@/shared/model/types";
+import { TypingParticipant } from "@/shared/ui/Typography";
 
 export type Feed = Array<ConversationFeed | GroupFeed | UserFeed>;
 export type FeedItem = ConversationFeed | GroupFeed | UserFeed | AdsFeed;
@@ -9,6 +11,14 @@ export enum FeedTypes {
     GROUP = 'Group',
     USER = 'User',
     ADS = "ADS"
+}
+
+export interface SearchUser {
+    _id: string;
+    name: string;
+    isOfficial: boolean;
+    presence: PRESENCE;
+    login: string;
 }
 
 export enum FEED_EVENTS {

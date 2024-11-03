@@ -1,5 +1,9 @@
 import React from 'react';
-import { UseInfiniteScrollOptions } from '@/shared/model/types';
+
+export interface UseInfiniteScrollOptions extends IntersectionObserverInit {
+    callback: () => Promise<void> | void;
+    deps: React.DependencyList;
+}
 
 export const useInfiniteScroll = <T extends HTMLElement>({
     callback,
