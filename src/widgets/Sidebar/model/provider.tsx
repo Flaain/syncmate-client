@@ -1,19 +1,19 @@
 import React from 'react';
 import { createStore } from 'zustand';
-import { SidebarStore } from './types';
+import { FeedUpdateParams, LocalFeed, SidebarStore } from './types';
 import { sidebarActions } from './actions';
 import { useSocket } from '@/shared/model/store';
-import { DeleteMessageEventParams, PRESENCE, TypingParticipant } from '@/shared/model/types';
-import { Message } from '@/entities/Message/model/types';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
+import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/types';
+import { PRESENCE } from '@/entities/profile/model/types';
+import { TypingParticipant } from '@/shared/ui/Typography';
 import { SidebarContext } from './context';
-import { ConversationFeed, FEED_EVENTS, FeedTypes } from '@/widgets/Feed/types';
 
 const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
     searchRef: React.createRef(),
     localResultsError: null,
-    globalResults: [],
+    globalResults: null,
     isSearching: false,
     searchValue: ''
 };
@@ -28,31 +28,54 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
     }, [])
 
     React.useEffect(() => {
-        socket?.on(FEED_EVENTS.CREATE_CONVERSATION, (conversation: ConversationFeed) => {
+        socket?.on(FEED_EVENTS.CREATE, (createFeedItem: LocalFeed) => {
+            store.setState((prevState) => {
+                const index = prevState.localResults.feed.findIndex((feedItem) => feedItem._id === createFeedItem._id);
+
+                if (index !== -1) {
+                    const feed = [...prevState.localResults.feed];
+                    
+                    feed[index] = createFeedItem;
+                    
+                    return { localResults: { ...prevState.localResults, feed: feed.sort(getSortedFeedByLastMessage) } };
+                }
+
+                return { localResults: { ...prevState.localResults, feed: [createFeedItem, ...prevState.localResults.feed] } };
+            })
+        });
+
+        socket?.on(FEED_EVENTS.USER_PRESENCE, ({ recipientId, presence }: { recipientId: string; presence: PRESENCE }) => {
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: [
-                        { _id: 'qwerty', lastActionAt: 'a', type: FeedTypes.CONVERSATION, item: conversation },
-                        ...prevState.localResults.feed
-                    ]
+                    feed: prevState.localResults.feed.map((feedItem) => {
+                        if (feedItem.type === FeedTypes.CONVERSATION && feedItem.item.recipient._id === recipientId) {
+                            return { ...feedItem, item: { ...feedItem.item, recipient: { ...feedItem.item.recipient, presence } } };
+                        }
+
+                        return feedItem;
+                    })
                 }
             }));
         });
 
-        socket?.on(FEED_EVENTS.CREATE_MESSAGE, ({ message, id }: { message: Message; id: string }) => {
-            store.getState().actions.updateFeed({ lastMessage: message, lastActionAt: message.createdAt }, id, true);
+        socket?.on(FEED_EVENTS.UPDATE, ({ itemId, lastActionAt, lastMessage, shouldSort }: FeedUpdateParams) => {
+            store.setState((prevState) => { 
+                const updatedFeed = prevState.localResults.feed.map((feedItem) => {
+                    return feedItem.item._id === itemId
+                        ? {
+                              ...feedItem,
+                              lastActionAt: lastActionAt ?? feedItem.lastActionAt,
+                              item: { ...feedItem.item, lastMessage }
+                          }
+                        : feedItem;
+                }) as Array<LocalFeed>;
+    
+                return { localResults: { ...prevState.localResults, feed: shouldSort ? updatedFeed.sort(getSortedFeedByLastMessage) : updatedFeed } };
+            })
         });
 
-        socket?.on(FEED_EVENTS.EDIT_MESSAGE, ({ message, id }: { message: Message; id: string }) => {
-            store.getState().actions.updateFeed({ lastMessage: message, lastActionAt: message.createdAt }, id);
-        })
-
-        socket?.on(FEED_EVENTS.DELETE_MESSAGE, ({ lastMessage, lastMessageSentAt, id }: DeleteMessageEventParams) => {
-            store.getState().actions.updateFeed({ lastMessage, lastActionAt: lastMessageSentAt }, id, true);
-        });
-
-        socket?.on(FEED_EVENTS.DELETE_CONVERSATION, (id: string) => {
+        socket?.on(FEED_EVENTS.DELETE, (id: string) => {
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
@@ -60,35 +83,20 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 }
             }));
         })
-        
-        socket?.on(FEED_EVENTS.USER_PRESENCE, ({ recipientId, presence }: { recipientId: string; presence: PRESENCE }) => {
-            store.setState((prevState) => ({
-                localResults: {
-                    ...prevState.localResults,
-                    feed: prevState.localResults.feed.map((item) => {
-                        if (FeedTypes.CONVERSATION === item.type && item.recipient._id === recipientId) {
-                            return { ...item, recipient: { ...item.recipient, presence } };
-                        }
-
-                        return item;
-                    })
-                }
-            }));
-        });
 
         socket?.on(FEED_EVENTS.START_TYPING, (data: { _id: string; participant: TypingParticipant }) => {
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.map((item) => {
-                        if (item.type !== FeedTypes.ADS && item._id === data._id) {
+                    feed: prevState.localResults.feed.map((feedItem) => {
+                        if (feedItem.type !== FeedTypes.ADS && feedItem._id === data._id) {
                             return {
-                                ...item, 
-                                participantsTyping: item.participantsTyping ? [...item.participantsTyping, data.participant] : [data.participant]
+                                ...feedItem, 
+                                participantsTyping: feedItem.item.participantsTyping ? [...feedItem.item.participantsTyping, data.participant] : [data.participant]
                             }
                         }
         
-                        return item;
+                        return feedItem;
                     })
                 }
             }))
@@ -98,27 +106,25 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.map((item) => {
-                        if (item.type !== FeedTypes.ADS && item._id === data._id) {
+                    feed: prevState.localResults.feed.map((feedItem) => {
+                        if (feedItem.type !== FeedTypes.ADS && feedItem._id === data._id) {
                             return {
-                                ...item, 
-                                participantsTyping: item.participantsTyping?.filter((participant) => participant._id !== data.participant._id)
+                                ...feedItem, 
+                                participantsTyping: feedItem.item.participantsTyping?.filter((participant) => participant._id !== data.participant._id)
                             }
                         }
         
-                        return item;
+                        return feedItem;
                     })
                 }
             }))
         })
 
         return () => {
-            socket?.off(FEED_EVENTS.CREATE_CONVERSATION);
-            socket?.off(FEED_EVENTS.DELETE_CONVERSATION);
+            socket?.off(FEED_EVENTS.CREATE);
+            socket?.off(FEED_EVENTS.UPDATE);
+            socket?.off(FEED_EVENTS.DELETE);
             
-            socket?.off(FEED_EVENTS.CREATE_MESSAGE);
-            socket?.off(FEED_EVENTS.DELETE_MESSAGE);
-
             socket?.off(FEED_EVENTS.START_TYPING);
             socket?.off(FEED_EVENTS.STOP_TYPING);
 

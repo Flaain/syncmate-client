@@ -1,22 +1,18 @@
-import { AppException } from '@/shared/api/error';
-import { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
+import { ApiException } from '@/shared/api/error';
+import { FieldPath, FieldValues } from 'react-hook-form';
 
 export interface CheckFormErrorsParams<T extends FieldValues> {
     error: unknown;
-    form: UseFormReturn<T>;
     fields: Array<FieldPath<T>>;
-    cb?: (error: { path : string, message: string }) => void;
+    onIncludes?: (error: { path: string; message: string }) => void;
 }
 
-export const checkFormErrors = <T extends FieldValues>({ error, form, fields, cb }: CheckFormErrorsParams<T>) => {
-    if (error instanceof AppException) {
-        error.errors?.forEach(({ path, message }) => {
-            if (fields.includes(path as FieldPath<T>)) {
-                form.setError(path as FieldPath<T>, { message }, { shouldFocus: true });
-                cb?.({ path, message });
-            }
+export const checkFormErrors = <T extends FieldValues>({ error, fields, onIncludes }: CheckFormErrorsParams<T>) => {
+    if (error instanceof ApiException) {
+        error.response.data.errors?.forEach(({ path, message }) => {
+            fields.includes(path as FieldPath<T>) && onIncludes?.({ path, message });
         });
 
-        !error.errors && error.toastError();
+        !error.response.data.errors && error.toastError();
     }
 };

@@ -1,33 +1,32 @@
 import { SidebarStore } from "./types";
-import { sessionAPI, useSession } from "@/entities/session";
+import { sessionApi, useSession } from "@/entities/session";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
-import { sidebarAPI } from "../api";
-import { AppException } from "@/shared/api/error";
-import { ConversationFeed, GroupFeed, SetStateInternal } from "@/shared/model/types";
-import { getSortedFeedByLastMessage } from "@/shared/lib/utils/getSortedFeedByLastMessage";
+import { SetStateInternal } from "@/shared/model/types";
+import { sidebarApi } from "../api";
+import { ApiException } from "@/shared/api/error";
 
 export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => SidebarStore): SidebarStore['actions'] => ({
     handleLogout: async () => {
-        await sessionAPI.logout();
+        await sessionApi.logout();
         useSession.getState().actions.onSignout();
     },
     getFeed: async () => {
         try {
-            const { data } = await sidebarAPI.get();
+            const { data } = await sidebarApi.get();
 
             set({ localResults: data });
         } catch (error) {
             console.error(error);
-            set({ localResultsError: error instanceof AppException ? error.message : 'Failed to load feed' });
+            set({ localResultsError: error instanceof ApiException ? error.message : 'Failed to load feed' });
         }
     },
     resetSearch: () => {
-        set({ searchValue: '', globalResults: [] });
+        set({ searchValue: '', globalResults: null });
         get().searchRef?.current?.focus();
     },
     handleSearch: ({ target: { value } }) => {
-        if (!value) return set({ searchValue: '', globalResults: [] });
+        if (!value) return get().actions.resetSearch();
         
         const trimmedSearchValue = value.trim();
         
@@ -40,21 +39,14 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
     },
     delayedSearch: debounce(async (value: string) => {
         try {
-            const { data } = await sidebarAPI.search({ query: value });
+            const { data } = await sidebarApi.search({ query: value });
 
-            set({ globalResults: data });
+            set({ globalResults: { feed: data.items } });
         } catch (error) {
             console.error(error);
-            set({ globalResults: [] });
+            set({ globalResults: null });
         } finally {
             set({ isSearching: false });
         }
-    }, 500),
-    updateFeed: (update: Pick<ConversationFeed | GroupFeed, 'lastMessage' | 'lastActionAt'>, id: string, sort?: boolean) => {
-        set((prevState) => {
-            const updatedArray = prevState.localResults.feed.map((item) => item._id === id ? { ...item, ...update } : item);
-
-            return { localResults: { ...prevState.localResults, feed: sort ? updatedArray.sort(getSortedFeedByLastMessage) : updatedArray } };
-        })
-    }
+    }, 500)
 })

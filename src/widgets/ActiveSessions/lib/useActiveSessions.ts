@@ -2,7 +2,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { GetSessionsReturn } from '@/entities/session/model/types';
 import { useModal } from '@/shared/lib/providers/modal';
-import { sessionAPI } from '@/entities/session';
+import { sessionApi } from '@/entities/session';
 
 export const useActiveSessions = () => {
     const [sessions, setSessions] = React.useState<GetSessionsReturn | null>(null);
@@ -14,7 +14,7 @@ export const useActiveSessions = () => {
     const handleTerimanteSessions = async () => {
         setIsTerminating(true);
 
-        await onAsyncActionModal(sessionAPI.terminateAllSessions, {
+        await onAsyncActionModal(sessionApi.terminateAllSessions, {
             onResolve: ({ data: { deletedCount } }) => {
                 setSessions((prevState) => ({ ...prevState!, sessions: [] }));
                 toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`, {
@@ -40,7 +40,7 @@ export const useActiveSessions = () => {
     React.useEffect(() => {
         (async () => {
             try {
-                const { data } = await sessionAPI.getSessions();
+                const { data } = await sessionApi.getSessions();
 
                 setSessions(data);
             } catch (error) {

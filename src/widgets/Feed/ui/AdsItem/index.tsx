@@ -1,8 +1,8 @@
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Typography } from '@/shared/ui/Typography';
 import { Link } from 'react-router-dom';
-import { AdsFeed } from '@/shared/model/types';
 import { Image } from '@/shared/ui/Image';
+import { AdsFeed } from '../../types';
 
 export const AdsItem = ({ adsItem: { link, description, name, avatar } }: { adsItem: AdsFeed }) => {
     return (

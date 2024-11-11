@@ -38,7 +38,7 @@ export enum USER_EVENTS {
 export interface DeleteMessageEventParams {
     lastMessage: Message;
     lastMessageSentAt: string;
-    id: string;
+    feedId: string;
 }
 
 export enum UserCheckType {

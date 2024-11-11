@@ -1,11 +1,11 @@
 import React from 'react';
 import { z } from 'zod';
-import { APIData, SearchUser } from '@/shared/model/types';
 import { createGroupSchema } from './schemas';
 import { UseFormReturn } from 'react-hook-form';
+import { SearchUser } from '@/widgets/Feed/types';
 
 export type CreateGroupType = z.infer<typeof createGroupSchema>;
-export type CreateGroupParams = Omit<z.infer<typeof createGroupSchema>, 'username'> & { participants: Array<string> };
+export type CreateGroupParams = Omit<CreateGroupType, 'username'> & { participants: Array<string> };
 
 export interface ICreateGroupContext {
     form: UseFormReturn<CreateGroupType>;
@@ -18,8 +18,4 @@ export interface ICreateGroupContext {
     handleRemove: (id: string) => void;
     handleSearchUser: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleBack: () => void;
-}
-
-export interface ICreateGroupAPI {
-    create(params: CreateGroupParams): Promise<APIData<{ _id: string }>>;
 }

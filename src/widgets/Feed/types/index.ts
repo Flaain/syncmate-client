@@ -1,6 +1,6 @@
 import { Avatar, PRESENCE } from "@/entities/profile/model/types";
 import { Conversation } from "@/pages/Conversation/model/types";
-import { Group } from "@/shared/model/types";
+import { Group } from "@/pages/Group/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
 
 export type Feed = Array<ConversationFeed | GroupFeed | UserFeed>;
@@ -10,7 +10,9 @@ export enum FeedTypes {
     CONVERSATION = 'Conversation',
     GROUP = 'Group',
     USER = 'User',
-    ADS = "ADS"
+    ADS = "ADS",
+    CLOUD = "Cloud",
+    CHANNEL = "Channel"
 }
 
 export interface SearchUser {
@@ -22,10 +24,8 @@ export interface SearchUser {
 }
 
 export enum FEED_EVENTS {
-    CREATE_MESSAGE = 'feed.create.message',
-    EDIT_MESSAGE = 'feed.edit.message',
-    DELETE_MESSAGE = 'feed.delete.message',
     CREATE = 'feed.create',
+    UPDATE = 'feed.update',
     DELETE = 'feed.delete',
     USER_PRESENCE = 'feed.user.presence',
     START_TYPING = 'feed.start.typing',
@@ -48,6 +48,7 @@ export type GroupFeed = Pick<Group, '_id' | 'lastMessage' | 'isOfficial' | 'name
 };
 
 export type UserFeed = SearchUser & { type: FeedTypes.USER };
+export type GroupGlobalFeed = GroupFeed & { type: FeedTypes.GROUP };
 
 export interface AdsFeed {
     _id: string;

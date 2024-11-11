@@ -6,8 +6,7 @@ import { ArrowDown, Edit2Icon, Paperclip, Reply, SendHorizonal, Smile } from 'lu
 import { toast } from 'sonner';
 import { useSendMessage } from '../lib/useSendMessage';
 import { EmojiPicker } from '@/shared/model/view';
-import { UseMessageParams } from '../model/types';
-import { MessageFormState } from '@/shared/model/types';
+import { MessageFormState, UseMessageParams } from '../model/types';
 import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';

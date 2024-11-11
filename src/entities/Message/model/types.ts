@@ -1,4 +1,5 @@
-import { Avatar, Recipient } from "@/shared/model/types";
+import { Avatar } from "@/entities/profile/model/types";
+import { Recipient } from "@/pages/Conversation/model/types";
 
 export interface REMOVE_THIS_LATER {
     _id: string;
@@ -46,6 +47,10 @@ export interface DeleteMessageRes {
 }
 
 export interface DefaultParamsAPI {
-    query: string;
+    endpoint: string;
     body: string;
+}
+
+export interface DeleteParamsAPI extends Omit<DefaultParamsAPI, 'body'> {
+    messageIds: Array<string>;
 }

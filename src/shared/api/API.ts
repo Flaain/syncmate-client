@@ -1,6 +1,7 @@
 import { ApiException, ApiExceptionCode } from './error';
 
-export type RequestBody = Record<string, any> | FormData; 
+export type RequestOptionsWithoutBody = Omit<RequestOptions, 'body'>;
+export type RequestBody = Record<string, any> | FormData | string; 
 export type InterceptorResponseSuccessFunction = <T>(response: ApiBaseResult<T>) => ApiBaseResult<T>['data'] | Promise<ApiBaseResult<T>['data']>
 export type InterceptorResponseFailureFunction = (error: ApiException) => any;
 export type InterceptorRequestSuccessFunction = (options: RequestConfig) => RequestConfig | Promise<RequestConfig>;
@@ -17,10 +18,12 @@ export interface ApiBaseResult<T> {
     status: Response['status'];
     statusText: Response['statusText'];
     url: URL;
-    data: T;
+    data: T
 }
 
-export interface ApiBaseSuccessData {}
+export interface ApiBaseSuccessData {
+    message: string;
+}
 
 export interface ApiBaseFailureData {
     message: string;
@@ -111,8 +114,8 @@ export abstract class ApiInterceptors {
     }
 
     protected readonly invokeResponseInterceptors = async <T>(initialResponse: Response, initialConfig: RequestConfig) => {
-        const data = await initialResponse.json();
         const url = new URL(initialResponse.url);
+        const data = await initialResponse.json();
 
         const response: ApiBaseResult<T>  = {
             url,
@@ -238,21 +241,21 @@ export class API extends ApiInterceptors {
     post = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
         return this.request<T>(endpoint, 'POST', {
             ...options,
-            ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
+            ...(!!body && { body: body instanceof FormData || typeof body === 'string' ? body : JSON.stringify(body) })
         });
     }
 
     put = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
         return this.request<T>(endpoint, 'PUT', {
             ...options,
-            ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
+            ...(!!body && { body: body instanceof FormData || typeof body === 'string' ? body : JSON.stringify(body) })
         });
     }
 
     patch = <T>(endpoint: string, body?: RequestBody, options: RequestOptions = {}) => {
         return this.request<T>(endpoint, 'PATCH', {
             ...options,
-            ...(!!body && { body: body instanceof FormData ? body : JSON.stringify(body) })
+            ...(!!body && { body: body instanceof FormData || typeof body === 'string' ? body : JSON.stringify(body) })
         });
     }
 

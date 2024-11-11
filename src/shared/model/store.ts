@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 import { Message } from '@/entities/Message/model/types';
-
-export type MessageFormState = 'send' | 'edit' | 'reply';
+import { MessageFormState } from '@/features/SendMessage/model/types';
 
 export interface LayoutStore {
     drafts: Map<string, Draft>;

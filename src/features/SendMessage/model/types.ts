@@ -1,3 +1,5 @@
+export type MessageFormState = 'send' | 'edit' | 'reply';
+
 export interface MessageTopBarProps {
     onClose: () => void;
     title: string;

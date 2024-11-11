@@ -5,7 +5,7 @@ import { useSidebar } from '@/widgets/Sidebar/model/context';
 import { useShallow } from 'zustand/shallow';
 import { feedItems, globalFilters, localFilters } from '@/widgets/Sidebar/model/constants';
 import { MIN_USER_SEARCH_LENGTH } from '@/shared/constants';
-import { FeedTypes } from '@/shared/model/types';
+import { FeedTypes } from '../types';
 
 export const Feed = () => {
     const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow((state) => ({
@@ -16,12 +16,12 @@ export const Feed = () => {
     })));
 
     const filteredLocalResults = localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue));
-    const filteredGlobalResults = globalResults?.filter((item) => !globalFilters[item.type](item, localResults));
-    const isResultsEmpty = !filteredLocalResults.length && !filteredGlobalResults?.length;
+    const filteredGlobalResults = globalResults?.feed?.filter((item) => !globalFilters[item.type](item, localResults));
+    const isResultsEmpty = !isSearching && !filteredLocalResults.length && !filteredGlobalResults?.length;
 
-    if (!isSearching && isResultsEmpty && searchValue.length <= MIN_USER_SEARCH_LENGTH) return <FeedSkeleton skeletonsCount={3} />;
+    if (isResultsEmpty && searchValue.length <= MIN_USER_SEARCH_LENGTH) return <FeedSkeleton skeletonsCount={3} />;
 
-    return !isSearching && isResultsEmpty && searchValue.length > MIN_USER_SEARCH_LENGTH ? (
+    return isResultsEmpty && searchValue.length > MIN_USER_SEARCH_LENGTH ? (
         <>
             <UserSearch className='dark:text-primary-white w-10 h-10 self-center' />
             <Typography as='p' variant='secondary' className='line-clamp-3 break-words px-3 box-border text-center'>

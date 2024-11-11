@@ -1,17 +1,17 @@
 import { CONVERSATION_EVENTS, ConversationStore } from './types';
-import { conversationAPI } from '../api';
 import { toast } from 'sonner';
 import { useSocket } from '@/shared/model/store';
-import { AppException } from '@/shared/api/error';
 import { redirect } from 'react-router-dom';
 import { SetStateInternal } from '@/shared/model/types';
+import { conversationApi } from '../api';
+import { ApiException } from '@/shared/api/error';
 
 export const conversationActions = (set: SetStateInternal<ConversationStore>, get: () => ConversationStore): ConversationStore['actions'] => ({
     getConversation: async (action: 'init' | 'refetch', recipientId: string, setChatState, abortController?: AbortController) => {
         try {
             action === 'init' ? set({ status: 'loading' }) : set({ isRefetching: true });
             
-            const { data } = await conversationAPI.get({ recipientId, signal: abortController?.signal });
+            const { data } = await conversationApi.get(recipientId, abortController?.signal);
 
             set({ data, status: 'idle', error: null });
 
@@ -26,13 +26,7 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
         } catch (error) {
             console.error(error);
 
-            if (error instanceof AppException) {
-                if (error.response?.status === 404) {
-                    redirect('/');
-                } else {
-                    set({ error: error.message, status: 'error' });
-                }
-            }
+            error instanceof ApiException && (error.response.status === 404 ? redirect('/') : set({ error: error.message, status: 'error' }));
         } finally {
             set({ isRefetching: false });
         }
@@ -42,19 +36,16 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
             set({ isPreviousMessagesLoading: true });
 
             const { data: { conversation: { recipient }, nextCursor } } = get();
-            const { data: previousMessages } = await conversationAPI.getPreviousMessages({
-                recipientId: recipient._id,
-                params: { cursor: nextCursor! }
-            });
+            const { data } = await conversationApi.getPreviousMessages(recipient._id, nextCursor!);
 
             set((prevState) => ({
                 data: {
                     ...prevState.data,
                     conversation: {
                         ...prevState.data.conversation,
-                        messages: [...previousMessages.messages, ...prevState.data.conversation.messages]
+                        messages: [...data.messages, ...prevState.data.conversation.messages]
                     },
-                    nextCursor: previousMessages.nextCursor
+                    nextCursor: data.nextCursor
                 }
             }));
         } catch (error) {

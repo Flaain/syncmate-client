@@ -2,13 +2,13 @@ import React from 'react';
 import { CONVERSATION_EVENTS, ConversationStore } from './types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationContext } from './context';
-import { PRESENCE } from '@/shared/model/types';
 import { Message } from '@/entities/Message/model/types';
 import { useEvents, useSocket } from '@/shared/model/store';
 import { useSession } from '@/entities/session';
 import { createStore } from 'zustand';
 import { conversationActions } from './actions';
 import { useChat } from '@/shared/lib/providers/chat/context';
+import { PRESENCE } from '@/entities/profile/model/types';
 
 const initialState: Omit<ConversationStore, 'actions'> = {
     data: null!,
@@ -21,10 +21,7 @@ const initialState: Omit<ConversationStore, 'actions'> = {
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
     const { id: recipientId } = useParams() as { id: string };
-    const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ 
-        ...initialState, 
-        actions: conversationActions(set, get) 
-    })));
+    const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ ...initialState, actions: conversationActions(set, get) })));
     
     const socket = useSocket((state) => state.socket);
     const userId = useSession((state) => state.userId)
@@ -44,9 +41,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
 
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
-        socket?.io.on('reconnect', () => {
-            socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
-        });
+        socket?.io.on('reconnect', () => socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId }));
 
         socket?.on(CONVERSATION_EVENTS.USER_PRESENCE, ({ presence, lastSeenAt }: { presence: PRESENCE; lastSeenAt?: string }) => {
             store.setState((prevState) => ({
@@ -111,7 +106,6 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, (editedMessage: Message) => {
-            console.log(editedMessage)
             store.setState((prevState) => ({
                 data: {
                     ...prevState.data,

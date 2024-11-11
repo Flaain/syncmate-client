@@ -1,26 +1,8 @@
-import { API } from "@/shared/api/API";
-import { OtpType } from "../model/types";
+import { api } from '@/shared/api';
+import { OtpType } from '../model/types';
+import { ApiBaseSuccessData } from '@/shared/api/API';
 
-class OTP extends API {
-    create = async (body: { email: string; type: OtpType }) => {
-        const request: RequestInit = {
-            method: 'POST',
-            headers: this._headers,
-            body: JSON.stringify(body)
-        };
-
-        return this._checkResponse<{ retryDelay: number }>(await fetch(this._baseUrl + '/auth/otp', request), request);
-    };
-
-    verify = async (body: { otp: string; email: string; type: OtpType }) => {
-        const request: RequestInit = {
-            method: 'POST',
-            headers: this._headers,
-            body: JSON.stringify(body)
-        };
-
-        return this._checkResponse<boolean>(await fetch(this._baseUrl + '/auth/otp/verify', request), request);
-    };
-}
-
-export const otpAPI = new OTP();
+export const otpApi = {
+    create: (body: { email: string; type: OtpType }) => api.post<{ retryDelay: number }>('/auth/otp', body),
+    verify: (body: { otp: string; email: string; type: OtpType }) => api.post<ApiBaseSuccessData>('/auth/otp/verify', body)
+};

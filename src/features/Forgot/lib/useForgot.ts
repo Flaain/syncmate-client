@@ -5,12 +5,12 @@ import { toast } from 'sonner';
 import { forgotAPI } from '../api';
 import { forgotSchema } from '../model/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { otpAPI } from '@/features/OTP';
 import { checkFormErrors } from '@/shared/lib/utils/checkFormErrors';
 import { steps } from '../model/constants';
 import { useOtp } from '@/features/OTP/model/store';
 import { useSigninForm } from '@/widgets/SigninForm/model/store';
 import { OtpType } from '@/features/OTP/model/types';
+import { otpApi } from '@/features/OTP';
 
 export const useForgot = () => {
     const [step, setStep] = React.useState(0);
@@ -53,14 +53,14 @@ export const useForgot = () => {
 
             const actions = {
                 0: async () => {
-                    const { data: { retryDelay } } = await forgotAPI.forgot({ email });
+                    const { data: { retryDelay } } = await otpApi.create({ email, type: OtpType.PASSWORD_RESET })
 
                     useOtp.setState({ otp: { targetEmail: email, type: OtpType.PASSWORD_RESET, retryDelay } });
                     
                     setStep((prevState) => prevState + 1);
                 },
                 1: async () => {
-                    await otpAPI.verify({ otp, email, type: OtpType.PASSWORD_RESET });
+                    await otpApi.verify({ otp, email, type: OtpType.PASSWORD_RESET });
 
                     setStep((prevState) => prevState + 1);
                 },
@@ -79,7 +79,13 @@ export const useForgot = () => {
             await actions[step as keyof typeof actions]();
         } catch (error) {
             console.error(error);
-            checkFormErrors({ error, form, fields: steps[step].fields });
+            checkFormErrors<ForgotSchemaType>({
+                error,
+                fields: steps[step].fields,
+                onIncludes: ({ path, message }) => {
+                    form.setError(path as FieldPath<ForgotSchemaType>, { message }, { shouldFocus: true });
+                }
+            });
         } finally {
             setIsLoading(false);
         }

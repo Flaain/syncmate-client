@@ -1,14 +1,13 @@
 import React from 'react';
 import { toast } from 'sonner';
-import { MessageFormState } from '@/shared/model/types';
-import { EmojiData, UseMessageParams } from '../model/types';
+import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
 import { useModal } from '@/shared/lib/providers/modal';
 import { Confirm } from '@/shared/ui/Confirm';
-import { messageAPI } from '@/entities/Message/api';
 import { selectModalActions } from '@/shared/lib/providers/modal/store';
 import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
+import { messageApi } from '@/entities/Message';
 
 export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
@@ -76,9 +75,9 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
     }, []);
 
     const handleDeleteMessage = React.useCallback(async () => {
-        onAsyncActionModal(() => messageAPI.delete({ 
-            query: `${params.apiUrl}/delete`, 
-            body: JSON.stringify({ ...params.query, messageIds: [currentDraft!.selectedMessage!._id] }) 
+        onAsyncActionModal(() => messageApi.delete({ 
+            endpoint: `${params.apiUrl}/delete/${params.id}`, 
+            messageIds: [currentDraft!.selectedMessage!._id]
         }), {
             closeOnError: true,
             onResolve: () => {
@@ -129,8 +128,8 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
 
             if (message === currentDraft!.selectedMessage!.text) return;
 
-            await messageAPI.edit({ 
-                query: `${params.apiUrl}/edit/${currentDraft!.selectedMessage!._id}`,
+            await messageApi.edit({ 
+                endpoint: `${params.apiUrl}/edit/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query })
              })
 
@@ -145,7 +144,7 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
         try {
             if (!message.length) return;
 
-            await messageAPI.send({ query: `${params.apiUrl}/send/${params.id}`, body: JSON.stringify({ message }) })
+            await messageApi.send({ endpoint: `${params.apiUrl}/send/${params.id}`, body: JSON.stringify({ message }) })
 
             lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });            
         } catch (error) {
@@ -160,8 +159,8 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
         try {
             if (!message.length) return;
 
-            await messageAPI.reply({ 
-                query: `${params.apiUrl}/reply/${currentDraft!.selectedMessage!._id}`,
+            await messageApi.reply({ 
+                endpoint: `${params.apiUrl}/reply/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query })
              })
         } catch (error) {
@@ -189,7 +188,7 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
             console.error(error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => textareaRef.current?.focus(), 0); // kludge, .focus() doesn't work cuz of disabled textarea on loading
+            setTimeout(() => textareaRef.current?.focus(), 0);
         }
     };
 

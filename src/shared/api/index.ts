@@ -24,5 +24,5 @@ api.interceptors.response.use(undefined, async (error) => {
         }
     }
 
-    Promise.reject(error);
+    return Promise.reject(error);
 });

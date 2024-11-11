@@ -1,12 +1,11 @@
 import React from 'react';
 import { toast } from 'sonner';
-import { Draft } from '@/shared/model/types';
 import { Message } from '../model/types';
-import { messageAPI } from '../api';
 import { useModal } from '@/shared/lib/providers/modal';
-import { useLayout } from '@/shared/model/store';
+import { Draft, useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
+import { messageApi } from '../api';
 
 export const useMessage = (message: Message) => {
     const { params, isContextActionsBlocked } = useChat(useShallow((state) => ({
@@ -22,14 +21,9 @@ export const useMessage = (message: Message) => {
     }, []);
 
     const handleMessageDelete = React.useCallback(async () => {
-        onAsyncActionModal(() => messageAPI.delete({ 
-            query: `${params.apiUrl}/delete`, 
-            body: JSON.stringify({ ...params.query, messageIds: [message._id] }) 
-        }), {
+        onAsyncActionModal(() => messageApi.delete({ endpoint: `${params.apiUrl}/delete/${params.id}`, messageIds: [message._id] }), {
             closeOnError: true,
-            onReject: () => {
-                toast.error('Cannot delete message', { position: 'top-center' });
-            }
+            onReject: () => toast.error('Cannot delete message', { position: 'top-center' })
         });
     }, [params.id, message]);
 

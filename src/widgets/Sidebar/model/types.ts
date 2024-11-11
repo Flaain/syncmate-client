@@ -1,6 +1,27 @@
-import { AdsFeed, ConversationFeed, FeedWrapper, GroupFeed, UserFeed } from "@/widgets/Feed/types";
+import { Message } from '@/entities/Message/model/types';
+import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/types';
 
-export type LocalFeed = ConversationFeed | GroupFeed | AdsFeed;
+export interface FeedUpdateParams {
+    lastActionAt?: string;
+    itemId: string;
+    lastMessage?: Message;
+    shouldSort?: boolean;
+}
+
+export interface LocalFeedItemWrapper<T extends FeedTypes, I extends ConversationFeed | GroupFeed | AdsFeed> {
+    _id: string;
+    lastActionAt: string;
+    createdAt: string;
+    item: I;
+    type: T;
+}
+
+export type ExctactLocalFeedItem<T extends FeedTypes> = Extract<LocalFeed, { type: T }>;
+
+export type LocalFeed =
+    | LocalFeedItemWrapper<FeedTypes.CONVERSATION, ConversationFeed>
+    | LocalFeedItemWrapper<FeedTypes.GROUP, GroupFeed>
+    | LocalFeedItemWrapper<FeedTypes.ADS, AdsFeed>;
 
 export interface SidebarAnouncement {
     title: string;
@@ -13,13 +34,18 @@ export interface UseSidebarEventsProps {
 }
 
 export interface LocalResults {
-    feed: Array<FeedWrapper<LocalFeed>>;
+    feed: Array<LocalFeed>;
     nextCursor: string | null;
+}
+
+export interface GlobalResults {
+    feed: Array<UserFeed | GroupGlobalFeed>;
+    nextCursor?: string | null;
 }
 
 export interface SidebarStore {
     localResults: LocalResults;
-    globalResults: Array<UserFeed | GroupFeed>;
+    globalResults: GlobalResults | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
     isSearching: boolean;
@@ -29,7 +55,6 @@ export interface SidebarStore {
         handleLogout: () => Promise<void>;
         handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
         delayedSearch: (value: string) => void;
-        updateFeed: (update: Pick<ConversationFeed | GroupFeed, 'lastMessage' | 'lastActionAt'>, id: string, sort?: boolean) => void;
         getFeed: () => Promise<void>;
-    }
+    };
 }

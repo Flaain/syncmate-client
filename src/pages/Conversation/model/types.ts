@@ -32,10 +32,15 @@ export interface ConversationStore {
     isRecipientTyping: boolean;
     isRefetching: boolean;
     actions: {
-        getConversation: (action: 'init' | 'refetch', recipientId: string, setChatState: (state: Partial<ChatStore>) => void, abortController?: AbortController) => Promise<void>;
+        getConversation: (
+            action: 'init' | 'refetch',
+            recipientId: string,
+            setChatState: (state: Partial<ChatStore>) => void,
+            abortController?: AbortController
+        ) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
         handleTypingStatus: () => () => void;
-    }
+    };
 }
 
 export interface Conversation {
@@ -51,9 +56,7 @@ export interface Conversation {
 }
 
 export interface GetDescriptionParams {
-    data: {
-        recipient: Pick<Recipient, 'presence' | 'lastSeenAt'>
-    } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
+    data: { recipient: Pick<Recipient, 'presence' | 'lastSeenAt'> } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
     shouldDisplayTypingStatus?: boolean;
     isRecipientTyping: boolean;
 }
