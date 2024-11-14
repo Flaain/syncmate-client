@@ -1,4 +1,4 @@
-import { messageAPI } from "@/entities/Message";
+import { messageApi } from "@/entities/Message";
 import { useChat } from "@/shared/lib/providers/chat/context";
 import { useModal } from "@/shared/lib/providers/modal";
 import { selectModalActions } from "@/shared/lib/providers/modal/store";
@@ -25,12 +25,10 @@ export const SelectState = () => {
                     onCancel={onCloseModal}
                     onConfirmButtonVariant='destructive'
                     onConfirmText='Delete'
-                    onConfirm={() => onAsyncActionModal(() => messageAPI.delete({
-                        query: `${params.apiUrl}/delete`,
-                        body: JSON.stringify({
-                            ...params.query,
-                            messageIds: [...selectedMessages.keys()]
-                        })}), 
+                    onConfirm={() => onAsyncActionModal(() => messageApi.delete({
+                        endpoint: `${params.apiUrl}/delete`,
+                        messageIds: [...selectedMessages.keys()]
+                    }), 
                     {
                         closeOnError: true,
                         onResolve: () => {

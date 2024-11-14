@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const noRefreshPaths = ['/auth/refresh', '/auth/signin'];
+
 export const routerList = {
     HOME: '/',
     AUTH: '/auth',

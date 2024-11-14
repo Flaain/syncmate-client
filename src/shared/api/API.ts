@@ -11,6 +11,7 @@ export type ApiSearchParams = Record<string, string | number | boolean | Array<s
 export interface BaseApi {
     baseUrl: string;
     headers?: Record<string, string>;
+    credentials?: RequestCredentials;
 }
 
 export interface ApiBaseResult<T> {
@@ -173,12 +174,14 @@ export abstract class ApiInterceptors {
 export class API extends ApiInterceptors {
     readonly baseUrl: BaseApi['baseUrl'];
     readonly headers: Record<string, string>;
+    readonly credentials?: RequestCredentials;
 
-    constructor({ baseUrl, headers = {} }: BaseApi) {
+    constructor({ baseUrl, headers = {}, credentials }: BaseApi) {
         super();
 
         this.baseUrl = baseUrl;
         this.headers = headers;
+        this.credentials = credentials;
     }
 
     setHeaders = (headers: Record<string, string>) => {
@@ -194,11 +197,12 @@ export class API extends ApiInterceptors {
 
         const config = await this.invokeRequestInterceptors({
             ...options,
+            credentials: this.credentials,
             url,
             method,
             headers: {
                 ...this.headers,
-                ...(options?.body && !(options.body instanceof FormData) && { 'Content-type': 'application/json' }),
+                ...(options?.body && !(options.body instanceof FormData) && { 'content-type': 'application/json' }),
                 ...(!!options?.headers && options.headers)
             }
         });

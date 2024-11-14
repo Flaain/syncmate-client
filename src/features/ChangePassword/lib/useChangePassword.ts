@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, useForm } from 'react-hook-form';
 import { ActionPasswordType, ChangePasswordSchemaType } from '../model/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -43,12 +43,16 @@ export const useChangePassword = () => {
 
             const actions = {
                 0: () => onAsyncActionModal(() => changePasswordAPI.changePassword({ type: ActionPasswordType.CHECK, currentPassword }), {
-                        onReject: (error) => checkFormErrors({ error, form, fields: steps[step].fields }),
+                        onReject: (error) => checkFormErrors<ChangePasswordSchemaType>({ error, fields: steps[step].fields, onIncludes: ({ path, message }) => {
+                            form.setError(path as FieldPath<ChangePasswordSchemaType>, { message }, { shouldFocus: true });
+                        } }),
                         onResolve: () => setStep((prevState) => prevState + 1),
                         closeOnSuccess: false
                     }),
                 1: () => onAsyncActionModal(() => changePasswordAPI.changePassword({ type: ActionPasswordType.SET, currentPassword, newPassword }), {
-                        onReject: (error) => checkFormErrors({ error, form, fields: steps[step].fields }),
+                        onReject: (error) => checkFormErrors<ChangePasswordSchemaType>({ error, fields: steps[step].fields, onIncludes: ({ path, message }) => {
+                            form.setError(path as FieldPath<ChangePasswordSchemaType>, { message }, { shouldFocus: true });
+                        } }),
                         onResolve: () => toast.success('Password changed successfully', { position: 'top-center' })
                     }),
             };

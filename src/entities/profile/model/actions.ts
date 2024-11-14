@@ -4,7 +4,7 @@ import { debounce } from "@/shared/lib/utils/debounce";
 import { imageValidators } from "./constants";
 import { toast } from "sonner";
 import { SetStateInternal } from "@/shared/model/types";
-import { profileApi } from "..";
+import { profileApi } from "../api";
 
 export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => ProfileStore): ProfileStore['actions'] => ({
     getProfile: async () => {

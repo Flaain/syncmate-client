@@ -3,8 +3,8 @@ import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
-import { PRESENCE, UserFeed } from '@/shared/model/types';
 import { useLayout } from '@/shared/model/store';
+import { UserFeed } from '../../types';
 
 export const UserItem = ({ user }: { user: UserFeed }) => {
     const draft = useLayout((state) => state.drafts).get(user._id);
@@ -23,7 +23,7 @@ export const UserItem = ({ user }: { user: UserFeed }) => {
                     )
                 }
             >
-                <AvatarByName name={user.name} size='lg' isOnline={user.presence === PRESENCE.ONLINE} />
+                <AvatarByName name={user.name} size='lg' />
                 <div className='flex flex-col items-start w-full'>
                     <Typography as='h2' weight='medium' className={cn(user.isOfficial && 'flex items-center')}>
                         {user.name}

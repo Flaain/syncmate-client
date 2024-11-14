@@ -1,6 +1,11 @@
 import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
 
+export enum SenderRefPath {
+    USER = 'User',
+    PARTICIPANT = 'Participant'
+}
+
 export interface REMOVE_THIS_LATER {
     _id: string;
     name?: string;
@@ -9,8 +14,8 @@ export interface REMOVE_THIS_LATER {
 }
 
 export type MessageSender =
-    | { sender: Recipient; refPath: 'User' }
-    | { sender: REMOVE_THIS_LATER; refPath: 'Participant' };
+    | { sender: Recipient; senderRefPath: SenderRefPath.USER }
+    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
 
 export type Message = {
     _id: string;

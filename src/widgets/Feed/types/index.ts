@@ -32,13 +32,6 @@ export enum FEED_EVENTS {
     STOP_TYPING = 'feed.stop.typing'
 }
 
-export interface FeedWrapper<T> {
-    _id: string;
-    item: T;
-    lastActionAt: string;
-    type: FeedTypes
-}
-
 export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
     participantsTyping?: Array<TypingParticipant>;
 };

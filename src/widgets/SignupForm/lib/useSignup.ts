@@ -4,7 +4,6 @@ import { OtpType } from "@/features/OTP/model/types";
 import { useOtp } from "@/features/OTP/model/store";
 import { useProfile } from "@/entities/profile";
 import { useSession } from "@/entities/session";
-import { checkFormErrors } from "@/shared/lib/utils/checkFormErrors";
 import { steps } from "../model/constants";
 import { useAuth } from "@/pages/Auth";
 import { FieldPath, useForm } from "react-hook-form";
@@ -13,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "../model/schema";
 import { signupApi } from "../api";
 import { otpApi } from "@/features/OTP";
+import { ApiException } from "@/shared/api/error";
+import { toast } from "sonner";
 
 export const useSignup = () => {
     const [step, setStep] = React.useState(0);
@@ -84,14 +85,16 @@ export const useSignup = () => {
 
             await actions[step as keyof typeof actions]();
         } catch (error) {
-            checkFormErrors<SignupSchemaType>({
-                error,
-                fields: steps[step].fields,
-                onIncludes: ({ path, message }) => {
-                    path === 'otp' && form.resetField('otp', { keepError: true });
-                    form.setError(path as FieldPath<SignupSchemaType>, { message }, { shouldFocus: true });
-                }
-            });
+            console.error(error);
+            if (error instanceof ApiException) {
+                error.response.data.errors?.forEach(({ path, message }) => {
+                   steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(path as FieldPath<SignupSchemaType>, { message }); 
+                });
+        
+                !error.response.data.errors && error.toastError();
+            } else {
+                toast.error('Something went wrong. Please try again later', { position: 'top-center' });
+            }
         } finally {
             setLoading(false);
         }

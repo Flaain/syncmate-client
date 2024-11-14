@@ -8,8 +8,8 @@ import { Button } from '@/shared/ui/button';
 import { Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { SessionProps } from '../model/types';
-import { sessionAPI } from '../api';
 import { useModal } from '@/shared/lib/providers/modal';
+import { sessionApi } from '../api';
 
 const iconStyles = 'w-7 h-7 dark:fill-primary-white fill-primary-dark-50';
 
@@ -31,7 +31,7 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
     const handleDrop = async () => {
         setIsDroping(true);
         
-        await onAsyncActionModal(() => sessionAPI.dropSession(session._id), {
+        await onAsyncActionModal(() => sessionApi.dropSession(session._id), {
             onResolve: () => {
                 onDrop?.(session);
                 toast.success('Session dropped', { position: 'top-center' });

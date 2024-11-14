@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { editNameSchema } from '../model/schema';
 import { toast } from 'sonner';
 import { useModal } from '@/shared/lib/providers/modal';
-import { profileAPI, useProfile } from '@/entities/profile';
+import { profileApi, useProfile } from '@/entities/profile';
 
 export const useEditName = () => {
     const profile = useProfile((state) => state.profile);
@@ -28,7 +28,7 @@ export const useEditName = () => {
 
         if (name === profile.name) return;
 
-        onAsyncActionModal(() => profileAPI.name({ name }), {
+        onAsyncActionModal(() => profileApi.name({ name }), {
             onResolve: () => useProfile.setState((prevState) => ({ profile: { ...prevState.profile, name } })),
             onReject: () => toast.error('Failed to change name'),
             closeOnError: true
