@@ -11,8 +11,9 @@ import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useShallow } from 'zustand/shallow';
+import { Placeholder } from './Placeholder';
 
-export const SendMessage = ({ onChange }: UseMessageParams) => {
+export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, listRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
         params: state.params,
         listRef: state.refs.listRef,
@@ -28,10 +29,16 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
         setIsEmojiPickerOpen,
         onEmojiSelect,
         isEmojiPickerOpen,
-        isLoading,
         value
-    } = useSendMessage(onChange);
+    } = useSendMessage({ onChange, handleTypingStatus });
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
+    const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
+
+    if (typeof restrictedIndex !== 'undefined' && restrictedIndex !== -1) {
+        return (
+            <Placeholder text={restrictMessaging![restrictedIndex].message} />
+        )
+    };
 
     const bars: Record<Exclude<MessageFormState, 'send'>, React.ReactNode> = {
         edit: (
@@ -40,7 +47,6 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                 mainIconSlot={<Edit2Icon className='dark:text-primary-white text-primary-gray min-w-5 h-5' />}
                 onClose={setDefaultState}
                 description={currentDraft?.selectedMessage?.text}
-                preventClose={isLoading}
             />
         ),
         reply: (
@@ -49,13 +55,12 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                 mainIconSlot={<Reply className='dark:text-primary-white text-primary-gray min-w-5 h-5' />}
                 onClose={setDefaultState}
                 description={currentDraft?.selectedMessage?.text}
-                preventClose={isLoading}
             />
         )
     };
 
     return (
-        <>
+        <div className='flex flex-col sticky bottom-0 w-full z-[999]'>
             {bars[currentDraft?.state as keyof typeof bars]}
             <form
                 className='w-full max-h-[120px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'
@@ -66,7 +71,6 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                     size='icon'
                     type='button'
                     className='px-5'
-                    disabled={isLoading}
                     onClick={() => toast.info('Coming soon!', { position: 'top-center' })}
                 >
                     <Paperclip className='w-6 h-6' />
@@ -77,7 +81,6 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                     value={value}
                     onBlur={onBlur}
                     onChange={handleChange}
-                    disabled={isLoading}
                     onKeyDown={onKeyDown}
                     placeholder='Write a message...'
                     className='overscroll-contain disabled:opacity-50 leading-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border w-full transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
@@ -102,7 +105,6 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                     variant='text'
                     type='button'
                     size='icon'
-                    disabled={isLoading}
                     className='px-4'
                     onClick={(e) => {
                         e.stopPropagation();
@@ -125,12 +127,12 @@ export const SendMessage = ({ onChange }: UseMessageParams) => {
                     variant='text'
                     size='icon'
                     type='submit'
-                    disabled={(!value.trim().length && currentDraft?.state !== 'edit') || isLoading}
+                    disabled={!value.trim().length && currentDraft?.state !== 'edit'}
                     className='pr-5'
                 >
                     <SendHorizonal className='w-6 h-6' />
                 </Button>
             </form>
-        </>
+        </div>
     );
 };

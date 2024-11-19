@@ -3,7 +3,7 @@ import { CONVERSATION_EVENTS, ConversationStore } from './types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationContext } from './context';
 import { Message } from '@/entities/Message/model/types';
-import { useEvents, useSocket } from '@/shared/model/store';
+import { useSocket } from '@/shared/model/store';
 import { useSession } from '@/entities/session';
 import { createStore } from 'zustand';
 import { conversationActions } from './actions';
@@ -13,31 +13,29 @@ import { PRESENCE } from '@/entities/profile/model/types';
 const initialState: Omit<ConversationStore, 'actions'> = {
     data: null!,
     error: null,
-    isPreviousMessagesLoading: false,
     isRecipientTyping: false,
     isRefetching: false,
     status: 'loading'
 };
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
+    const setChat = useChat((state) => state.actions.setChat);
+
     const { id: recipientId } = useParams() as { id: string };
-    const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ ...initialState, actions: conversationActions(set, get) })));
+    const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ 
+        ...initialState, 
+        actions: conversationActions(set, get, setChat) 
+    })));
     
     const socket = useSocket((state) => state.socket);
     const userId = useSession((state) => state.userId)
 
-    const addEventListener = useEvents((state) => state.addEventListener);
-    const setChatState = useChat((state) => state.actions.setChatState);
     const navigate = useNavigate();
 
     React.useEffect(() => {
         const abortController = new AbortController();
 
-        store.getState().actions.getConversation('init', recipientId, setChatState, abortController);
-
-        const removeEventListener = addEventListener('keydown', (event) => {
-            event.key === 'Escape' && navigate('/');
-        });
+        store.getState().actions.getConversation('init', recipientId, abortController);
 
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
@@ -70,7 +68,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
                 }
             }));
 
-            setChatState({ isContextActionsBlocked: true });
+            setChat({ isContextActionsBlocked: true });
         });
 
         socket?.on(CONVERSATION_EVENTS.USER_UNBLOCK, (id: string) => {
@@ -78,7 +76,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
                 const isInitiatorBlocked = id === userId ? false : prevState.data.conversation.isInitiatorBlocked;
                 const isRecipientBlocked = id === recipientId ? false : prevState.data.conversation.isRecipientBlocked;
 
-                setChatState({ isContextActionsBlocked: isInitiatorBlocked || isRecipientBlocked });
+                setChat({ isContextActionsBlocked: isInitiatorBlocked || isRecipientBlocked });
 
                 return {
                     data: {
@@ -93,13 +91,13 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message & { conversationId: string }) => {
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
             store.setState((prevState) => ({
                 data: {
                     ...prevState.data,
                     conversation: {
                         ...prevState.data.conversation,
-                        messages: [...prevState.data.conversation.messages, message]
+                        messages: [...(prevState.data.conversation.messages || []), message]
                     }
                 }
             }));
@@ -144,11 +142,8 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
         socket?.on(CONVERSATION_EVENTS.START_TYPING, () => store.setState({ isRecipientTyping: true }));
         socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
-
         return () => {
-            removeEventListener();
-
-            setChatState({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
+            setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
 
             abortController.abort('Signal aborted due to new incoming request');
 

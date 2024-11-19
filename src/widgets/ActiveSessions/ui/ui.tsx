@@ -13,7 +13,7 @@ export const ActiveSessions = () => {
     const { sessions, isLoading, isTerminating, handleTerimanteSessions, handleDropSession } = useActiveSessions();
     const { onCloseModal, onOpenModal } = useModal(useShallow(selectModalActions));
 
-    if (isLoading) return <ActiveSessionsSkeleton />;
+    if (isLoading || !sessions?.sessions.length) return <ActiveSessionsSkeleton />;
 
     const onConfirm = () => {
         onCloseModal();

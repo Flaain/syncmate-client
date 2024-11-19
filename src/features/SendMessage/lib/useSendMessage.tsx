@@ -9,17 +9,16 @@ import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
 
-export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
+export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
     const { params, lastMessageRef, textareaRef } = useChat(useShallow((state) => ({ 
         textareaRef: state.refs.textareaRef,
         lastMessageRef: state.refs.lastMessageRef,
-        params: state.params 
+        params: state.params
     })));
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
-    const [isLoading, setIsLoading] = React.useState(false);
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
 
@@ -56,9 +55,11 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
     const handleChange = React.useCallback(({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
         const trimmedValue = value.trim();
         
-        onChange?.(trimmedValue);
         setValue(!trimmedValue.length ? '' : value.normalize('NFC').replace(/[\u0300-\u036f]/g, ""));
-    }, [onChange]);
+        
+        onChange?.(trimmedValue);
+        handleTypingStatus?.();
+    }, []);
 
     const setDefaultState = React.useCallback(() => {
         useLayout.setState((prevState) => {
@@ -175,25 +176,23 @@ export const useSendMessage = (onChange: UseMessageParams['onChange']) => {
         try {
             event.preventDefault();
 
-            setIsLoading(true);
-
             const actions: Record<MessageFormState, (message: string) => Promise<void>> = {
                 send: onSendMessage,
                 edit: onSendEditedMessage,
                 reply: onReplyMessage
             };
 
+            handleTypingStatus?.(true);
+
             await actions[currentDraft?.state ?? 'send'](value.trim());
         } catch (error) {
             console.error(error);
         } finally {
-            setIsLoading(false);
             setTimeout(() => textareaRef.current?.focus(), 0);
         }
     };
 
     return {
-        isLoading,
         value,
         isEmojiPickerOpen,
         setIsEmojiPickerOpen,

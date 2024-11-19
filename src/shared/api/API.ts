@@ -263,5 +263,9 @@ export class API extends ApiInterceptors {
         });
     }
 
-    call = <T>(options: RequestConfig) => this.request<T>(options.url.pathname, options.method, options);
+    call = async <T>(options: RequestConfig) => {
+        const { data } = await this.request<T>(options.url.pathname, options.method, options);
+
+        return data;
+    };
 }

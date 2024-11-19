@@ -5,19 +5,13 @@ import { MessagesListProps } from '../model/types';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
 
-export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps>(({
-    canFetch,
-    messages,
-    getPreviousMessages,
-    nextCursor,
-    isFetchingPreviousMessages,
-}, ref) => {
-    const groupedMessages = useMessagesList({ canFetch, messages, getPreviousMessages });
+export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps>(({ messages, getPreviousMessages, nextCursor }) => {
+    const { groupedMessages, canFetch, isPreviousMessagesLoading, listRef } = useMessagesList({ messages, nextCursor, getPreviousMessages });
 
     return (
         <ul
-            ref={ref}
-            className='relative flex flex-col flex-1 w-full px-5 mb-auto max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
+            ref={listRef}
+            className='relative flex flex-col w-full p-5 mb-auto max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
         >
             {nextCursor && (
                 <li className='flex justify-center items-center'>
@@ -27,7 +21,7 @@ export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps
                         disabled={!canFetch}
                         onClick={getPreviousMessages}
                     >
-                        {isFetchingPreviousMessages ? (
+                        {isPreviousMessagesLoading ? (
                             <Loader2 className='w-6 h-6 animate-spin' />
                         ) : (
                             'Load previous messages'

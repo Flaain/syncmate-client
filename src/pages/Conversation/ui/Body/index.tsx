@@ -2,28 +2,23 @@ import { Typography } from '@/shared/ui/Typography';
 import { MessagesList } from '@/widgets/MessagesList';
 import { useConversation } from '../../model/context';
 import { useShallow } from 'zustand/shallow';
-import { useChat } from '@/shared/lib/providers/chat/context';
 
 export const ConversationBody = () => {
-    const { messages, nextCursor, isPreviousMessagesLoading, actions } = useConversation(useShallow((state) => ({
+    const { messages, nextCursor, actions } = useConversation(useShallow((state) => ({
+        _id: state.data.conversation._id,
+        recipient: state.data.conversation.recipient,
         messages: state.data.conversation.messages,
         nextCursor: state.data.nextCursor,
         actions: state.actions,
-        isPreviousMessagesLoading: state.isPreviousMessagesLoading
     })));
-
-    const listRef = useChat((state) => state.refs.listRef);
 
     return (
         <>
-            {messages.length ? (
+            {messages?.length ? (
                 <MessagesList
-                    ref={listRef}
                     messages={messages}
                     getPreviousMessages={actions.getPreviousMessages}
-                    isFetchingPreviousMessages={isPreviousMessagesLoading}
                     nextCursor={nextCursor}
-                    canFetch={!isPreviousMessagesLoading && !!nextCursor}
                 />
             ) : (
                 <Typography

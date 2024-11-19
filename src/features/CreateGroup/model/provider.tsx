@@ -7,13 +7,13 @@ import { debounce } from "@/shared/lib/utils/debounce";
 import { MAX_GROUP_SIZE, steps } from "./constants";
 import { useModal } from "@/shared/lib/providers/modal";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
-import { checkFormErrors } from "@/shared/lib/utils/checkFormErrors";
 import { CreateGroupContext } from "./context";
 import { useShallow } from "zustand/shallow";
 import { NavigateFunction } from "react-router-dom";
 import { SearchUser } from "@/widgets/Feed/types";
 import { profileApi } from "@/entities/profile";
 import { createGroupApi } from "../api";
+import { ApiException } from "@/shared/api/error";
 
 export const CreateGroupProvider = ({ children, navigate }: { children: React.ReactNode; navigate: NavigateFunction }) => {
     const { isModalDisabled, onAsyncActionModal } = useModal(useShallow((state) => ({
@@ -97,13 +97,13 @@ export const CreateGroupProvider = ({ children, navigate }: { children: React.Re
 
         if (step === steps.length - 1) {
             onAsyncActionModal(() => createGroupApi.create({ ...rest, participants: [...selectedUsers.keys()] }), {
-                onReject: (error) => checkFormErrors<CreateGroupType>({
-                    error,
-                    fields: steps[step].fields,
-                    onIncludes: ({ path, message }) => {
-                        form.setError(path as FieldPath<CreateGroupType>, { message }, { shouldFocus: true });
+                onReject: (error) => {
+                    if (error instanceof ApiException) {
+                        error.response.data.errors?.forEach(({ path, message }) => {
+                            steps[step].fields.includes(path as FieldPath<CreateGroupType>) && form.setError(path as FieldPath<CreateGroupType>, { message }, { shouldFocus: true });  
+                        })
                     }
-                }),
+                },
                 onResolve: ({ data }) => navigate(`/group/${data._id}`)
             });
         } else {

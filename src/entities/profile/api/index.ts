@@ -5,7 +5,7 @@ import { Pagination, WrappedInPagination } from '@/shared/model/types';
 import { SearchUser } from '@/widgets/Feed/types';
 
 export const profileApi = {
-    getProfile: () => api.get<Profile>('/auth/me', { cache: 'no-store' }),
+    getProfile: () => api.get<Profile>('/auth/me'),
     avatar: (form: FormData) => api.post<Avatar>('/user/avatar', form),
     status: (body: { status: string }) => api.post<ApiBaseSuccessData>('/user/status', body),
     name: (body: { name: string }) => api.post<ApiBaseSuccessData>('/user/name', body),

@@ -11,6 +11,8 @@ export interface MessageTopBarProps {
 
 export interface UseMessageParams {
     onChange?: (value: string) => void;
+    handleTypingStatus?: (reset?: boolean) => void;
+    restrictMessaging?: Array<{ reason: boolean; message: string }>
 }
 
 export interface EmojiMartData {

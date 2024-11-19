@@ -1,6 +1,5 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
-import { ChatStore } from '@/shared/lib/providers/chat/types';
 
 export type ConversationStatuses = 'idle' | 'loading' | 'error';
 
@@ -27,19 +26,13 @@ export enum CONVERSATION_EVENTS {
 export interface ConversationStore {
     data: ConversationWithMeta;
     status: ConversationStatuses;
-    isPreviousMessagesLoading: boolean;
     error: string | null;
     isRecipientTyping: boolean;
     isRefetching: boolean;
     actions: {
-        getConversation: (
-            action: 'init' | 'refetch',
-            recipientId: string,
-            setChatState: (state: Partial<ChatStore>) => void,
-            abortController?: AbortController
-        ) => Promise<void>;
+        getConversation: (action: 'init' | 'refetch', recipientId: string, abortController?: AbortController) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
-        handleTypingStatus: () => () => void;
+        handleTypingStatus: () => (reset?: boolean) => void;
     };
 }
 

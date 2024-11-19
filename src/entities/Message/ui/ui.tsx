@@ -12,21 +12,16 @@ import { useShallow } from 'zustand/shallow';
 export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message, isFirst, isLast, isMessageFromMe, className, ...rest }, ref) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
-    const { createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo } = message;
-    const { selectedMessages, isContextActionsBlocked } = useChat(useShallow((state) => ({
+    const { createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply } = message;
+    const { type, selectedMessages, isContextActionsBlocked } = useChat(useShallow((state) => ({
+        type: state.params.type,
         selectedMessages: state.selectedMessages,
         isContextActionsBlocked: state.isContextActionsBlocked
     })));
 
     const isSelected = selectedMessages.has(message._id);
     const createTime = new Date(createdAt);
-    const editTime = new Date(updatedAt);
-    const stylesForBottomIcon = cn(
-        'w-4 h-4 mt-0.5',
-        isMessageFromMe
-            ? 'dark:text-primary-dark-200 text-primary-white'
-            : 'dark:text-primary-white text-primary-dark-200'
-    );
+    const stylesForBottomIcon = cn('w-4 h-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
 
     return (
         <ContextMenu onOpenChange={setIsContextMenuOpen}>
@@ -61,7 +56,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && senderRefPath === SenderRefPath.PARTICIPANT && (
+                    {!isMessageFromMe && isFirst && senderRefPath === SenderRefPath.PARTICIPANT && type === 'group' && (
                         <Typography variant='primary' weight='semibold'>
                             {sender.name || sender.user.name}
                         </Typography>
@@ -70,7 +65,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                         className={cn(
                             'py-2 px-3 xl:m-0 relative max-w-[500px]',
                             isMessageFromMe ? 'ml-auto' : 'mr-auto',
-                            (replyTo === null || !!replyTo) && 'flex flex-col gap-2',
+                            inReply && 'flex flex-col gap-2',
                             getBubblesStyles({
                                 isFirst,
                                 isLast,
@@ -78,7 +73,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                             })
                         )}
                     >
-                        {(replyTo === null || !!replyTo) && (
+                        {inReply && (
                             <Typography
                                 as='p'
                                 weight='semibold'
@@ -86,7 +81,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                                     'line-clamp-1 dark:text-primary-blue text-xs flex flex-col py-1 px-2 w-full rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
                                 )}
                             >
-                                {replyTo === null ? 'Deleted Message' : replyTo.senderRefPath === SenderRefPath.USER ? replyTo.sender.name : (replyTo.sender.name || replyTo.sender.user.name)}
+                                {!replyTo ? 'Deleted Message' : replyTo.senderRefPath === SenderRefPath.USER ? replyTo.sender.name : (replyTo.sender.name || replyTo.sender.user.name)}
                                 {!!replyTo && (
                                     <Typography
                                         className={cn(
@@ -116,19 +111,11 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                                         ? 'dark:text-primary-dark-50/20 text-primary-white'
                                         : 'dark:text-primary-white/20'
                                 )}
-                                title={`${createTime.toLocaleString()}${
-                                    hasBeenEdited ? `\nEdited: ${editTime.toLocaleString()}` : ''
-                                }`}
+                                title={`${createTime.toLocaleString()}${hasBeenEdited ? `\nEdited: ${new Date(updatedAt).toLocaleString()}` : ''}`}
                             >
-                                {new Date(createdAt).toLocaleTimeString(navigator.language ?? 'en-US', {
-                                    timeStyle: 'short'
-                                })}
+                                {createTime.toLocaleTimeString(navigator.language ?? 'en-US', { timeStyle: 'short' })}
                                 {hasBeenEdited && ', edited'}
-                                {hasBeenRead ? (
-                                    <CheckCheck className={stylesForBottomIcon} />
-                                ) : (
-                                    <Check className={stylesForBottomIcon} />
-                                )}
+                                {hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />}
                             </Typography>
                         </div>
                     </div>

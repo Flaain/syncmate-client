@@ -12,7 +12,7 @@ export const OutletError = ({
 }) => {
     return (
         <OutletContainer>
-            <div className='mx-auto flex flex-col gap-2 my-auto'>
+            <div className='flex flex-col gap-2 m-auto'>
                 <Typography as='h1' variant='primary' size='5xl' weight='bold' align='center' className='max-w-[400px]'>
                     {title}
                 </Typography>

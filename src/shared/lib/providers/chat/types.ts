@@ -10,13 +10,14 @@ export interface ChatStore {
     mode: ChatMode;
     showDetails: boolean;
     selectedMessages: Map<string, Message>;
+    isPreviousMessagesLoading: boolean;
     refs: {
         listRef: React.RefObject<HTMLUListElement>;
         lastMessageRef: React.RefObject<HTMLLIElement>;
         textareaRef: React.RefObject<HTMLTextAreaElement>;
     };
     actions: {
-        setChatState: SetStateInternal<ChatStore>;
+        setChat: SetStateInternal<ChatStore>;
         handleSelectMessage: (message: Message) => void;
     };
 }

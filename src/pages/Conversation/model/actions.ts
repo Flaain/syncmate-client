@@ -5,9 +5,10 @@ import { redirect } from 'react-router-dom';
 import { SetStateInternal } from '@/shared/model/types';
 import { conversationApi } from '../api';
 import { ApiException } from '@/shared/api/error';
+import { ChatStore } from '@/shared/lib/providers/chat/types';
 
-export const conversationActions = (set: SetStateInternal<ConversationStore>, get: () => ConversationStore): ConversationStore['actions'] => ({
-    getConversation: async (action: 'init' | 'refetch', recipientId: string, setChatState, abortController?: AbortController) => {
+export const conversationActions = (set: SetStateInternal<ConversationStore>, get: () => ConversationStore, setChat: SetStateInternal<ChatStore>): ConversationStore['actions'] => ({
+    getConversation: async (action: 'init' | 'refetch', recipientId: string, abortController?: AbortController) => {
         try {
             action === 'init' ? set({ status: 'loading' }) : set({ isRefetching: true });
             
@@ -15,13 +16,13 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
 
             set({ data, status: 'idle', error: null });
 
-            setChatState({
+            setChat({
                 params: {
                     apiUrl: '/message',
                     id: data.conversation.recipient._id,
                     query: { recipientId: data.conversation.recipient._id },
                     type: 'conversation'
-                 }
+                }
             })
         } catch (error) {
             console.error(error);
@@ -33,7 +34,7 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
     },
     getPreviousMessages: async () => {
         try {
-            set({ isPreviousMessagesLoading: true });
+            setChat({ isPreviousMessagesLoading: true });
 
             const { data: { conversation: { recipient }, nextCursor } } = get();
             const { data } = await conversationApi.getPreviousMessages(recipient._id, nextCursor!);
@@ -52,13 +53,19 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
             console.error(error);
             toast.error('Cannot get previous messages', { position: 'top-center' });
         } finally {
-            set({ isPreviousMessagesLoading: false });
+            setChat({ isPreviousMessagesLoading: false });
         }
     },
     handleTypingStatus: () => {
         const ctx: { isTyping: boolean, typingTimeout: ReturnType<typeof setTimeout> | null } = { isTyping: false, typingTimeout: null };
 
-        return () => {
+        return (reset?: boolean) => {
+            if (reset) {
+                ctx.isTyping = false;
+                clearTimeout(ctx.typingTimeout!);
+                return;
+            }
+
             const { data: { conversation } } = get();
             const { socket } = useSocket.getState();
     
