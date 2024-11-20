@@ -10,7 +10,7 @@ import { conversationApi } from '../api';
 export const useConversationDDM = () => {
     const { onAsyncActionModal, onCloseModal, onOpenModal } = useModal(useShallow(selectModalActions));
     
-    const recipient = useConversation((state) => state.data.conversation.recipient);
+    const recipient = useConversation((state) => state.conversation.recipient);
 
     const handleBlockRecipient = async (type: 'block' | 'unblock', event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();

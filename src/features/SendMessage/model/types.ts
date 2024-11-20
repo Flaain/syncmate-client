@@ -1,4 +1,11 @@
+import { Message } from '@/entities/Message/model/types';
+import { Draft } from '@/shared/model/store';
+
 export type MessageFormState = 'send' | 'edit' | 'reply';
+export type OptimisticFunc = (
+    message: string,
+    currentDraft: Draft | undefined
+) => { onSuccess: (data: Message) => void; onError: (error: unknown, message?: string) => void; signal?: AbortSignal };
 
 export interface MessageTopBarProps {
     onClose: () => void;
@@ -12,7 +19,8 @@ export interface MessageTopBarProps {
 export interface UseMessageParams {
     onChange?: (value: string) => void;
     handleTypingStatus?: (reset?: boolean) => void;
-    restrictMessaging?: Array<{ reason: boolean; message: string }>
+    onOptimisticUpdate: OptimisticFunc;
+    restrictMessaging?: Array<{ reason: boolean; message: string }>;
 }
 
 export interface EmojiMartData {

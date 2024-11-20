@@ -15,7 +15,7 @@ export interface REMOVE_THIS_LATER {
 }
 
 export type MessageSender =
-    | { sender: Recipient; senderRefPath: SenderRefPath.USER }
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; senderRefPath: SenderRefPath.USER }
     | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
 
 export type Message = {
@@ -27,6 +27,7 @@ export type Message = {
     inReply?: boolean;
     createdAt: string;
     updatedAt: string;
+    abort?: () => void;
     isPending?: boolean;
     error?: ApiException['config'];
 } & MessageSender;
@@ -57,6 +58,7 @@ export interface DeleteMessageRes {
 export interface DefaultParamsAPI {
     endpoint: string;
     body: string;
+    signal?: AbortSignal;
 }
 
 export interface DeleteParamsAPI extends Omit<DefaultParamsAPI, 'body'> {

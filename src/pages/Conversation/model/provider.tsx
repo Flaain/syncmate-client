@@ -9,9 +9,10 @@ import { createStore } from 'zustand';
 import { conversationActions } from './actions';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { PRESENCE } from '@/entities/profile/model/types';
+import { useShallow } from 'zustand/shallow';
 
 const initialState: Omit<ConversationStore, 'actions'> = {
-    data: null!,
+    conversation: null!,
     error: null,
     isRecipientTyping: false,
     isRefetching: false,
@@ -19,12 +20,12 @@ const initialState: Omit<ConversationStore, 'actions'> = {
 };
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
-    const setChat = useChat((state) => state.actions.setChat);
+    const { setChat, getChat } = useChat(useShallow((state) => ({ setChat: state.actions.setChat, getChat: state.actions.getChat })));
 
     const { id: recipientId } = useParams() as { id: string };
     const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ 
         ...initialState, 
-        actions: conversationActions(set, get, setChat) 
+        actions: conversationActions(set, get, setChat, getChat) 
     })));
     
     const socket = useSocket((state) => state.socket);
@@ -43,15 +44,12 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
 
         socket?.on(CONVERSATION_EVENTS.USER_PRESENCE, ({ presence, lastSeenAt }: { presence: PRESENCE; lastSeenAt?: string }) => {
             store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        recipient: {
-                            ...prevState.data.conversation.recipient,
-                            lastSeenAt: lastSeenAt || prevState.data.conversation.recipient.lastSeenAt,
-                            presence
-                        }
+                conversation: {
+                    ...prevState.conversation,
+                    recipient: {
+                        ...prevState.conversation.recipient,
+                        lastSeenAt: lastSeenAt || prevState.conversation.recipient.lastSeenAt,
+                        presence
                     }
                 }
             }));
@@ -59,12 +57,9 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
 
         socket?.on(CONVERSATION_EVENTS.USER_BLOCK, (id: string) => {
             store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        [id === userId ? 'isInitiatorBlocked' : 'isRecipientBlocked']: true
-                    }
+                conversation: {
+                    ...prevState.conversation,
+                    [id === userId ? 'isInitiatorBlocked' : 'isRecipientBlocked']: true
                 }
             }));
 
@@ -73,70 +68,35 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
 
         socket?.on(CONVERSATION_EVENTS.USER_UNBLOCK, (id: string) => {
             store.setState((prevState) => {
-                const isInitiatorBlocked = id === userId ? false : prevState.data.conversation.isInitiatorBlocked;
-                const isRecipientBlocked = id === recipientId ? false : prevState.data.conversation.isRecipientBlocked;
+                const isInitiatorBlocked = id === userId ? false : prevState.conversation.isInitiatorBlocked;
+                const isRecipientBlocked = id === recipientId ? false : prevState.conversation.isRecipientBlocked;
 
                 setChat({ isContextActionsBlocked: isInitiatorBlocked || isRecipientBlocked });
 
                 return {
-                    data: {
-                        ...prevState.data,
-                        conversation: {
-                            ...prevState.data.conversation,
-                            isInitiatorBlocked,
-                            isRecipientBlocked
-                        }
+                    conversation: {
+                        ...prevState.conversation,
+                        isInitiatorBlocked,
+                        isRecipientBlocked
                     }
                 }
             });
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
-            store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        messages: [...(prevState.data.conversation.messages || []), message]
-                    }
-                }
-            }));
+            setChat((prevState) => ({ messages: [...prevState.messages, message]}))
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, (editedMessage: Message) => {
-            store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        messages: prevState.data.conversation.messages.map((message) => message._id === editedMessage._id ? editedMessage : message)
-                    }
-                }
-            }));
+            setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === editedMessage._id ? editedMessage : message)}))
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
-            store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        messages: prevState.data.conversation.messages.filter((message) => !messageIds.includes(message._id))
-                    }
-                }
-            }));
+            setChat((prevState) => ({ messages: prevState.messages.filter((message) => !messageIds.includes(message._id))}))
         });
 
         socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => {
-            store.setState((prevState) => ({
-                data: {
-                    ...prevState.data,
-                    conversation: {
-                        ...prevState.data.conversation,
-                        _id
-                    }
-                }
-            }));
+            store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } }));
         });
 
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));

@@ -4,12 +4,12 @@ import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
 import { useModal } from '@/shared/lib/providers/modal';
 import { Confirm } from '@/shared/ui/Confirm';
 import { selectModalActions } from '@/shared/lib/providers/modal/store';
-import { useLayout } from '@/shared/model/store';
+import { useLayout, useSocket } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
 
-export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
+export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
     const { params, lastMessageRef, textareaRef } = useChat(useShallow((state) => ({ 
         textareaRef: state.refs.textareaRef,
@@ -17,6 +17,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         params: state.params
     })));
     
+    const socket = useSocket((state) => state.socket);
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
@@ -137,22 +138,29 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             setDefaultState();
         } catch (error) {
             console.error(error);
-            toast.error('Cannot edit message', { position: 'top-center' });
         }
     };
 
     const onSendMessage = async (message: string) => {
+        if (!message.length) return;
+
+        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        
+        setDefaultState();
+        
         try {
-            if (!message.length) return;
-
-            await messageApi.send({ endpoint: `${params.apiUrl}/send/${params.id}`, body: JSON.stringify({ message }) })
-
+            const { data } = await messageApi.send({ 
+                signal, 
+                endpoint: `${params.apiUrl}/send/${params.id}`, 
+                body: JSON.stringify({ message, socket_id: socket.id })
+            });
+            
+            onSuccess(data);
+            
             lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });            
         } catch (error) {
             console.error(error);
-            toast.error('Cannot send message', { position: 'top-center' });
-        } finally {
-            setDefaultState();
+            onError(error, 'Cannot send message');
         }
     };
 
@@ -166,7 +174,6 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
              })
         } catch (error) {
             console.error(error);
-            toast.error('Cannot reply message', { position: 'top-center' });
         } finally {
             setDefaultState();
         }

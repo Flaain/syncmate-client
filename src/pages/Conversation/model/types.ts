@@ -1,5 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
+import { OptimisticFunc } from '@/features/SendMessage/model/types';
 
 export type ConversationStatuses = 'idle' | 'loading' | 'error';
 
@@ -24,7 +25,7 @@ export enum CONVERSATION_EVENTS {
 }
 
 export interface ConversationStore {
-    data: ConversationWithMeta;
+    conversation: Omit<ConversationWithMeta['conversation'], 'messages'>;
     status: ConversationStatuses;
     error: string | null;
     isRecipientTyping: boolean;
@@ -33,6 +34,7 @@ export interface ConversationStore {
         getConversation: (action: 'init' | 'refetch', recipientId: string, abortController?: AbortController) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
         handleTypingStatus: () => (reset?: boolean) => void;
+        handleOptimisticUpdate: OptimisticFunc;
     };
 }
 
@@ -54,4 +56,4 @@ export interface GetDescriptionParams {
     isRecipientTyping: boolean;
 }
 
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'presence' | 'status' | 'avatar'>;
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;

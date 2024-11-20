@@ -13,12 +13,13 @@ import { ConversationBody } from '../Body';
 import { SendMessage } from '@/features/SendMessage/ui/ui';
 
 export const Content = () => {
-    const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow((state) => ({
-        _id: state.data.conversation._id,
+    const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus, handleOptimisticUpdate } = useConversation(useShallow((state) => ({
+        _id: state.conversation._id,
         handleTypingStatus: state.actions.handleTypingStatus,
-        isInitiatorBlocked: state.data.conversation.isInitiatorBlocked,
-        isRecipientBlocked: state.data.conversation.isRecipientBlocked,
-        recipient: state.data.conversation.recipient,
+        handleOptimisticUpdate: state.actions.handleOptimisticUpdate,
+        isInitiatorBlocked: state.conversation.isInitiatorBlocked,
+        isRecipientBlocked: state.conversation.isRecipientBlocked,
+        recipient: state.conversation.recipient,
         isRecipientTyping: state.isRecipientTyping
     })));
 
@@ -35,6 +36,7 @@ export const Content = () => {
             />
             <ConversationBody />
             <SendMessage
+                onOptimisticUpdate={handleOptimisticUpdate}
                 handleTypingStatus={handleTypingStatus()}
                 restrictMessaging={[
                     {

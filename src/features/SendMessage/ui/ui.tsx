@@ -13,13 +13,14 @@ import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useShallow } from 'zustand/shallow';
 import { Placeholder } from './Placeholder';
 
-export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
+export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, restrictMessaging }: UseMessageParams) => {
     const { params, listRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
         params: state.params,
         listRef: state.refs.listRef,
         textareaRef: state.refs.textareaRef,
         showAnchor: state.showAnchor
     })));
+    console.log(listRef.current?.getBoundingClientRect());
     const {
         handleSubmitMessage,
         onKeyDown,
@@ -30,7 +31,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
         onEmojiSelect,
         isEmojiPickerOpen,
         value
-    } = useSendMessage({ onChange, handleTypingStatus });
+    } = useSendMessage({ onChange, handleTypingStatus, onOptimisticUpdate });
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
     const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
 

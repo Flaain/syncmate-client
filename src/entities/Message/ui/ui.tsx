@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { MessageContextMenu } from './ContextMenu';
-import { Check, CheckCheck } from 'lucide-react';
+import { Check, CheckCheck, Clock, Info } from 'lucide-react';
 import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
 import { MessageProps, SenderRefPath } from '../model/types';
 import { getBubblesStyles } from '../lib/getBubblesStyles';
@@ -12,7 +12,7 @@ import { useShallow } from 'zustand/shallow';
 export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message, isFirst, isLast, isMessageFromMe, className, ...rest }, ref) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
-    const { createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply } = message;
+    const { createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, isPending, error } = message;
     const { type, selectedMessages, isContextActionsBlocked } = useChat(useShallow((state) => ({
         type: state.params.type,
         selectedMessages: state.selectedMessages,
@@ -115,7 +115,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                             >
                                 {createTime.toLocaleTimeString(navigator.language ?? 'en-US', { timeStyle: 'short' })}
                                 {hasBeenEdited && ', edited'}
-                                {hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />}
+                                {isPending ? <Clock className={stylesForBottomIcon} /> : error ? <Info className={stylesForBottomIcon} /> : hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />}
                             </Typography>
                         </div>
                     </div>

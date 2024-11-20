@@ -16,5 +16,6 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
 
         set({ selectedMessages: newState });
     },
-    setChat: set
+    setChat: set,
+    getChat: get
 });

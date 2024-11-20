@@ -3,13 +3,14 @@ import { cn } from '@/shared/lib/utils/cn';
 import { Typography } from '@/shared/ui/Typography';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { OutletHeaderProps } from '../../model/types';
-import { useSocket } from '@/shared/model/store';
+import { useLayout, useSocket } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '@/shared/lib/providers/chat/context';
 
 export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
+    const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     
     const navigate = useNavigate()
     const setChat = useChat((state) => state.actions.setChat);
@@ -41,14 +42,14 @@ export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...r
                 </Typography>
                 {dropdownMenu}
             </div>
-            {isConnected ? (
+            {isConnected && connectedToNetwork ? (
                 <Typography as='p' variant='secondary'>
                     {description}
                 </Typography>
             ) : (
                 <Typography className='flex items-center gap-2'>
                     <Loader2 className='w-5 h-5 animate-spin' />
-                    Connecting...
+                    {!connectedToNetwork ? 'Waiting for network' : 'Connecting'}
                 </Typography>
             )}
         </div>

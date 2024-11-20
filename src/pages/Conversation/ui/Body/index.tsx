@@ -1,25 +1,16 @@
 import { Typography } from '@/shared/ui/Typography';
 import { MessagesList } from '@/widgets/MessagesList';
 import { useConversation } from '../../model/context';
-import { useShallow } from 'zustand/shallow';
+import { useChat } from '@/shared/lib/providers/chat/context';
 
 export const ConversationBody = () => {
-    const { messages, nextCursor, actions } = useConversation(useShallow((state) => ({
-        _id: state.data.conversation._id,
-        recipient: state.data.conversation.recipient,
-        messages: state.data.conversation.messages,
-        nextCursor: state.data.nextCursor,
-        actions: state.actions,
-    })));
+    const getPreviousMessages = useConversation((state) => state.actions.getPreviousMessages);
+    const messages = useChat((state) => state.messages);
 
     return (
         <>
             {messages?.length ? (
-                <MessagesList
-                    messages={messages}
-                    getPreviousMessages={actions.getPreviousMessages}
-                    nextCursor={nextCursor}
-                />
+                <MessagesList getPreviousMessages={getPreviousMessages} />
             ) : (
                 <Typography
                     variant='primary'

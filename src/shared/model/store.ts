@@ -6,6 +6,7 @@ import { MessageFormState } from '@/features/SendMessage/model/types';
 export interface LayoutStore {
     drafts: Map<string, Draft>;
     isSheetOpen: boolean;
+    connectedToNetwork: boolean;
 }
 
 export interface Draft {
@@ -28,7 +29,8 @@ export interface SocketStore {
 
 export const useLayout = create<LayoutStore>(() => ({
     drafts: new Map(),
-    isSheetOpen: false
+    isSheetOpen: false,
+    connectedToNetwork: true
 }));
 
 export const useEvents = create<EventsStore>((set) => ({

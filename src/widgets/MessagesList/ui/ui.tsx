@@ -1,19 +1,18 @@
-import React from 'react';
 import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
-import { MessagesListProps } from '../model/types';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
+import { MessagesListProps } from '../model/types';
 
-export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps>(({ messages, getPreviousMessages, nextCursor }) => {
-    const { groupedMessages, canFetch, isPreviousMessagesLoading, listRef } = useMessagesList({ messages, nextCursor, getPreviousMessages });
+export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
+    const { groupedMessages, canFetch, isPreviousMessagesLoading, previousMessagesCursor, listRef } = useMessagesList(getPreviousMessages);
 
     return (
         <ul
             ref={listRef}
             className='relative flex flex-col w-full p-5 mb-auto max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
         >
-            {nextCursor && (
+            {previousMessagesCursor && (
                 <li className='flex justify-center items-center'>
                     <Button
                         variant='text'
@@ -38,4 +37,4 @@ export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps
             ))}
         </ul>
     );
-})
+};

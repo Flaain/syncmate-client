@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEvents, useSocket } from '@/shared/model/store';
+import { useEvents, useLayout, useSocket } from '@/shared/model/store';
 import { USER_EVENTS } from '@/shared/model/types';
 import { io } from 'socket.io-client';
 import { PRESENCE } from '@/entities/profile/model/types';
@@ -22,7 +22,16 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 
         useSocket.setState({ socket });
 
+        const onOffline = () => useLayout.setState({ connectedToNetwork: false });
+        const onOnline = () => useLayout.setState({ connectedToNetwork: true });
+
+        window.addEventListener('offline', onOffline);
+        window.addEventListener('online', onOnline);
+
         return () => {
+            window.removeEventListener('offline', onOffline);
+            window.removeEventListener('online', onOnline);
+            
             socket.disconnect();
         };
     }, []);
