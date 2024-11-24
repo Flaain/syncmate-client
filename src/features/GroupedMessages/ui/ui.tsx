@@ -12,10 +12,9 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     const { mode, lastMessageRef, handleSelectMessage } = useChat(useShallow((state) => ({
         mode: state.mode,
         lastMessageRef: state.refs.lastMessageRef,
-        selectedMessages: state.selectedMessages,
         handleSelectMessage: state.actions.handleSelectMessage
     })));
-    
+
     const userId = useSession((state) => state.userId);
     const message = messages[0];
     const isUser = message.senderRefPath === SenderRefPath.USER;

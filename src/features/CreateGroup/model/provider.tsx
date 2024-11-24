@@ -9,13 +9,13 @@ import { useModal } from "@/shared/lib/providers/modal";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
 import { CreateGroupContext } from "./context";
 import { useShallow } from "zustand/shallow";
-import { NavigateFunction } from "react-router-dom";
 import { SearchUser } from "@/widgets/Feed/types";
 import { profileApi } from "@/entities/profile";
 import { createGroupApi } from "../api";
 import { ApiException } from "@/shared/api/error";
+import { useNavigate } from "react-router-dom";
 
-export const CreateGroupProvider = ({ children, navigate }: { children: React.ReactNode; navigate: NavigateFunction }) => {
+export const CreateGroupProvider = ({ children }: { children: React.ReactNode }) => {
     const { isModalDisabled, onAsyncActionModal } = useModal(useShallow((state) => ({
         isModalDisabled: state.isModalDisabled,
         onAsyncActionModal: state.actions.onAsyncActionModal
@@ -24,6 +24,8 @@ export const CreateGroupProvider = ({ children, navigate }: { children: React.Re
     const [step, setStep] = React.useState(0);
     const [selectedUsers, setSelectedUsers] = React.useState<Map<string, SearchUser>>(new Map());
     const [searchedUsers, setSearchedUsers] = React.useState<Array<SearchUser>>([]);
+
+    const navigate = useNavigate();
 
     const form = useForm<CreateGroupType>({
         resolver: zodResolver(createGroupSchema),

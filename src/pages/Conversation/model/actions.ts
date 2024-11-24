@@ -9,11 +9,12 @@ import { ChatStore } from '@/shared/lib/providers/chat/types';
 import { Message, SenderRefPath } from '@/entities/Message/model/types';
 import { useProfile } from '@/entities/profile';
 import { uuidv4 } from '@/shared/lib/utils/uuidv4';
+import { MessageFormState } from '@/features/SendMessage/model/types';
 
 export const conversationActions = (set: SetStateInternal<ConversationStore>, get: () => ConversationStore, setChat: SetStateInternal<ChatStore>, getChat: () => ChatStore): ConversationStore['actions'] => ({
-    getConversation: async (action: 'init' | 'refetch', recipientId: string, abortController?: AbortController) => {
+    getConversation: async ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => {
         try {
-            action === 'init' ? set({ status: 'loading' }) : set({ isRefetching: true });
+            set({ status: action === 'init' ? 'loading' : 'refetching' });
             
             const { data } = await conversationApi.get(recipientId, abortController?.signal);
 
@@ -23,7 +24,7 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
                 params: {
                     apiUrl: '/message',
                     id: data.conversation.recipient._id,
-                    query: { recipientId: data.conversation.recipient._id },
+                    query: { recipientId: data.conversation.recipient._id, socket_id: useSocket.getState().socket.id },
                     type: 'conversation'
                 },
                 messages: data.conversation.messages,
@@ -33,8 +34,6 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
             console.error(error);
 
             error instanceof ApiException && (error.response.status === 404 ? redirect('/') : set({ error: error.message, status: 'error' }));
-        } finally {
-            set({ isRefetching: false });
         }
     },
     getPreviousMessages: async () => {
@@ -55,7 +54,9 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
     handleTypingStatus: () => {
         const ctx: { isTyping: boolean, typingTimeout: ReturnType<typeof setTimeout> | null } = { isTyping: false, typingTimeout: null };
 
-        return (reset?: boolean) => {
+        return (action: MessageFormState, reset?: boolean) => {
+            if (action === 'edit') return;
+            
             if (reset) {
                 ctx.isTyping = false;
                 clearTimeout(ctx.typingTimeout!);
@@ -97,13 +98,24 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
             updatedAt: new Date().toISOString(),
             hasBeenEdited: false,
             hasBeenRead: false,
-            inReply: currentDraft?.state === 'reply',
+            inReply: currentDraft?.state === 'reply' || currentDraft?.selectedMessage?.inReply,
             isPending: true,
-            abort: () => abortController.abort('Sending message was cancelled'),
-            replyTo: currentDraft?.selectedMessage
-        }
+            abort: () => abortController.abort('Request was cancelled'),
+            replyTo:
+                currentDraft?.state === 'reply'
+                    ? {
+                          _id: currentDraft.selectedMessage?._id!,
+                          text: currentDraft.selectedMessage?.text!,
+                          senderRefPath: SenderRefPath.USER,
+                          sender: {
+                              _id: currentDraft.selectedMessage?.sender._id!,
+                              name: currentDraft.selectedMessage?.sender.name!,
+                          }
+                      }
+                    : currentDraft?.selectedMessage?.replyTo
+        };
 
-        const rollback = (prevState: ChatStore) => ({ messages: currentDraft?.state !== 'edit' ? prevState.messages.filter((m) => m._id !== optimisticMessage._id) : prevState.messages.map((m) => m._id === optimisticMessage._id ? currentDraft.selectedMessage! : m) });
+        const rollback = (prevState: ChatStore) => ({ messages: currentDraft?.state === 'edit' ? prevState.messages.map((m) => m._id === optimisticMessage._id ? currentDraft.selectedMessage! : m) : prevState.messages.filter((m) => m._id !== optimisticMessage._id) });
         
         abortController.signal.onabort = () => setChat(rollback);
 
@@ -113,14 +125,23 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
 
         return {
             signal: abortController.signal,
-            onSuccess: (data) => setChat((prevState) => ({ messages: prevState.messages.map((m) => m._id === optimisticMessage._id ? data : m) })),
+            onSuccess: (data) => setChat((prevState) => ({
+                messages: prevState.messages.map((message) => {
+                    if (message._id === optimisticMessage._id) return data;
+                    if (message.inReply && message.replyTo?._id === data._id) return { ...message, replyTo: { ...message.replyTo, text: data.text } };
+
+                    return message;
+                })
+            })),
             onError: (error) => {
                 if (error instanceof ApiException) {
                     setChat((prevState) => ({
-                        messages: prevState.messages.map((m) => m._id === optimisticMessage._id ? { ...m, isPending: false, error: error.config } : m)
-                    }))
+                        messages: prevState.messages.map((m) =>
+                            m._id === optimisticMessage._id ? { ...m, isPending: false, error: error.config } : m
+                        )
+                    }));
                 }
             }
-        }
+        };
     }
 });

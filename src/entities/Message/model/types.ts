@@ -18,12 +18,16 @@ export type MessageSender =
     | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; senderRefPath: SenderRefPath.USER }
     | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
 
+export type ReplySender =
+    | { sender: Pick<Recipient, '_id' | 'name'>; senderRefPath: SenderRefPath.USER }
+    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+
 export type Message = {
     _id: string;
     hasBeenRead: boolean;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & MessageSender | null;
+    replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
     inReply?: boolean;
     createdAt: string;
     updatedAt: string;

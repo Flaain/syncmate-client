@@ -9,19 +9,21 @@ import { RecipientDetails } from '../RecipientDetails';
 import { ConversationDDM } from '../DropdownMenu';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
-import { ConversationBody } from '../Body';
 import { SendMessage } from '@/features/SendMessage/ui/ui';
+import { contentSelector } from '../../model/selectors';
+import { MessagesList } from '@/widgets/MessagesList';
 
 export const Content = () => {
-    const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus, handleOptimisticUpdate } = useConversation(useShallow((state) => ({
-        _id: state.conversation._id,
-        handleTypingStatus: state.actions.handleTypingStatus,
-        handleOptimisticUpdate: state.actions.handleOptimisticUpdate,
-        isInitiatorBlocked: state.conversation.isInitiatorBlocked,
-        isRecipientBlocked: state.conversation.isRecipientBlocked,
-        recipient: state.conversation.recipient,
-        isRecipientTyping: state.isRecipientTyping
-    })));
+    const {
+        _id,
+        isInitiatorBlocked,
+        isRecipientBlocked,
+        recipient,
+        isRecipientTyping,
+        handleTypingStatus,
+        handleOptimisticUpdate,
+        getPreviousMessages
+    } = useConversation(useShallow(contentSelector));
 
     const showDetails = useChat((state) => state.showDetails);
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
@@ -34,7 +36,7 @@ export const Content = () => {
                 description={description}
                 dropdownMenu={<ConversationDDM />}
             />
-            <ConversationBody />
+            <MessagesList getPreviousMessages={getPreviousMessages} />
             <SendMessage
                 onOptimisticUpdate={handleOptimisticUpdate}
                 handleTypingStatus={handleTypingStatus()}

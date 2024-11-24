@@ -9,6 +9,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 
     React.useEffect(() => {
         const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
+        const abortController = new AbortController();
 
         socket.on('connect', () => {
             useSocket.setState({ socket, isConnected: true });
@@ -22,16 +23,11 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 
         useSocket.setState({ socket });
 
-        const onOffline = () => useLayout.setState({ connectedToNetwork: false });
-        const onOnline = () => useLayout.setState({ connectedToNetwork: true });
-
-        window.addEventListener('offline', onOffline);
-        window.addEventListener('online', onOnline);
+        window.addEventListener('online', () => useLayout.setState({ connectedToNetwork: true }), { signal: abortController.signal });
+        window.addEventListener('offline', () => useLayout.setState({ connectedToNetwork: false }), { signal: abortController.signal });
 
         return () => {
-            window.removeEventListener('offline', onOffline);
-            window.removeEventListener('online', onOnline);
-            
+            abortController.abort();            
             socket.disconnect();
         };
     }, []);

@@ -3,9 +3,21 @@ import { Loader2 } from 'lucide-react';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
 import { MessagesListProps } from '../model/types';
+import { Typography } from '@/shared/ui/Typography';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     const { groupedMessages, canFetch, isPreviousMessagesLoading, previousMessagesCursor, listRef } = useMessagesList(getPreviousMessages);
+
+    if (!groupedMessages.length) {
+        return (
+            <Typography
+                variant='primary'
+                className='m-auto px-5 py-2 rounded-full dark:bg-primary-dark-50 bg-primary-white'
+            >
+                No messages yet
+            </Typography>
+        );
+    }
 
     return (
         <ul

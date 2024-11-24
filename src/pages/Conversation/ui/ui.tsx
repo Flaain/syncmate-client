@@ -10,21 +10,20 @@ import { useShallow } from 'zustand/shallow';
 
 export const Conversation = () => {
     const { id } = useParams();
-    const { status, error, isRefetching, getConversation } = useConversation(useShallow((state) => ({
+    const { status, error, getConversation } = useConversation(useShallow((state) => ({
         status: state.status,
         error: state.error,
-        isRefetching: state.isRefetching,
         getConversation: state.actions.getConversation
     })));
 
-    const components: Record<ConversationStatuses, React.ReactNode> = {
+    const components: Record<Exclude<ConversationStatuses, 'refetching'>, React.ReactNode> = {
         error: (
             <OutletError
                 title='Something went wrong'
                 description={error! ?? 'Cannot load conversation'}
                 callToAction={
-                    <Button onClick={() => getConversation('refetch', id!)} className='mt-5'>
-                        {isRefetching ? <Loader2 className='w-6 h-6 animate-spin' /> : 'try again'}
+                    <Button onClick={() => getConversation({ action: 'refetch', recipientId: id! })} className='mt-5'>
+                        {status === 'refetching' ? <Loader2 className='w-6 h-6 animate-spin' /> : 'try again'}
                     </Button>
                 }
             />
@@ -33,5 +32,5 @@ export const Conversation = () => {
         idle: <Content />
     };
 
-    return components[status];
+    return components[status as keyof typeof components];
 };

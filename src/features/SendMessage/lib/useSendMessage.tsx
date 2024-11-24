@@ -4,7 +4,7 @@ import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
 import { useModal } from '@/shared/lib/providers/modal';
 import { Confirm } from '@/shared/ui/Confirm';
 import { selectModalActions } from '@/shared/lib/providers/modal/store';
-import { useLayout, useSocket } from '@/shared/model/store';
+import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
@@ -17,7 +17,6 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
         params: state.params
     })));
     
-    const socket = useSocket((state) => state.socket);
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
@@ -59,22 +58,23 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
         setValue(!trimmedValue.length ? '' : value.normalize('NFC').replace(/[\u0300-\u036f]/g, ""));
         
         onChange?.(trimmedValue);
-        handleTypingStatus?.();
-    }, []);
+        handleTypingStatus?.(currentDraft?.state ?? 'send');
+    }, [currentDraft]);
 
     const setDefaultState = React.useCallback(() => {
         useLayout.setState((prevState) => {
             const newState = new Map([...prevState.drafts]);
-
+            
             newState.delete(params.id);
-
+            
             return { drafts: newState };
         })
-
+        
+        handleTypingStatus?.(currentDraft?.state ?? 'send', true);
         setValue('');
 
         textareaRef.current?.focus();
-    }, []);
+    }, [params.id, currentDraft]);
 
     const handleDeleteMessage = React.useCallback(async () => {
         onAsyncActionModal(() => messageApi.delete({ 
@@ -112,32 +112,39 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
     }, [params.id, currentDraft]);
 
     const onSendEditedMessage = async (message: string) => {
+        if (!message.length) {
+            return onOpenModal({
+                content: (
+                    <Confirm
+                        onCancel={onCloseModal}
+                        onConfirm={handleDeleteMessage}
+                        onConfirmText='Delete'
+                        text='Are you sure you want to delete this message?'
+                        onConfirmButtonVariant='destructive'
+                    />
+                ),
+                withHeader: false,
+                bodyClassName: 'h-auto p-5 w-[400px]'
+            });
+        }
+
+        if (message === currentDraft!.selectedMessage!.text) return setDefaultState();
+        
+        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        
+        setDefaultState();
+
         try {
-            if (!message.length)
-                return onOpenModal({
-                    content: (
-                        <Confirm
-                            onCancel={onCloseModal}
-                            onConfirm={handleDeleteMessage}
-                            onConfirmText='Delete'
-                            text='Are you sure you want to delete this message?'
-                            onConfirmButtonVariant='destructive'
-                        />
-                    ),
-                    withHeader: false,
-                    bodyClassName: 'h-auto p-5 w-[400px]'
-                });
-
-            if (message === currentDraft!.selectedMessage!.text) return;
-
-            await messageApi.edit({ 
+            const { data } = await messageApi.edit({ 
+                signal,
                 endpoint: `${params.apiUrl}/edit/${currentDraft!.selectedMessage!._id}`,
-                body: JSON.stringify({ message, ...params.query })
+                body: JSON.stringify({ message, ...params.query }),
              })
-
-            setDefaultState();
+            
+            onSuccess(data);
         } catch (error) {
             console.error(error);
+            onError(error, 'Cannot edit message');
         }
     };
 
@@ -152,12 +159,12 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
             const { data } = await messageApi.send({ 
                 signal, 
                 endpoint: `${params.apiUrl}/send/${params.id}`, 
-                body: JSON.stringify({ message, socket_id: socket.id })
+                body: JSON.stringify({ message, ...params.query })
             });
             
             onSuccess(data);
             
-            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });            
+            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });          
         } catch (error) {
             console.error(error);
             onError(error, 'Cannot send message');
@@ -165,19 +172,25 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
     };
 
     const onReplyMessage = async (message: string) => {
-        try {
-            if (!message.length) return;
+        if (!message.length) return;
 
-            await messageApi.reply({ 
+        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        
+        setDefaultState();
+        
+        try {
+            const { data } = await messageApi.reply({
+                signal, 
                 endpoint: `${params.apiUrl}/reply/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query })
              })
+            
+            onSuccess(data);
         } catch (error) {
             console.error(error);
-        } finally {
-            setDefaultState();
+            onError(error, 'Cannot reply message');
         }
-    } 
+    }
 
     const handleSubmitMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -188,9 +201,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
                 edit: onSendEditedMessage,
                 reply: onReplyMessage
             };
-
-            handleTypingStatus?.(true);
-
+            
             await actions[currentDraft?.state ?? 'send'](value.trim());
         } catch (error) {
             console.error(error);

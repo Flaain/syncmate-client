@@ -9,18 +9,16 @@ import { EmojiPicker } from '@/shared/model/view';
 import { MessageFormState, UseMessageParams } from '../model/types';
 import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
-import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useShallow } from 'zustand/shallow';
 import { Placeholder } from './Placeholder';
 
 export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, restrictMessaging }: UseMessageParams) => {
-    const { params, listRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
+    const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
         params: state.params,
-        listRef: state.refs.listRef,
+        lastMessageRef: state.refs.lastMessageRef,
         textareaRef: state.refs.textareaRef,
         showAnchor: state.showAnchor
     })));
-    console.log(listRef.current?.getBoundingClientRect());
     const {
         handleSubmitMessage,
         onKeyDown,
@@ -88,11 +86,10 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                 ></textarea>
                 {showAnchor && (
                     <Button
-                        onClick={() => listRef.current?.scrollTo({ 
-                            top: getScrollBottom(listRef.current), 
-                            left: 0, 
-                            behavior: 'smooth' 
-                        })}
+                        onClick={() => {
+                            console.log(lastMessageRef.current);
+                            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })
+                        }}
                         disabled={!showAnchor}
                         variant='text'
                         type='button'

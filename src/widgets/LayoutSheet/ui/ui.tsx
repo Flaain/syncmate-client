@@ -12,13 +12,11 @@ import { useTheme } from '@/entities/theme';
 import { SettingsProvider, Settings } from '@/widgets/Settings';
 import { useLayout } from '@/shared/model/store';
 import { useProfile } from '@/entities/profile';
-import { useNavigate } from 'react-router-dom';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
 export const LayoutSheet = () => {
     const onOpenModal = useModal((state) => state.actions.onOpenModal);
-    const navigate = useNavigate();
     const profile = useProfile((state) => state.profile);
     const theme = useTheme((state) => state.theme);
 
@@ -59,7 +57,7 @@ export const LayoutSheet = () => {
                             onSheetAction({
                                 withHeader: false,
                                 content: (
-                                    <CreateGroupProvider navigate={navigate}>
+                                    <CreateGroupProvider>
                                         <CreateGroup />
                                     </CreateGroupProvider>
                                 ),

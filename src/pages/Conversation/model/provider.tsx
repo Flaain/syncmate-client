@@ -15,7 +15,6 @@ const initialState: Omit<ConversationStore, 'actions'> = {
     conversation: null!,
     error: null,
     isRecipientTyping: false,
-    isRefetching: false,
     status: 'loading'
 };
 
@@ -36,7 +35,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     React.useEffect(() => {
         const abortController = new AbortController();
 
-        store.getState().actions.getConversation('init', recipientId, abortController);
+        store.getState().actions.getConversation({ action: 'init', recipientId, abortController });
 
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
@@ -88,11 +87,28 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, (editedMessage: Message) => {
-            setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === editedMessage._id ? editedMessage : message)}))
+            setChat((prevState) => ({
+                messages: prevState.messages.map((message) => {
+                    if (message._id === editedMessage._id) return editedMessage;
+                    if (message.inReply && message.replyTo?._id === editedMessage._id) return { ...message, replyTo: { ...message.replyTo, text: editedMessage.text } };
+
+                    return message;
+                })
+            }))
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
-            setChat((prevState) => ({ messages: prevState.messages.filter((message) => !messageIds.includes(message._id))}))
+            setChat((prevState) => {
+                const array = prevState.messages.reduce((acc, message) => {
+                    if (messageIds.includes(message._id)) return acc;
+
+                    if (message.inReply && messageIds.includes(message.replyTo!._id)) return [...acc, { ...message, replyTo: undefined }];
+
+                    return [...acc, message];
+                }, [] as Array<Message>);
+
+                return { messages: array };
+            });
         });
 
         socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => {

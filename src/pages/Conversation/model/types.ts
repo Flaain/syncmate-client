@@ -1,8 +1,8 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
-import { OptimisticFunc } from '@/features/SendMessage/model/types';
+import { MessageFormState, OptimisticFunc } from '@/features/SendMessage/model/types';
 
-export type ConversationStatuses = 'idle' | 'loading' | 'error';
+export type ConversationStatuses = 'idle' | 'loading' | 'refetching' | 'error';
 
 export interface ConversationWithMeta {
     conversation: Pick<Conversation, '_id' | 'recipient' | 'messages' | 'createdAt' | 'isInitiatorBlocked' | 'isRecipientBlocked'>;
@@ -29,11 +29,10 @@ export interface ConversationStore {
     status: ConversationStatuses;
     error: string | null;
     isRecipientTyping: boolean;
-    isRefetching: boolean;
     actions: {
-        getConversation: (action: 'init' | 'refetch', recipientId: string, abortController?: AbortController) => Promise<void>;
+        getConversation: ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
-        handleTypingStatus: () => (reset?: boolean) => void;
+        handleTypingStatus: () => (action: MessageFormState, reset?: boolean) => void;
         handleOptimisticUpdate: OptimisticFunc;
     };
 }
