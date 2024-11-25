@@ -18,7 +18,7 @@ export const Feed = () => {
     const filteredLocalResults = localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue));
     const filteredGlobalResults = globalResults?.feed?.filter((item) => !globalFilters[item.type](item, localResults));
     const isResultsEmpty = !isSearching && !filteredLocalResults.length && !filteredGlobalResults?.length;
-
+    
     if (isResultsEmpty && searchValue.length <= MIN_USER_SEARCH_LENGTH) return <FeedSkeleton skeletonsCount={3} />;
 
     return isResultsEmpty && searchValue.length > MIN_USER_SEARCH_LENGTH ? (

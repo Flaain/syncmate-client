@@ -88,11 +88,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.map((feedItem) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem._id === data._id) {
+                    feed: prevState.localResults.feed.map((feedItem: any) => {
+                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
                             return {
-                                ...feedItem, 
-                                participantsTyping: feedItem.item.participantsTyping ? [...feedItem.item.participantsTyping, data.participant] : [data.participant]
+                                ...feedItem,
+                                item: { ...feedItem.item, participantsTyping: [...(feedItem.item.participantsTyping ?? []), data.participant] } 
                             }
                         }
         
@@ -106,11 +106,14 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.map((feedItem) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem._id === data._id) {
+                    feed: prevState.localResults.feed.map((feedItem: any) => {
+                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
                             return {
-                                ...feedItem, 
-                                participantsTyping: feedItem.item.participantsTyping?.filter((participant) => participant._id !== data.participant._id)
+                                ...feedItem,
+                                item: {
+                                    ...feedItem.item,
+                                    participantsTyping: feedItem.item.participantsTyping?.filter((participant: any) => participant._id !== data.participant._id)
+                                } 
                             }
                         }
         

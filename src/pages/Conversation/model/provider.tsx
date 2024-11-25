@@ -130,7 +130,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         });
 
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
-        socket?.on(CONVERSATION_EVENTS.START_TYPING, () => store.setState({ isRecipientTyping: true }));
+        socket?.on(CONVERSATION_EVENTS.START_TYPING, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
         socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
         return () => {
             setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
