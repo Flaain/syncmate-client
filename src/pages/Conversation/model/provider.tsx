@@ -3,7 +3,7 @@ import { CONVERSATION_EVENTS, ConversationStore } from './types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationContext } from './context';
 import { Message } from '@/entities/Message/model/types';
-import { useSocket } from '@/shared/model/store';
+import { useLayout, useSocket } from '@/shared/model/store';
 import { useSession } from '@/entities/session';
 import { createStore } from 'zustand';
 import { conversationActions } from './actions';
@@ -28,7 +28,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     })));
     
     const socket = useSocket((state) => state.socket);
-    const userId = useSession((state) => state.userId)
+    const userId = useSession((state) => state.userId);
 
     const navigate = useNavigate();
 
@@ -100,7 +100,21 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat((prevState) => {
                 const array = prevState.messages.reduce((acc, message) => {
-                    if (messageIds.includes(message._id)) return acc;
+                    if (messageIds.includes(message._id)) {
+                        useLayout.setState((prevState) => {
+                            if (prevState.drafts.get(recipientId)?.selectedMessage?._id === message._id) {
+                                const newDrafts = new Map([...prevState.drafts]);
+                                
+                                newDrafts.delete(recipientId);
+
+                                return { drafts: newDrafts };
+                            }
+
+                            return prevState;
+                        })
+
+                        return acc;
+                    };
 
                     if (message.inReply && messageIds.includes(message.replyTo!._id)) return [...acc, { ...message, replyTo: undefined }];
 
