@@ -96,7 +96,8 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                                 )}
                             </Typography>
                         )}
-                        <div
+                        <Typography
+                            as='p'
                             className={cn(
                                 'flex items-center gap-2 flex-wrap break-all overflow-y-hidden',
                                 isMessageFromMe ? 'dark:text-primary-dark-200' : 'text-primary-white'
@@ -117,7 +118,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                                 {hasBeenEdited && ', edited'}
                                 {isPending ? <Clock className={stylesForBottomIcon} /> : error ? <Info className={stylesForBottomIcon} /> : hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />}
                             </Typography>
-                        </div>
+                        </Typography>
                     </div>
                 </li>
             </ContextMenuTrigger>

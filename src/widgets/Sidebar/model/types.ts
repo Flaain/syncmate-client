@@ -1,4 +1,5 @@
 import { Message } from '@/entities/Message/model/types';
+import { WrappedInPagination } from '@/shared/model/types';
 import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/types';
 
 export interface FeedUpdateParams {
@@ -38,14 +39,9 @@ export interface LocalResults {
     nextCursor: string | null;
 }
 
-export interface GlobalResults {
-    feed: Array<UserFeed | GroupGlobalFeed>;
-    nextCursor?: string | null;
-}
-
 export interface SidebarStore {
     localResults: LocalResults;
-    globalResults: GlobalResults | null;
+    globalResults: WrappedInPagination<UserFeed | GroupGlobalFeed> | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
     isSearching: boolean;

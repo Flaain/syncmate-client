@@ -41,7 +41,7 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
         try {
             const { data } = await sidebarApi.search({ query: value });
 
-            set({ globalResults: { feed: data.items } });
+            set({ globalResults: data });
         } catch (error) {
             console.error(error);
             set({ globalResults: null });

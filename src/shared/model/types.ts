@@ -56,8 +56,11 @@ export interface Pagination {
 
 export interface WrappedInPagination<T> {
     items: Array<T>;
-    total_items: number;
-    current_page: number;
-    total_pages: number;
-    remaining_items: number;
+    meta: {
+        total_items: number;
+        remaining_items: number;
+        total_pages: number;
+        current_page: number;
+        next_page: number | null;
+    }
 }

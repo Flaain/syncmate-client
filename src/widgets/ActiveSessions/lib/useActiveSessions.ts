@@ -5,10 +5,24 @@ import { useModal } from '@/shared/lib/providers/modal';
 import { sessionApi } from '@/entities/session';
 
 export const useActiveSessions = () => {
-    const [sessions, setSessions] = React.useState<GetSessionsReturn | null>(null);
+    const [data, setSessions] = React.useState<GetSessionsReturn | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isTerminating, setIsTerminating] = React.useState(false);
     
+    React.useEffect(() => {
+        (async () => {
+            try {
+                const { data } = await sessionApi.getSessions();
+
+                setSessions(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
+        })();
+    }, []);
+
     const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
     
     const handleTerimanteSessions = async () => {
@@ -37,19 +51,5 @@ export const useActiveSessions = () => {
         }));
     }, []);
 
-    React.useEffect(() => {
-        (async () => {
-            try {
-                const { data } = await sessionApi.getSessions();
-
-                setSessions(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        })();
-    }, []);
-
-    return { sessions, isLoading, isTerminating, handleDropSession, handleTerimanteSessions };
+    return { data, isLoading, isTerminating, handleDropSession, handleTerimanteSessions };
 };
