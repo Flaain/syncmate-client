@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/button';
 import { Archive, Moon, Users, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/cn';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
-import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
+// import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
 import { useTheme } from '@/entities/theme';
 import { SettingsProvider, Settings } from '@/widgets/Settings';
 import { useLayout } from '@/shared/model/store';
@@ -53,17 +53,17 @@ export const LayoutSheet = () => {
                     <Button
                         variant='ghost'
                         className='rounded-none flex items-center justify-start gap-4 w-full'
-                        onClick={() =>
-                            onSheetAction({
-                                withHeader: false,
-                                content: (
-                                    <CreateGroupProvider>
-                                        <CreateGroup />
-                                    </CreateGroupProvider>
-                                ),
-                                bodyClassName: 'w-[450px] p-3 h-auto'
-                            })
-                        }
+                        // onClick={() =>
+                        //     onSheetAction({
+                        //         withHeader: false,
+                        //         content: (
+                        //             <CreateGroupProvider>
+                        //                 <CreateGroup />
+                        //             </CreateGroupProvider>
+                        //         ),
+                        //         bodyClassName: 'w-[450px] p-3 h-auto'
+                        //     })
+                        // }
                     >
                         <Users className={listIconStyle} />
                         <Typography weight='medium'>New Group</Typography>
