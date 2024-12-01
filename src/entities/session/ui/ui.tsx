@@ -11,7 +11,7 @@ import { iconsMap } from '../model/constants';
 export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }: SessionProps) => {
     const [isDroping, setIsDroping] = React.useState(false);
     const { userAgent } = session;
-    const icon = iconsMap[userAgent.type as keyof typeof iconsMap]?.[userAgent.name] || iconsMap[userAgent.type as keyof typeof iconsMap]?.default;
+    const icon = userAgent ? (iconsMap[userAgent.type as keyof typeof iconsMap]?.[userAgent.name] || iconsMap[userAgent?.type as keyof typeof iconsMap]?.default) : null;
     
     const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
     
@@ -46,10 +46,10 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
             </div>
             <div className='flex flex-col'>
                 <Typography as='h3' variant='primary'>
-                    {userAgent?.name ?? 'Unknown'}&nbsp;{userAgent.version}
+                    {userAgent?.name ?? 'Unknown'}&nbsp;{userAgent?.version}
                 </Typography>
                 <Typography as='h3' variant='primary' size='sm'>
-                    {userAgent?.os.name ?? 'Unknown'}&nbsp;{userAgent.os?.version}
+                    {userAgent?.os.name ?? 'Unknown'}&nbsp;{userAgent?.os?.version}
                 </Typography>
                 <Typography as='p' variant='secondary' className='line-clamp-1' size='sm'>
                     Session created at&nbsp;-&nbsp;

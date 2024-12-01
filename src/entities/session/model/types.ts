@@ -30,7 +30,7 @@ export interface IOS {
 
 export interface Session {
     _id: string;
-    userAgent: ParsedSession;
+    userAgent: ParsedSession | null;
     userIP: null;
     createdAt: string;
     expiresAt: string;
