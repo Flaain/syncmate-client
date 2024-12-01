@@ -3,9 +3,9 @@ import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
-import { GroupFeed } from '@/shared/model/types';
 import { useSession } from '@/entities/session';
 import { useLayout } from '@/shared/model/store';
+import { GroupFeed } from '../../types';
 
 export const GroupItem = ({ group }: { group: GroupFeed }) => {
     const userId = useSession((state) => state.userId);
