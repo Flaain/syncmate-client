@@ -7,11 +7,11 @@ import { Button } from '@/shared/ui/button';
 import { Archive, Moon, Users, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/cn';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
-// import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
 import { useTheme } from '@/entities/theme';
 import { SettingsProvider, Settings } from '@/widgets/Settings';
 import { useLayout } from '@/shared/model/store';
 import { useProfile } from '@/entities/profile';
+// import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
