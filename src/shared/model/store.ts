@@ -1,9 +1,36 @@
 import { create } from 'zustand';
-import { EventsStore, LayoutStore, SocketStore } from './types';
+import { Socket } from 'socket.io-client';
+import { Message } from '@/entities/Message/model/types';
+import { MessageFormState } from '@/features/SendMessage/model/types';
+
+export interface LayoutStore {
+    drafts: Map<string, Draft>;
+    isSheetOpen: boolean;
+    connectedToNetwork: boolean;
+}
+
+export interface Draft {
+    value: string;
+    state: MessageFormState;
+    selectedMessage?: Message;
+}
+
+export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>
+
+export interface EventsStore {
+    listeners: Map<any, any>;
+    addEventListener<E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void): () => void;
+}
+
+export interface SocketStore {
+    socket: Socket;
+    isConnected: boolean;
+}
 
 export const useLayout = create<LayoutStore>(() => ({
     drafts: new Map(),
-    isSheetOpen: false
+    isSheetOpen: false,
+    connectedToNetwork: true
 }));
 
 export const useEvents = create<EventsStore>((set) => ({

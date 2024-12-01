@@ -3,12 +3,13 @@ import { cn } from '@/shared/lib/utils/cn';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@/shared/ui/Typography';
 import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
+import { OutletContainer } from '@/shared/ui/OutletContainer';
 
 export const ConversationSkeleton = () => {
     const { state } = useLocation();
 
     return (
-        <div className='flex z-10 flex-col flex-1 h-svh overflow-hidden gap-5 items-center justify-start dark:bg-primary-dark-200 bg-primary-white'>
+        <OutletContainer>
             <div className='min-h-[70px] flex items-center self-start w-full px-5 py-3 box-border dark:bg-primary-dark-100 sticky top-0 z-[999]'>
                 {state && (
                     <Typography
@@ -27,7 +28,7 @@ export const ConversationSkeleton = () => {
                     </Typography>
                 )}
             </div>
-            <ul className='flex flex-col w-full px-5 gap-5'>
+            <ul className='flex flex-col px-5 gap-5 pb-2 overflow-hidden'>
                 {[...new Array(12)].map((_, index) => (
                     <li
                         key={index}
@@ -44,6 +45,6 @@ export const ConversationSkeleton = () => {
                 ))}
             </ul>
             <div className='sticky bottom-0 w-full min-h-[70px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'></div>
-        </div>
+        </OutletContainer>
     );
 };

@@ -1,22 +1,7 @@
-import { API } from '@/shared/api/API';
-import { BasicAPIResponse } from '@/shared/model/types';
+import { ApiBaseSuccessData } from '@/shared/api/API';
 import { UserPasswordParams } from '../model/types';
+import { api } from '@/shared/api';
 
-class ChangePasswordAPI extends API {
-    changePassword = async ({ type, ...body }: UserPasswordParams) => {
-        const request: RequestInit = {
-            method: 'POST',
-            headers: this._headers,
-            credentials: this._cretedentials,
-            body: JSON.stringify(body)
-        };
-        
-        const url = new URL(this._baseUrl + `/auth/password`);
-
-        url.searchParams.append('type', type);
-
-        return this._checkResponse<BasicAPIResponse>(await fetch(url, request), request);
-    };
-}
-
-export const changePasswordAPI = new ChangePasswordAPI();
+export const changePasswordAPI = {
+    changePassword: ({ type, ...body }: UserPasswordParams) => api.post<ApiBaseSuccessData>(`/auth/password`, body, { params: { type } })
+};

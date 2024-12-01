@@ -1,4 +1,4 @@
-import { FeedTypes } from '@/shared/model/types';
+import { FeedTypes } from '@/widgets/Feed/types';
 import { LocalFeed } from '@/widgets/Sidebar/model/types';
 
 export const getSortedFeedByLastMessage = (a: LocalFeed, b: LocalFeed) => {

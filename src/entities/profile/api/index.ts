@@ -1,79 +1,15 @@
-import { API } from '@/shared/api/API';
-import { Avatar, BasicAPIResponse, Profile, SearchUser, WrappedInPagination } from '@/shared/model/types';
+import { api } from '@/shared/api';
+import { Avatar, Profile } from '../model/types';
+import { ApiBaseSuccessData } from '@/shared/api/API';
+import { Pagination, WrappedInPagination } from '@/shared/model/types';
+import { SearchUser } from '@/widgets/Feed/types';
 
-class ProfileApi extends API {
-    getProfile = async () => {
-        const request: RequestInit = {
-            headers: this._headers,
-            credentials: this._cretedentials,
-            cache: 'no-store'
-        };
-
-        return this._checkResponse<Profile>(await fetch(this._baseUrl + '/auth/me', request), request);
-    };
-
-    avatar = async (form: FormData) => {
-        const request: RequestInit = {
-            method: 'POST',
-            credentials: this._cretedentials,
-            body: form
-        };
-
-        return this._checkResponse<Avatar>(await fetch(this._baseUrl + '/user/avatar', request), request);
-    }
-
-    status = async (body: { status: string }) => {
-        const request: RequestInit = { 
-            method: 'POST', 
-            headers: this._headers, 
-            credentials: this._cretedentials,
-            body: JSON.stringify(body)
-        };
-
-        return this._checkResponse<BasicAPIResponse>(await fetch(this._baseUrl + `/user/status`, request), request);
-    };
-
-    name = async (body: { name: string }) => {
-        const request: RequestInit = { 
-            method: 'POST', 
-            headers: this._headers, 
-            credentials: this._cretedentials,
-            body: JSON.stringify(body)
-        };
-
-        return this._checkResponse<BasicAPIResponse>(await fetch(this._baseUrl + `/user/name`, request), request);
-    };
-
-    search = async ({ query, page = 0, limit = 10 }: { query: string; page?: number; limit?: number }) => {
-        const url = new URL(this._baseUrl + '/user/search');
-        const request: RequestInit = { headers: this._headers, credentials: this._cretedentials };
-
-        url.searchParams.append('query', query);
-        url.searchParams.append('page', page.toString());
-        url.searchParams.append('limit', limit.toString());
-
-        return this._checkResponse<WrappedInPagination<SearchUser>>(await fetch(url, request), request);
-    };
-
-    block = async ({ recipientId }: { recipientId: string }) => {
-        const request: RequestInit = { 
-            method: 'POST', 
-            headers: this._headers, 
-            credentials: this._cretedentials,
-        };
-
-        return this._checkResponse<BasicAPIResponse>(await fetch(this._baseUrl + `/user/block/${recipientId}`, request), request);
-    }
-
-    unblock = async ({ recipientId }: { recipientId: string }) => {
-        const request: RequestInit = { 
-            method: 'POST', 
-            headers: this._headers, 
-            credentials: this._cretedentials,
-        };
-
-        return this._checkResponse<BasicAPIResponse>(await fetch(this._baseUrl + `/user/unblock/${recipientId}`, request), request);
-    }
+export const profileApi = {
+    getProfile: () => api.get<Profile>('/auth/me'),
+    avatar: (form: FormData) => api.post<Avatar>('/user/avatar', form),
+    status: (body: { status: string }) => api.post<ApiBaseSuccessData>('/user/status', body),
+    name: (body: { name: string }) => api.post<ApiBaseSuccessData>('/user/name', body),
+    search: ({ query, page = 0, limit = 10 }: Pagination) => api.get<WrappedInPagination<SearchUser>>('/user/search', { params: { query, page, limit } }),
+    block: ({ recipientId }: { recipientId: string }) => api.post<ApiBaseSuccessData>(`/user/block/${recipientId}`),
+    unblock: ({ recipientId }: { recipientId: string }) => api.post<ApiBaseSuccessData>(`/user/unblock/${recipientId}`)
 }
-
-export const profileAPI = new ProfileApi();

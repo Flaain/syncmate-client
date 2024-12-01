@@ -1,14 +1,8 @@
 import { Message } from '@/entities/Message/model/types';
-import { ChatStore } from '@/shared/lib/providers/chat/types';
-import { APIData, Recipient, WithParams, WithRequired } from '@/shared/model/types';
+import { Profile } from '@/entities/profile/model/types';
+import { MessageFormState, OptimisticFunc } from '@/features/SendMessage/model/types';
 
-export type ConversationStatuses = 'idle' | 'loading' | 'error';
-
-export interface IConversationAPI {
-    create: (body: { recipientId: string }) => Promise<APIData<Pick<Conversation, '_id' | 'lastMessageSentAt'>>>;
-    get: (body: Omit<WithParams<{ recipientId: string }>, 'params'>) => Promise<APIData<ConversationWithMeta>>;
-    getPreviousMessages: (body: WithRequired<WithParams<{ recipientId: string }>, 'params'>) => Promise<APIData<{ messages: Array<Message>, nextCursor: string | null }>>;
-}
+export type ConversationStatuses = 'idle' | 'loading' | 'refetching' | 'error';
 
 export interface ConversationWithMeta {
     conversation: Pick<Conversation, '_id' | 'recipient' | 'messages' | 'createdAt' | 'isInitiatorBlocked' | 'isRecipientBlocked'>;
@@ -31,17 +25,16 @@ export enum CONVERSATION_EVENTS {
 }
 
 export interface ConversationStore {
-    data: ConversationWithMeta;
+    conversation: Omit<ConversationWithMeta['conversation'], 'messages'>;
     status: ConversationStatuses;
-    isPreviousMessagesLoading: boolean;
     error: string | null;
     isRecipientTyping: boolean;
-    isRefetching: boolean;
     actions: {
-        getConversation: (action: 'init' | 'refetch', recipientId: string, setChatState: (state: Partial<ChatStore>) => void, abortController?: AbortController) => Promise<void>;
+        getConversation: ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
-        handleTypingStatus: () => () => void;
-    }
+        handleTypingStatus: () => (action: MessageFormState, reset?: boolean) => void;
+        handleOptimisticUpdate: OptimisticFunc;
+    };
 }
 
 export interface Conversation {
@@ -57,9 +50,9 @@ export interface Conversation {
 }
 
 export interface GetDescriptionParams {
-    data: {
-        recipient: Pick<Recipient, 'presence' | 'lastSeenAt'>
-    } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
+    data: { recipient: Pick<Recipient, 'presence' | 'lastSeenAt'> } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
     shouldDisplayTypingStatus?: boolean;
     isRecipientTyping: boolean;
 }
+
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;

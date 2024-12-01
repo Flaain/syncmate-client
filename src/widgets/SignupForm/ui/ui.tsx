@@ -7,6 +7,7 @@ import { LoaderCircle } from 'lucide-react';
 import { SignupCredentials } from './SignupCredentials';
 import { steps } from '../model/constants';
 import { useSignup } from '../lib/useSignup';
+import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
 
 const components = {
     0: <SignupCredentials />,
@@ -17,22 +18,14 @@ export const SignupForm = () => {
     const { form, step, loading, isLastStep, onSubmit, onBack, isNextButtonDisabled } = useSignup();
 
     return (
-        <div className='flex items-center w-full h-full max-w-[1230px] box-border gap-5'>
-            <div className='flex flex-col gap-2 items-end max-md:hidden max-w-[450px] w-full'>
-                <Typography
-                    variant='primary'
-                    as='h1'
-                    size='6xl'
-                    weight='bold'
-                    align='right'
-                    className='max-lg:text-6xl'
-                >
-                    {isLastStep ? 'Verify your email' : 'Sign up'}
-                </Typography>
-                <Typography as='p' size='xl' variant='secondary' align='right' className='max-lg:text-xl'>
-                    {isLastStep ? `We’ve sent an email to ${form.getValues('email').toLowerCase()} with a OTP code to verify your email` : "We're so excited to have you join us!"}
-                </Typography>
-            </div>
+        <AuthFormContainer
+            title={isLastStep ? 'Verify your email' : 'Sign up'}
+            description={
+                isLastStep
+                    ? `We’ve sent an email to ${form.getValues('email').toLowerCase()} with a OTP code to verify your email`
+                    : "We're so excited to have you join us!"
+            }
+        >
             <Form {...form}>
                 <div className='flex max-md:justify-center flex-1 md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
                     <form
@@ -78,6 +71,6 @@ export const SignupForm = () => {
                     </form>
                 </div>
             </Form>
-        </div>
+        </AuthFormContainer>
     );
 };

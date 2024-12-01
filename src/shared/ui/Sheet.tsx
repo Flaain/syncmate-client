@@ -1,9 +1,16 @@
 import React from 'react';
-import { SheetProps } from '@/shared/model/types';
 import { XIcon } from 'lucide-react';
 import { cn } from '../lib/utils/cn';
 import { Typography } from './Typography';
 import { useEvents } from '../model/store';
+
+export interface SheetProps {
+    children: React.ReactNode;
+    closeHandler: () => void;
+    withHeader?: boolean;
+    direction?: 'left' | 'right';
+    title?: string;
+}
 
 const SheetHeader = ({ title, closeHandler }: Pick<SheetProps, 'title' | 'closeHandler'>) => {
     return (

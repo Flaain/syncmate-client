@@ -1,4 +1,4 @@
-import { messageAPI } from "@/entities/Message";
+import { messageApi } from "@/entities/Message";
 import { useChat } from "@/shared/lib/providers/chat/context";
 import { useModal } from "@/shared/lib/providers/modal";
 import { selectModalActions } from "@/shared/lib/providers/modal/store";
@@ -11,10 +11,10 @@ import { useShallow } from "zustand/shallow";
 
 export const SelectState = () => {
     const { onOpenModal, onAsyncActionModal, onCloseModal } = useModal(useShallow(selectModalActions));
-    const { selectedMessages, params, setChatState } = useChat(useShallow((state) => ({
+    const { selectedMessages, params, setChat } = useChat(useShallow((state) => ({
         params: state.params,
         selectedMessages: state.selectedMessages,
-        setChatState: state.actions.setChatState
+        setChat: state.actions.setChat
     })));
 
     const handleDelete = () => {
@@ -25,19 +25,17 @@ export const SelectState = () => {
                     onCancel={onCloseModal}
                     onConfirmButtonVariant='destructive'
                     onConfirmText='Delete'
-                    onConfirm={() => onAsyncActionModal(() => messageAPI.delete({
-                        query: `${params.apiUrl}/delete`,
-                        body: JSON.stringify({
-                            ...params.query,
-                            messageIds: [...selectedMessages.keys()]
-                        })}), 
+                    onConfirm={() => onAsyncActionModal(() => messageApi.delete({
+                        endpoint: `${params.apiUrl}/delete/${params.id}`,
+                        messageIds: [...selectedMessages.keys()]
+                    }), 
                     {
                         closeOnError: true,
                         onResolve: () => {
                             toast.success(`${selectedMessages.size} ${selectedMessages.size > 1 ? 'messages' : 'message'} was deleted`, { 
                                 position: 'top-center' 
                             });
-                            setChatState({ mode: 'default', selectedMessages: new Map() })
+                            setChat({ mode: 'default', selectedMessages: new Map() })
                         },
                         onReject: () => toast.error('Cannot delete messages')
                     })}
@@ -50,7 +48,7 @@ export const SelectState = () => {
 
     return (
         <div className='flex items-center w-full'>
-            <Button variant='text' size='icon' className='mr-2' onClick={() => setChatState({ mode: 'default', selectedMessages: new Map() })}>
+            <Button variant='text' size='icon' className='mr-2' onClick={() => setChat({ mode: 'default', selectedMessages: new Map() })}>
                 <X className='w-6 h-6' />
             </Button>
             <Typography>{`${selectedMessages.size} ${selectedMessages.size > 1 ? 'messages' : 'message'}`}</Typography>

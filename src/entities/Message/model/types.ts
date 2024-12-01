@@ -1,4 +1,11 @@
-import { Avatar, Recipient } from "@/shared/model/types";
+import { Avatar } from "@/entities/profile/model/types";
+import { Recipient } from "@/pages/Conversation/model/types";
+import { ApiException } from "@/shared/api/error";
+
+export enum SenderRefPath {
+    USER = 'User',
+    PARTICIPANT = 'Participant'
+}
 
 export interface REMOVE_THIS_LATER {
     _id: string;
@@ -8,18 +15,25 @@ export interface REMOVE_THIS_LATER {
 }
 
 export type MessageSender =
-    | { sender: Recipient; refPath: 'User' }
-    | { sender: REMOVE_THIS_LATER; refPath: 'Participant' };
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; senderRefPath: SenderRefPath.USER }
+    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+
+export type ReplySender =
+    | { sender: Pick<Recipient, '_id' | 'name'>; senderRefPath: SenderRefPath.USER }
+    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
 
 export type Message = {
     _id: string;
     hasBeenRead: boolean;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & MessageSender | null;
+    replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
+    inReply?: boolean;
     createdAt: string;
     updatedAt: string;
-    sendingInProgress?: boolean;
+    abort?: () => void;
+    isPending?: boolean;
+    error?: ApiException['config'];
 } & MessageSender;
 
 export interface UseMessageProps {
@@ -46,6 +60,11 @@ export interface DeleteMessageRes {
 }
 
 export interface DefaultParamsAPI {
-    query: string;
+    endpoint: string;
     body: string;
+    signal?: AbortSignal;
+}
+
+export interface DeleteParamsAPI extends Omit<DefaultParamsAPI, 'body'> {
+    messageIds: Array<string>;
 }

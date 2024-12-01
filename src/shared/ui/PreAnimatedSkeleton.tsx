@@ -1,5 +1,8 @@
 import { cn } from '../lib/utils/cn';
-import { PreAnimatedSkeletonProps } from '../model/types';
+
+export interface PreAnimatedSkeletonProps extends React.HTMLAttributes<HTMLSpanElement> {
+    animate?: boolean;
+}
 
 export const PreAnimatedSkeleton = ({ animate = true, className, ...rest }: PreAnimatedSkeletonProps) => (
     <span

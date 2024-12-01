@@ -5,11 +5,13 @@ import { Image } from '@/shared/ui/Image';
 import { ProfileIndicator } from '@/shared/ui/ProfileIndicator';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
-import { ConversationFeed, PRESENCE } from '@/shared/model/types';
 import { useLayout } from '@/shared/model/store';
+import { FeedTypes } from '../../types';
+import { PRESENCE } from '@/entities/profile/model/types';
+import { ExctactLocalFeedItem } from '@/widgets/Sidebar/model/types';
 
-export const ConversationItem = ({ conversation }: { conversation: ConversationFeed }) => {
-    const recipient = conversation.recipient;
+export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLocalFeedItem<FeedTypes.CONVERSATION> }) => {
+    const recipient = item.recipient;
     const draft = useLayout((state) => state.drafts).get(recipient._id);
 
     return (
@@ -47,7 +49,7 @@ export const ConversationItem = ({ conversation }: { conversation: ConversationF
                             </Typography>
                         )}
                     </Typography>
-                    {!!conversation.participantsTyping?.length ? (
+                    {!!item.participantsTyping?.length ? (
                         <Typography as='p' variant='secondary' className='line-clamp-1'>
                             typing...
                         </Typography>
@@ -59,13 +61,13 @@ export const ConversationItem = ({ conversation }: { conversation: ConversationF
                             {draft.value}
                         </Typography>
                     ) : (
-                        !!conversation.lastMessage && (
+                        !!item.lastMessage && (
                             <div className='flex items-center w-full gap-5'>
                                 <Typography className='break-all dark:text-primary-white/30 text-primary-gray line-clamp-1'>
-                                    {conversation.lastMessage?.text}
+                                    {item.lastMessage?.text}
                                 </Typography>
                                 <Typography className='ml-auto' variant='secondary'>
-                                    {new Date(conversation.lastMessage.createdAt).toLocaleTimeString(
+                                    {new Date(item.lastMessage.createdAt).toLocaleTimeString(
                                         navigator.language,
                                         {
                                             hour: 'numeric',

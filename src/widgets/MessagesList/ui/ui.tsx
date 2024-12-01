@@ -1,25 +1,30 @@
-import React from 'react';
 import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
-import { MessagesListProps } from '../model/types';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
+import { MessagesListProps } from '../model/types';
+import { Typography } from '@/shared/ui/Typography';
 
-export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps>(({
-    canFetch,
-    messages,
-    getPreviousMessages,
-    nextCursor,
-    isFetchingPreviousMessages,
-}, ref) => {
-    const groupedMessages = useMessagesList({ canFetch, messages, getPreviousMessages });
+export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
+    const { groupedMessages, canFetch, isPreviousMessagesLoading, previousMessagesCursor, listRef } = useMessagesList(getPreviousMessages);
+
+    if (!groupedMessages.length) {
+        return (
+            <Typography
+                variant='primary'
+                className='m-auto px-5 py-2 rounded-full dark:bg-primary-dark-50 bg-primary-white'
+            >
+                No messages yet
+            </Typography>
+        );
+    }
 
     return (
         <ul
-            ref={ref}
-            className='relative flex flex-col flex-1 w-full px-5 mb-auto max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
+            ref={listRef}
+            className='relative flex flex-col justify-start w-full h-full p-5 max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
         >
-            {nextCursor && (
+            {previousMessagesCursor && (
                 <li className='flex justify-center items-center'>
                     <Button
                         variant='text'
@@ -27,7 +32,7 @@ export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps
                         disabled={!canFetch}
                         onClick={getPreviousMessages}
                     >
-                        {isFetchingPreviousMessages ? (
+                        {isPreviousMessagesLoading ? (
                             <Loader2 className='w-6 h-6 animate-spin' />
                         ) : (
                             'Load previous messages'
@@ -44,4 +49,4 @@ export const MessagesList = React.forwardRef<HTMLUListElement, MessagesListProps
             ))}
         </ul>
     );
-})
+};

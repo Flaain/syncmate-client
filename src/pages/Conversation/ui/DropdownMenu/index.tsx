@@ -6,8 +6,8 @@ import { useShallow } from 'zustand/shallow';
 
 export const ConversationDDM = () => {
     const { _id, isRecipientBlocked } = useConversation(useShallow((state) => ({
-        _id: state.data.conversation._id,
-        isRecipientBlocked: state.data.conversation.isRecipientBlocked
+        _id: state.conversation._id,
+        isRecipientBlocked: state.conversation.isRecipientBlocked
     })));
     const { handleBlockRecipient, handleDeleteConversation } = useConversationDDM();
 

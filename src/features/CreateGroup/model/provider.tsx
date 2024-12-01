@@ -6,16 +6,16 @@ import { createGroupSchema } from "./schemas";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { MAX_GROUP_SIZE, steps } from "./constants";
 import { useModal } from "@/shared/lib/providers/modal";
-import { SearchUser } from "@/shared/model/types";
-import { profileAPI } from "@/entities/profile";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
-import { checkFormErrors } from "@/shared/lib/utils/checkFormErrors";
-import { createGroupAPI } from "../api";
 import { CreateGroupContext } from "./context";
 import { useShallow } from "zustand/shallow";
-import { NavigateFunction } from "react-router-dom";
+import { SearchUser } from "@/widgets/Feed/types";
+import { profileApi } from "@/entities/profile";
+import { createGroupApi } from "../api";
+import { ApiException } from "@/shared/api/error";
+import { useNavigate } from "react-router-dom";
 
-export const CreateGroupProvider = ({ children, navigate }: { children: React.ReactNode; navigate: NavigateFunction }) => {
+export const CreateGroupProvider = ({ children }: { children: React.ReactNode }) => {
     const { isModalDisabled, onAsyncActionModal } = useModal(useShallow((state) => ({
         isModalDisabled: state.isModalDisabled,
         onAsyncActionModal: state.actions.onAsyncActionModal
@@ -24,6 +24,8 @@ export const CreateGroupProvider = ({ children, navigate }: { children: React.Re
     const [step, setStep] = React.useState(0);
     const [selectedUsers, setSelectedUsers] = React.useState<Map<string, SearchUser>>(new Map());
     const [searchedUsers, setSearchedUsers] = React.useState<Array<SearchUser>>([]);
+
+    const navigate = useNavigate();
 
     const form = useForm<CreateGroupType>({
         resolver: zodResolver(createGroupSchema),
@@ -56,7 +58,7 @@ export const CreateGroupProvider = ({ children, navigate }: { children: React.Re
     })
 
     const handleSearchDelay = React.useCallback(debounce(async (value: string) => {
-        onAsyncActionModal(() => profileAPI.search({ query: value }), {
+        onAsyncActionModal(() => profileApi.search({ query: value }), {
             onReject: () => setSearchedUsers([]),
             onResolve: ({ data: { items } }) => setSearchedUsers(items),
             closeOnError: false,
@@ -96,10 +98,16 @@ export const CreateGroupProvider = ({ children, navigate }: { children: React.Re
         const { username, ...rest } = form.getValues();
 
         if (step === steps.length - 1) {
-            onAsyncActionModal(() => createGroupAPI.create({ ...rest, participants: [...selectedUsers.keys()] }), {
-                onReject: (error) => checkFormErrors({ error, fields: steps[step].fields, form }),
+            onAsyncActionModal(() => createGroupApi.create({ ...rest, participants: [...selectedUsers.keys()] }), {
+                onReject: (error) => {
+                    if (error instanceof ApiException) {
+                        error.response.data.errors?.forEach(({ path, message }) => {
+                            steps[step].fields.includes(path as FieldPath<CreateGroupType>) && form.setError(path as FieldPath<CreateGroupType>, { message }, { shouldFocus: true });  
+                        })
+                    }
+                },
                 onResolve: ({ data }) => navigate(`/group/${data._id}`)
-            })
+            });
         } else {
             setStep((prevState) => prevState + 1);
         }

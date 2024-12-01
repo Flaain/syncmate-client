@@ -1,7 +1,44 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
-import { PolymorphicRef, TypographyComponent, TypographyProps } from '../model/types';
 import { cn } from '../lib/utils/cn';
+
+export type TypographyVariant = 'primary' | 'secondary' | 'commerce' | 'error';
+export type TypographySize = 'base' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+export type TypographyWeight = 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
+export type TypographyAlign = 'left' | 'center' | 'right';
+
+export interface TypingParticipant {
+    _id: string;
+    name: string;
+}
+
+export interface TypographyVariants {
+    variant: Record<TypographyVariant, string>;
+    size: Record<TypographySize, string>;
+    weight: Record<TypographyWeight, string>;
+}
+
+export interface BaseTypographyProps {
+    variant?: TypographyVariant;
+    size?: TypographySize;
+    weight?: TypographyWeight;
+    align?: TypographyAlign;
+}
+
+export type PolymorphicRef<T extends React.ElementType> = React.Ref<T> | React.RefObject<T>;
+
+export type PropsOf<T extends React.ElementType> = React.ComponentPropsWithRef<T>;
+
+export type PolymorphicProps<T extends React.ElementType = React.ElementType, TProps = object> = {
+    as?: T;
+} & TProps &
+    Omit<PropsOf<T>, keyof TProps | 'as' | 'ref'> & { ref?: PolymorphicRef<T> };
+
+export type TypographyProps<T extends React.ElementType = 'span'> = PolymorphicProps<T, BaseTypographyProps>;
+
+export type TypographyComponent = <T extends React.ElementType = 'span'>(
+    props: PolymorphicProps<T, TypographyProps<T>>
+) => React.ReactNode;
 
 const typographyVariants = cva(undefined, {
     variants: {

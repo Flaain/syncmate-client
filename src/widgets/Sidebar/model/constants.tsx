@@ -1,29 +1,25 @@
-import { AdsFeed, ConversationFeed, FeedItem, FeedTypes, GroupFeed, UserFeed } from '@/shared/model/types';
 import { ConversationItem, GroupItem, UserItem } from '@/widgets/Feed';
 import { AdsItem } from '@/widgets/Feed/ui/AdsItem';
-import { LocalResults } from './types';
+import { ExctactLocalFeedItem, LocalResults } from './types';
+import { AdsFeed, FeedTypes, GroupFeed, UserFeed } from '@/widgets/Feed/types';
 
-export const localFilters: Record<Exclude<FeedTypes, 'User' | 'ADS'>, (item: FeedItem, value: string) => boolean> = {
-    Conversation: (item, value) => {
-        const { name, login } = (item as ConversationFeed).recipient;
-
+export const localFilters: Record<FeedTypes.CONVERSATION | FeedTypes.GROUP, (item: any, value: string) => boolean> = {
+    Conversation: ({ item: { recipient: { name, login } } }: ExctactLocalFeedItem<FeedTypes.CONVERSATION>, value) => {
         return name.toLowerCase().includes(value) || login.toLowerCase().includes(value);
     },
-    Group: (item, value) => {
-        const { name, login } = (item as GroupFeed);
-
+    Group: ({ item: { name, login } }: ExctactLocalFeedItem<FeedTypes.GROUP>, value) => {
         return name.toLowerCase().includes(value) || login.toLowerCase().includes(value);
     }
 };
 
-export const globalFilters: Record<Exclude<FeedTypes, 'Conversation' | 'ADS'>, (item: FeedItem, localResults: LocalResults['feed']) => boolean> = {
-    User: (item, localResults) => localResults.some((localItem) => localItem.type === FeedTypes.CONVERSATION && localItem.recipient._id === item._id),
-    Group: (item, localResults) => localResults.some((localItem) => localItem._id === item._id)
+export const globalFilters: Record<FeedTypes.GROUP | FeedTypes.USER, (item: any, localResults: LocalResults['feed']) => boolean> = {
+    User: ({ _id }: UserFeed, localResults) => localResults.some(({ type, item }) => type === FeedTypes.CONVERSATION && item.recipient._id === _id),
+    Group: ({ _id }: ExctactLocalFeedItem<FeedTypes.GROUP>, localResults) => localResults.some(({ type, item }) => type === FeedTypes.GROUP && item._id === _id)
 };
 
-export const feedItems: Record<FeedTypes, (item: FeedItem) => React.ReactNode> = {
-    Conversation: (item) => <ConversationItem key={item._id} conversation={item as ConversationFeed} />,
-    User: (item) => <UserItem user={item as UserFeed} key={item._id} />,
-    Group: (item) => <GroupItem group={item as GroupFeed} key={item._id} />,
-    ADS: (item) => <AdsItem adsItem={item as AdsFeed} key={item._id}/>
+export const feedItems: Record<Exclude<FeedTypes, 'Cloud' | 'Channel'>, (feedItem: any) => React.ReactNode> = {
+    Conversation: (feedItem: ExctactLocalFeedItem<FeedTypes.CONVERSATION>) => <ConversationItem key={feedItem._id} feedItem={feedItem} />,
+    User: (item: UserFeed) => <UserItem user={item} key={item._id} />,
+    Group: (item: GroupFeed) => <GroupItem group={item} key={item._id} />,
+    ADS: (item: AdsFeed) => <AdsItem adsItem={item} key={item._id} />
 };

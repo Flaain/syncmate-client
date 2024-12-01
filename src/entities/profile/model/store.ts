@@ -7,5 +7,3 @@ export const useProfile = create<ProfileStore>((set, get) => ({
     isUploadingAvatar: false,
     actions: profileActions(set, get)
 }));
-
-useProfile.getState().actions.getProfile();

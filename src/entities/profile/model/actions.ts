@@ -1,15 +1,15 @@
 import { ProfileStore } from "./types";
-import { profileAPI } from "../api";
 import { useSession } from "@/entities/session";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { imageValidators } from "./constants";
 import { toast } from "sonner";
 import { SetStateInternal } from "@/shared/model/types";
+import { profileApi } from "../api";
 
 export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => ProfileStore): ProfileStore['actions'] => ({
     getProfile: async () => {
         try {
-            const { data } = await profileAPI.getProfile();
+            const { data } = await profileApi.getProfile();
 
             set({ profile: data });
 
@@ -22,13 +22,13 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
     },
     handleSetStatus: debounce(async (status: string) => {
         try {
-            await profileAPI.status({ status });
+            await profileApi.status({ status });
 
             set((prevState) => ({ profile: { ...prevState.profile, status } }));
         } catch (error) {
             console.error(error);
         }
-    }),
+    }, 500),
     handleUploadAvatar: async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files?.length || get().isUploadingAvatar) return;
 
@@ -45,7 +45,7 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
 
             form.append('image', blob);
 
-            const { data } = await profileAPI.avatar(form);
+            const { data } = await profileApi.avatar(form);
 
             set((prevState) => ({ profile: { ...prevState.profile, avatar: data } }));
         } catch (error) {

@@ -6,20 +6,20 @@ import { Message } from '@/entities/Message';
 import { useSession } from '@/entities/session';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
+import { SenderRefPath } from '@/entities/Message/model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
     const { mode, lastMessageRef, handleSelectMessage } = useChat(useShallow((state) => ({
         mode: state.mode,
         lastMessageRef: state.refs.lastMessageRef,
-        selectedMessages: state.selectedMessages,
         handleSelectMessage: state.actions.handleSelectMessage
     })));
-    
+
     const userId = useSession((state) => state.userId);
     const message = messages[0];
-    const isUser = message.refPath === 'User';
+    const isUser = message.senderRefPath === SenderRefPath.USER;
     const isMessageFromMe = isUser ? message.sender._id === userId : false; // TODO: add participant store
-    
+
     return (
         <li className={cn('flex items-end gap-3 xl:self-start w-full', isMessageFromMe ? 'self-end' : 'self-start')}>
             <Image

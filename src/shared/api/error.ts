@@ -1,23 +1,26 @@
 import { ExternalToast, toast } from 'sonner';
-import { AppExceptionCode, IAppException } from '../model/types';
+import { ApiResponseFailureResult, RequestConfig } from './API';
 
-export class AppException extends Error implements IAppException {
-    public url: string;
-    public timestamp: Date;
-    public errorCode?: AppExceptionCode;
-    public headers: Record<string, string>;
-    public statusCode: number;
-    public errors?: Array<{ path: string; message: string }>;
+export enum ApiExceptionCode {
+    INVALID_ACCESS_TOKEN = 'INVALID_ACCESS_TOKEN',
+    FORM = 'FORM'
+}
 
-    constructor(error: IAppException) {
+export interface IApiException {
+    message: string;
+    config: RequestConfig;
+    response: ApiResponseFailureResult;
+}
+
+export class ApiException extends Error implements IApiException {
+    readonly config: RequestConfig;
+    readonly response: ApiResponseFailureResult;
+
+    constructor(error: IApiException) {
         super(error.message);
 
-        this.url = error.url;
-        this.timestamp = error.timestamp;
-        this.errorCode = error.errorCode;
-        this.errors = error.errors;
-        this.headers = error.headers;
-        this.statusCode = error.statusCode;
+        this.config = error.config;
+        this.response = error.response;
     }
 
     toastError(message?: string, options: ExternalToast = { position: 'top-center' }) {

@@ -1,18 +1,19 @@
 import React from "react";
 import { UserCheckType } from "@/shared/model/types";
-import { signupAPI } from "../api";
-import { otpAPI } from "@/features/OTP";
 import { OtpType } from "@/features/OTP/model/types";
 import { useOtp } from "@/features/OTP/model/store";
 import { useProfile } from "@/entities/profile";
 import { useSession } from "@/entities/session";
-import { checkFormErrors } from "@/shared/lib/utils/checkFormErrors";
 import { steps } from "../model/constants";
 import { useAuth } from "@/pages/Auth";
 import { FieldPath, useForm } from "react-hook-form";
 import { SignupSchemaType } from "../model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "../model/schema";
+import { signupApi } from "../api";
+import { otpApi } from "@/features/OTP";
+import { ApiException } from "@/shared/api/error";
+import { toast } from "sonner";
 
 export const useSignup = () => {
     const [step, setStep] = React.useState(0);
@@ -59,14 +60,14 @@ export const useSignup = () => {
 
             const actions = {
                 0: async () => {
-                    await signupAPI.check({ type: UserCheckType.EMAIL, email: data.email.toLowerCase().trim() });
+                    await signupApi.check({ type: UserCheckType.EMAIL, email: data.email.toLowerCase().trim() });
 
                     setStep((prevState) => prevState + 1);
                 },
                 1: async () => {
-                    await signupAPI.check({ type: UserCheckType.LOGIN, login: data.login.toLowerCase().trim() });
+                    await signupApi.check({ type: UserCheckType.LOGIN, login: data.login.toLowerCase().trim() });
                     
-                    const { data: { retryDelay } } = await otpAPI.create({ email: data.email, type: OtpType.EMAIL_VERIFICATION });
+                    const { data: { retryDelay } } = await otpApi.create({ email: data.email, type: OtpType.EMAIL_VERIFICATION });
                     
                     useOtp.setState({ otp: { targetEmail: data.email, type: OtpType.EMAIL_VERIFICATION, retryDelay } });
                     
@@ -75,7 +76,7 @@ export const useSignup = () => {
                 2: async () => {
                     const { confirmPassword, ...rest } = data;
                     
-                    const { data: profile } = await signupAPI.signup(rest);
+                    const { data: profile } = await signupApi.signup(rest);
 
                     useProfile.setState({ profile });
                     useSession.getState().actions.onSignin(profile._id);
@@ -84,12 +85,16 @@ export const useSignup = () => {
 
             await actions[step as keyof typeof actions]();
         } catch (error) {
-            checkFormErrors({
-                error,
-                form,
-                fields: steps[step].fields,
-                cb: ({ path }) => path === 'otp' && form.resetField('otp', { keepError: true })
-            });
+            console.error(error);
+            if (error instanceof ApiException) {
+                error.response.data.errors?.forEach(({ path, message }) => {
+                   steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(path as FieldPath<SignupSchemaType>, { message }); 
+                });
+        
+                !error.response.data.errors && error.toastError();
+            } else {
+                toast.error('Something went wrong. Please try again later', { position: 'top-center' });
+            }
         } finally {
             setLoading(false);
         }

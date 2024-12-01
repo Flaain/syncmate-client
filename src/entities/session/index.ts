@@ -1,2 +1,2 @@
-export { sessionAPI } from './api';
+export { sessionApi } from './api';
 export { useSession } from './model/store';

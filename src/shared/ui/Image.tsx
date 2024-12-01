@@ -1,6 +1,9 @@
 import React from "react";
 import { cn } from "../lib/utils/cn";
-import { ImageProps } from "../model/types";
+
+export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+    skeleton?: React.ReactNode;
+}
 
 export const Image = ({ skeleton, className, ...rest }: ImageProps) => {
     const [imageLoaded, setImageLoaded] = React.useState(false);

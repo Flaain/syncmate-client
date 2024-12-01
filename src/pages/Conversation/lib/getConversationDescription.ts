@@ -1,4 +1,4 @@
-import { PRESENCE } from '@/shared/model/types';
+import { PRESENCE } from '@/entities/profile/model/types';
 import { GetDescriptionParams } from '../model/types';
 import { getRelativeTimeString } from '@/shared/lib/utils/getRelativeTimeString';
 

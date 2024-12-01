@@ -1,48 +1,37 @@
 export interface ParsedSession {
-    ua: string;
-    browser: IBrowser;
+    header: string;
+    name: string;
+    type: string;
+    version: string;
+    version_major: string;
     device: IDevice;
     engine: IEngine;
     os: IOS;
-    cpu: ICPU;
-}
-
-export interface IBrowser {
-    name: string | undefined;
-    version: string | undefined;
-    major: string | undefined;
 }
 
 export interface IDevice {
-    model: string | undefined;
-    type: string | undefined;
-    vendor: string | undefined;
+    brand: string;
+    name: string;
+    type: string;
 }
 
 export interface IEngine {
-    name: string | undefined;
-    version: string | undefined;
+    name: string;
+    tpye: string;
+    version: string;
+    version_major: string;
 }
 
 export interface IOS {
-    name: string | undefined;
-    version: string | undefined;
-}
-
-export interface ICPU {
-    architecture: string | undefined;
-}
-
-export interface CurrentSession {
-    _id: string;
-    userAgent: ParsedSession;
-    createdAt: string;
-    expiresAt: string;
+    name: string;
+    type: string;
+    version: string | null;
 }
 
 export interface Session {
     _id: string;
     userAgent: ParsedSession;
+    userIP: null;
     createdAt: string;
     expiresAt: string;
 }
@@ -55,7 +44,7 @@ export interface SessionProps {
 }
 
 export interface GetSessionsReturn {
-    currentSession: CurrentSession;
+    currentSession: Session;
     sessions: Array<Session>;
 }
 
