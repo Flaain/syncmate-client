@@ -5,5 +5,5 @@ import { UserCheckParams } from '@/shared/model/types';
 
 export const signupApi = {
     signup: (body: Omit<SignupSchemaType, 'confirmPassword'>) => api.post<Profile>('/auth/signup', body),
-    check: ({ type }: UserCheckParams) => api.get('/user/check', { params: { type } })
+    check: (params: UserCheckParams) => api.get('/user/check', { params })
 };

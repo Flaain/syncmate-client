@@ -5,11 +5,12 @@ import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useSession } from '@/entities/session';
 import { useLayout } from '@/shared/model/store';
-import { GroupFeed } from '../../types';
+import { GroupFeedItemProps } from '../../types';
 
-export const GroupItem = ({ group }: { group: GroupFeed }) => {
+export const GroupItem = (props: GroupFeedItemProps) => {
+    const group = props.isGlobal ? props.group : props.group.item;
     const userId = useSession((state) => state.userId);
-    const draft = useLayout((state) => state.drafts).get(group._id);
+    const draft = useLayout((state) => state.drafts.get(group._id));
 
     return (
         <li>
@@ -42,15 +43,15 @@ export const GroupItem = ({ group }: { group: GroupFeed }) => {
                             </Typography>
                             {draft.value}
                         </Typography>
-                    ) : group.lastMessage ? (
+                    ) : !props.isGlobal && props.group.item.lastMessage ? (
                         <div className='flex items-center w-full gap-5'>
                             <Typography as='p' variant='secondary' className='line-clamp-1'>
-                                {group.lastMessage.sender._id === userId
-                                    ? `You: ${group.lastMessage.text}`
-                                    : `${group.lastMessage.sender.name}: ${group.lastMessage.text}`}
+                                {props.group.item.lastMessage.sender._id === userId
+                                    ? props.group.item.lastMessage.text
+                                    : `${props.group.item.lastMessage.sender.name}: ${props.group.item.lastMessage.text}`}
                             </Typography>
                             <Typography className='ml-auto' variant='secondary'>
-                                {new Date(group.lastMessage.createdAt).toLocaleTimeString(navigator.language, {
+                                {new Date(props.group.item.lastMessage.createdAt).toLocaleTimeString(navigator.language, {
                                     hour: 'numeric',
                                     minute: 'numeric'
                                 })}

@@ -17,9 +17,14 @@ export const globalFilters: Record<FeedTypes.GROUP | FeedTypes.USER, (item: any,
     Group: ({ _id }: ExctactLocalFeedItem<FeedTypes.GROUP>, localResults) => localResults.some(({ type, item }) => type === FeedTypes.GROUP && item._id === _id)
 };
 
-export const feedItems: Record<Exclude<FeedTypes, 'Cloud' | 'Channel'>, (feedItem: any) => React.ReactNode> = {
+
+export const localFeedItems: Record<Exclude<FeedTypes, 'Cloud' | 'Channel' | 'User'>, (feedItem: any) => React.ReactNode> = {
     Conversation: (feedItem: ExctactLocalFeedItem<FeedTypes.CONVERSATION>) => <ConversationItem key={feedItem._id} feedItem={feedItem} />,
-    User: (item: UserFeed) => <UserItem user={item} key={item._id} />,
-    Group: (item: GroupFeed) => <GroupItem group={item} key={item._id} />,
+    Group: (item: ExctactLocalFeedItem<FeedTypes.GROUP>) => <GroupItem group={item} key={item._id} isGlobal={false} />,
     ADS: (item: AdsFeed) => <AdsItem adsItem={item} key={item._id} />
+}
+
+export const globalFeedItems: Record<Exclude<FeedTypes, 'ADS' | 'Cloud' | 'Channel' | 'Conversation'>, (feedItem: any) => React.ReactNode> = {
+    User: (item: UserFeed) => <UserItem user={item} key={item._id} />,
+    Group: (item: GroupFeed) => <GroupItem group={item} key={item._id} isGlobal={true} />,
 };

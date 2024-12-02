@@ -2,9 +2,13 @@ import { Avatar, PRESENCE } from "@/entities/profile/model/types";
 import { Conversation } from "@/pages/Conversation/model/types";
 import { Group } from "@/pages/Group/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
+import { ExctactLocalFeedItem } from "@/widgets/Sidebar/model/types";
 
 export type Feed = Array<ConversationFeed | GroupFeed | UserFeed>;
 export type FeedItem = ConversationFeed | GroupFeed | UserFeed | AdsFeed;
+export type GroupFeedItemProps =
+    | { group: Omit<GroupFeed, 'participantsTyping' | 'lastMessage'>; isGlobal: true }
+    | { group: ExctactLocalFeedItem<FeedTypes.GROUP>; isGlobal: false };
 
 export enum FeedTypes {
     CONVERSATION = 'Conversation',
