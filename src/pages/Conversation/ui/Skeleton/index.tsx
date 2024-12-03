@@ -9,7 +9,7 @@ export const ConversationSkeleton = () => {
     const { state } = useLocation();
 
     return (
-        <OutletContainer>
+        <OutletContainer className='flex-col'>
             <div className='min-h-[70px] flex items-center self-start w-full px-5 py-3 box-border dark:bg-primary-dark-100 sticky top-0 z-[999]'>
                 {state && (
                     <Typography
