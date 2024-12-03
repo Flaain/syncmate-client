@@ -26,31 +26,38 @@ export const Content = () => {
     } = useConversation(useShallow(contentSelector));
 
     const showDetails = useChat((state) => state.showDetails);
-    const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
+    const description = getConversationDescription({
+        data: { recipient, isInitiatorBlocked, isRecipientBlocked },
+        isRecipientTyping
+    });
 
     return (
         <OutletContainer>
-            <OutletHeader
-                name={recipient.name}
-                isOfficial={recipient.isOfficial}
-                description={description}
-                dropdownMenu={<ConversationDDM />}
-            />
-            <MessagesList getPreviousMessages={getPreviousMessages} />
-            <SendMessage
-                onOptimisticUpdate={handleOptimisticUpdate}
-                handleTypingStatus={handleTypingStatus()}
-                restrictMessaging={[
-                    {
-                        reason: !!(isInitiatorBlocked || isRecipientBlocked),
-                        message: isRecipientBlocked ? `You blocked ${recipient.name}` : `${recipient.name} has restricted incoming messages`
-                    },
-                    {
-                        reason: !_id && recipient.isPrivate,
-                        message: `${recipient.name} does not accept new messages`
-                    }
-                ]}
-            />
+            <div className='flex-1 flex flex-col'>
+                <OutletHeader
+                    name={recipient.name}
+                    isOfficial={recipient.isOfficial}
+                    description={description}
+                    dropdownMenu={<ConversationDDM />}
+                />
+                <MessagesList getPreviousMessages={getPreviousMessages} />
+                <SendMessage
+                    onOptimisticUpdate={handleOptimisticUpdate}
+                    handleTypingStatus={handleTypingStatus()}
+                    restrictMessaging={[
+                        {
+                            reason: !!(isInitiatorBlocked || isRecipientBlocked),
+                            message: isRecipientBlocked
+                                ? `You blocked ${recipient.name}`
+                                : `${recipient.name} has restricted incoming messages`
+                        },
+                        {
+                            reason: !_id && recipient.isPrivate,
+                            message: `${recipient.name} does not accept new messages`
+                        }
+                    ]}
+                />
+            </div>
             {showDetails && (
                 <OutletDetails
                     name={recipient.name}

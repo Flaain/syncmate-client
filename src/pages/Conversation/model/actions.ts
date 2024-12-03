@@ -24,7 +24,7 @@ export const conversationActions = (set: SetStateInternal<ConversationStore>, ge
                 params: {
                     apiUrl: '/message',
                     id: data.conversation.recipient._id,
-                    query: { recipientId: data.conversation.recipient._id, socket_id: useSocket.getState().socket.id },
+                    query: { recipientId: data.conversation.recipient._id, session_id: useSocket.getState().session_id },
                     type: 'conversation'
                 },
                 messages: data.conversation.messages,

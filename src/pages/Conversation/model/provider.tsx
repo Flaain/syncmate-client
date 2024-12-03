@@ -152,8 +152,6 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
 
             socket?.off(CONVERSATION_EVENTS.START_TYPING);
             socket?.off(CONVERSATION_EVENTS.STOP_TYPING);
-
-            socket?.off('reconnect');
         };
     }, [recipientId]);
 
