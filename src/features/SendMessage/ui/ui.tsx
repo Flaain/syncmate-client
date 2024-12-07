@@ -87,7 +87,6 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                 {showAnchor && (
                     <Button
                         onClick={() => {
-                            console.log(lastMessageRef.current);
                             lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })
                         }}
                         disabled={!showAnchor}

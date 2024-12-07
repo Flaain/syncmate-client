@@ -8,16 +8,40 @@ import { MessageProps, SenderRefPath } from '../model/types';
 import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
+import { messageApi } from '../api';
 
-export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message, isFirst, isLast, isMessageFromMe, className, ...rest }, ref) => {
+export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
-    const { createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, isPending, error } = message;
-    const { type, selectedMessages, isContextActionsBlocked } = useChat(useShallow((state) => ({
-        type: state.params.type,
+    const { _id, createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, isPending, error } = message;
+    const { params, selectedMessages, lastMessageRef, isContextActionsBlocked, setChat } = useChat(useShallow((state) => ({
+        lastMessageRef: state.refs.lastMessageRef,
+        params: state.params,
         selectedMessages: state.selectedMessages,
-        isContextActionsBlocked: state.isContextActionsBlocked
+        isContextActionsBlocked: state.isContextActionsBlocked,
+        setChat: state.actions.setChat
     })));
+    const observer = React.useRef<IntersectionObserver | null>(null);
+
+    const ref = React.useCallback((node: HTMLLIElement) => {
+        isLastGroup && isLast && (lastMessageRef.current = node);
+
+        if (isMessageFromMe || hasBeenRead) return;
+
+        observer.current?.disconnect();
+
+        observer.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                messageApi.read({ 
+                    endpoint: `${params.apiUrl}/read/${message._id}`,
+                    body: JSON.stringify(params.query)
+                })
+                setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) }));
+                observer.current?.unobserve(entries[0].target);
+            }
+        });
+       node && observer.current.observe(node);
+    }, [])
 
     const isSelected = selectedMessages.has(message._id);
     const createTime = new Date(createdAt);
@@ -56,7 +80,7 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && senderRefPath === SenderRefPath.PARTICIPANT && type === 'group' && (
+                    {!isMessageFromMe && isFirst && senderRefPath === SenderRefPath.PARTICIPANT && params.type === 'group' && (
                         <Typography variant='primary' weight='semibold'>
                             {sender.name || sender.user.name}
                         </Typography>
@@ -131,4 +155,4 @@ export const Message = React.forwardRef<HTMLLIElement, MessageProps>(({ message,
             )}
         </ContextMenu>
     );
-});
+};

@@ -5,5 +5,6 @@ export const messageApi = {
     send: <T = Message>({ endpoint, body, signal }: DefaultParamsAPI) => api.post<T>(endpoint, body, { signal }),
     edit: <T = Message>({ endpoint, body }: DefaultParamsAPI) => api.patch<T>(endpoint, body),
     reply: <T = Message>({ endpoint, body }: DefaultParamsAPI) => api.post<T>(endpoint, body),
-    delete: <T = Message>({ endpoint, messageIds }: DeleteParamsAPI) => api.delete<T>(endpoint, { params: { messageIds } })
+    delete: <T = Message>({ endpoint, messageIds }: DeleteParamsAPI) => api.delete<T>(endpoint, { params: { messageIds } }),
+    read: ({ endpoint, body }: DefaultParamsAPI) => api.patch(endpoint, body, { keepalive: true })
 };

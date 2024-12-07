@@ -9,9 +9,8 @@ import { useShallow } from 'zustand/shallow';
 import { SenderRefPath } from '@/entities/Message/model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
-    const { mode, lastMessageRef, handleSelectMessage } = useChat(useShallow((state) => ({
+    const { mode, handleSelectMessage } = useChat(useShallow((state) => ({
         mode: state.mode,
-        lastMessageRef: state.refs.lastMessageRef,
         handleSelectMessage: state.actions.handleSelectMessage
     })));
 
@@ -33,9 +32,9 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
                         key={message._id}
                         isFirst={!index}
                         isMessageFromMe={isMessageFromMe}
+                        isLastGroup={isLastGroup}
                         isLast={index === array.length - 1}
                         message={message}
-                        ref={isLastGroup && index === array.length - 1 ? lastMessageRef : null}
                         onClick={mode === 'selecting' && isMessageFromMe ? () => handleSelectMessage(message) : undefined}
                     />
                 ))}

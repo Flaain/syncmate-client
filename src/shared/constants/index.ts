@@ -31,13 +31,12 @@ export const nameForSchema = z
     .string()
     .trim()
     .min(1, 'Name is required')
-    .min(3, 'Name must be at least 3 characters long')
     .max(32, 'Name must be at most 32 characters long');
 
 export const loginForSchema = z
     .string()
     .trim()
-    .min(5, 'Login must be at least 5 characters long')
+    .min(4, 'Login must be at least 5 characters long')
     .max(32, 'Login must be at most 32 characters long')
     .toLowerCase()
     .regex(onlyLatinRegExp, 'Invalid login. Please use only a-z, 0-9 and underscore characters');

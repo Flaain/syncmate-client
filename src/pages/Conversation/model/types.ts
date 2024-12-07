@@ -14,6 +14,7 @@ export enum CONVERSATION_EVENTS {
     LEAVE = 'conversation.leave',
     CREATED = 'conversation.created',
     DELETED = 'conversation.deleted',
+    MESSAGE_READ = 'conversation.message.read',
     MESSAGE_SEND = 'conversation.message.send',
     MESSAGE_EDIT = 'conversation.message.edit',
     MESSAGE_DELETE = 'conversation.message.delete',
