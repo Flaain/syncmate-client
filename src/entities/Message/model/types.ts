@@ -1,7 +1,6 @@
 import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
 import { ApiException } from "@/shared/api/error";
-import { ChatStore } from "@/shared/lib/providers/chat/types";
 
 export enum SenderRefPath {
     USER = 'User',
