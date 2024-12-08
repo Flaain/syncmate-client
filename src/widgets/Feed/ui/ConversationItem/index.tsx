@@ -41,12 +41,21 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLoca
                     <AvatarByName name={recipient.name} size='lg' isOnline={recipient.presence === PRESENCE.ONLINE} />
                 )}
                 <div className='flex flex-col items-start w-full overflow-hidden'>
-                    <Typography as='h2' weight='medium' className={cn(recipient.isOfficial && 'flex items-center')}>
+                    <Typography
+                        as='h2'
+                        weight='medium'
+                        className='flex w-full items-center'
+                    >
                         {recipient.name}
                         {recipient.isOfficial && (
                             <Typography className='ml-2'>
                                 <Verified className='w-5 h-5' />
                             </Typography>
+                        )}
+                        {!!item.unreadMessages && (
+                            <span className='text-primary-dark-200 font-semibold text-sm flex items-center justify-center ml-auto size-5 rounded-full bg-primary-white'>
+                                {item.unreadMessages}
+                            </span>
                         )}
                     </Typography>
                     {!!item.participantsTyping?.length ? (
@@ -67,13 +76,10 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLoca
                                     {item.lastMessage?.text}
                                 </Typography>
                                 <Typography className='ml-auto' variant='secondary'>
-                                    {new Date(item.lastMessage.createdAt).toLocaleTimeString(
-                                        navigator.language,
-                                        {
-                                            hour: 'numeric',
-                                            minute: 'numeric'
-                                        }
-                                    )}
+                                    {new Date(item.lastMessage.createdAt).toLocaleTimeString(navigator.language, {
+                                        hour: 'numeric',
+                                        minute: 'numeric'
+                                    })}
                                 </Typography>
                             </div>
                         )

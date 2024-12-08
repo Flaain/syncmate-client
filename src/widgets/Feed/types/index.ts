@@ -37,6 +37,7 @@ export enum FEED_EVENTS {
 }
 
 export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
+    unreadMessages?: number;
     participantsTyping?: Array<TypingParticipant>;
 };
 
