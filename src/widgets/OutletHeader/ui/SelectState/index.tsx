@@ -47,7 +47,7 @@ export const SelectState = () => {
     }
 
     return (
-        <div className='flex items-center w-full'>
+        <div className='flex items-center size-full'>
             <Button variant='text' size='icon' className='mr-2' onClick={() => setChat({ mode: 'default', selectedMessages: new Map() })}>
                 <X className='w-6 h-6' />
             </Button>

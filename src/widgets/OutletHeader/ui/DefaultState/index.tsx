@@ -21,7 +21,7 @@ export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...r
     }
 
     return (
-        <div {...rest} onClick={() => setChat({ showDetails: true })} className='flex flex-col items-start w-full gap-1 cursor-pointer'>
+        <div {...rest} onClick={() => setChat({ showDetails: true })} className='flex flex-col items-start w-full cursor-pointer'>
             <div className='flex items-center w-full'>
                 <Button variant='text' size='icon' className='md:hidden' onClick={handleBack}>
                     <ArrowLeft className='w-6 h-6' />

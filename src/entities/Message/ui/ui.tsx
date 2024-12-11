@@ -9,27 +9,24 @@ import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '../api';
+import { messageSelector } from '@/shared/lib/providers/chat/selectors';
+
 
 export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
-
-    const { _id, createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, isPending, error } = message;
-    const { params, selectedMessages, lastMessageRef, isContextActionsBlocked, setChat } = useChat(useShallow((state) => ({
-        lastMessageRef: state.refs.lastMessageRef,
-        params: state.params,
-        selectedMessages: state.selectedMessages,
-        isContextActionsBlocked: state.isContextActionsBlocked,
-        setChat: state.actions.setChat
-    })));
+    
+    const { _id, createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
+    const { params, selectedMessages, lastMessageRef, isContextActionsBlocked, setChat } = useChat(useShallow(messageSelector));
+    
     const observer = React.useRef<IntersectionObserver | null>(null);
-
+    
     const ref = React.useCallback((node: HTMLLIElement) => {
         isLastGroup && isLast && (lastMessageRef.current = node);
-
+        
         if (isMessageFromMe || hasBeenRead) return;
-
+        
         observer.current?.disconnect();
-
+        
         observer.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 messageApi.read({ 
@@ -40,12 +37,17 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                 observer.current?.unobserve(entries[0].target);
             }
         });
-       node && observer.current.observe(node);
+        node && observer.current.observe(node);
     }, [])
-
+    
     const isSelected = selectedMessages.has(message._id);
     const createTime = new Date(createdAt);
     const stylesForBottomIcon = cn('w-4 h-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
+    const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = {
+        idle: hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />,
+        pending: <Clock className={stylesForBottomIcon} />,
+        error: <Info className={stylesForBottomIcon} />,
+    }
 
     return (
         <ContextMenu onOpenChange={setIsContextMenuOpen}>
@@ -140,7 +142,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             >
                                 {createTime.toLocaleTimeString(navigator.language ?? 'en-US', { timeStyle: 'short' })}
                                 {hasBeenEdited && ', edited'}
-                                {isPending ? <Clock className={stylesForBottomIcon} /> : error ? <Info className={stylesForBottomIcon} /> : hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />}
+                                {statusIcons[status ?? 'idle']}
                             </Typography>
                         </Typography>
                     </div>

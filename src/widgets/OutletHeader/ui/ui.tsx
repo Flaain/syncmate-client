@@ -13,7 +13,7 @@ export const OutletHeader = (props: OutletHeaderProps) => {
     };
 
     return (
-        <div className='flex items-center self-start w-full h-[70px] px-5 py-3 box-border dark:bg-primary-dark-100 sticky top-0 z-[999]'>
+        <div className='flex items-center self-start size-full max-h-[70px] px-5 py-3 box-border dark:bg-primary-dark-100 sticky top-0 z-[999]'>
             {components[chatMode]}
         </div>
     );

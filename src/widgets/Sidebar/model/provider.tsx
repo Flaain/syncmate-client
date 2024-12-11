@@ -61,19 +61,55 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
 
         socket?.on(FEED_EVENTS.UPDATE, ({ itemId, lastActionAt, lastMessage, shouldSort }: FeedUpdateParams) => {
             store.setState((prevState) => { 
-                const updatedFeed = prevState.localResults.feed.map((feedItem) => {
-                    return feedItem.item._id === itemId
-                        ? {
-                              ...feedItem,
-                              lastActionAt: lastActionAt ?? feedItem.lastActionAt,
-                              item: { ...feedItem.item, lastMessage }
-                          }
-                        : feedItem;
-                }) as Array<LocalFeed>;
+                const updatedFeed = prevState.localResults.feed.map((feedItem: any) => {
+                    if (feedItem.item._id === itemId) {
+                        return {
+                            ...feedItem,
+                            lastActionAt: lastActionAt ?? feedItem.lastActionAt,
+                            item: { ...feedItem.item, lastMessage }
+                        };
+                    }
+
+                    return feedItem;
+                });
     
-                return { localResults: { ...prevState.localResults, feed: shouldSort ? updatedFeed.sort(getSortedFeedByLastMessage) : updatedFeed } };
+                return {
+                    localResults: {
+                        ...prevState.localResults,
+                        feed: shouldSort ? updatedFeed.sort(getSortedFeedByLastMessage) : updatedFeed
+                    }
+                };
             })
         });
+
+        socket?.on(FEED_EVENTS.UNREAD_COUNTER, ({ itemId, count, action }: { itemId: string; count?: number; action: 'set' | 'inc' | 'dec' }) => {
+            store.setState((prevState) => {
+                const actions: Record<typeof action, (unreadMessages?: number) => number> = {
+                    set: () => count ?? 0,
+                    inc: (unread) => (unread ?? 0) + (count ?? 1),
+                    dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
+                }
+
+                return {
+                    localResults: {
+                        ...prevState.localResults,
+                        feed: prevState.localResults.feed.map((feedItem: any) => {
+                            if (feedItem.item._id === itemId) {
+                                return {
+                                    ...feedItem,
+                                    item: {
+                                        ...feedItem.item,
+                                        unreadMessages: actions[action](feedItem.item.unreadMessages)
+                                    }
+                                };
+                            }
+    
+                            return feedItem;
+                        })
+                    }
+                }
+            })
+        })
 
         socket?.on(FEED_EVENTS.DELETE, (id: string) => {
             store.setState((prevState) => ({
@@ -92,8 +128,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                         if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
-                                item: { ...feedItem.item, participantsTyping: [...(feedItem.item.participantsTyping ?? []), data.participant] } 
-                            }
+                                item: {
+                                    ...feedItem.item,
+                                    participantsTyping: [...(feedItem.item.participantsTyping ?? []), data.participant]
+                                }
+                            };
                         }
         
                         return feedItem;

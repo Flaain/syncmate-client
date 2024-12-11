@@ -82,8 +82,9 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, (_id: string) => {
-            setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message ) }))
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
+            console.log(_id, readedAt)
+            setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, readedAt, hasBeenRead: true } : message ) }))
         })
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {

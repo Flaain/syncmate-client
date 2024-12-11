@@ -1,6 +1,5 @@
 import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
-import { ApiException } from "@/shared/api/error";
 
 export enum SenderRefPath {
     USER = 'User',
@@ -29,11 +28,15 @@ export type Message = {
     text: string;
     replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
     inReply?: boolean;
+    readedAt?: string;
     createdAt: string;
     updatedAt: string;
-    abort?: () => void;
-    isPending?: boolean;
-    error?: ApiException['config'];
+    status?: 'pending' | 'error';
+    actions?: {
+        abort?: () => void;
+        remove?: () => void;
+        resend?: () => void;
+    }
 } & MessageSender;
 
 export interface UseMessageProps {
