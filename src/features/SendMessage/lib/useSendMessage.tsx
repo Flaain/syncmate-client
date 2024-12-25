@@ -10,12 +10,13 @@ import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
 import { endpoints } from '@/entities/Message/model/constants';
 
-export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate }: Omit<UseMessageParams, 'restrictMessaging'>) => {
+export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
-    const { params, lastMessageRef, textareaRef } = useChat(useShallow((state) => ({ 
+    const { params, lastMessageRef, textareaRef, handleOptimisticUpdate } = useChat(useShallow((state) => ({ 
         textareaRef: state.refs.textareaRef,
         lastMessageRef: state.refs.lastMessageRef,
-        params: state.params
+        params: state.params,
+        handleOptimisticUpdate: state.actions.handleOptimisticUpdate
     })));
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
@@ -137,7 +138,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
 
         if (message === currentDraft!.selectedMessage!.text) return setDefaultState();
         
-        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        const { onSuccess, signal, onError } = handleOptimisticUpdate(message);
         
         setDefaultState();
 
@@ -158,7 +159,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
     const onSendMessage = async (message: string) => {
         if (!message.length) return;
 
-        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        const { onSuccess, signal, onError } = handleOptimisticUpdate(message);
         
         setDefaultState();
         
@@ -181,7 +182,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
     const onReplyMessage = async (message: string) => {
         if (!message.length) return;
 
-        const { onSuccess, signal, onError } = onOptimisticUpdate(message, currentDraft);
+        const { onSuccess, signal, onError } = handleOptimisticUpdate(message);
         
         setDefaultState();
         

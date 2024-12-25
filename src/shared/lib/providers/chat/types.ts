@@ -1,7 +1,8 @@
-import { Message } from '@/entities/Message/model/types';
+import { Message, SourceRefPath } from '@/entities/Message/model/types';
 import { SetStateInternal } from '@/shared/model/types';
 
 export type ChatMode = 'default' | 'selecting';
+export type OptimisticFunc = (message: string) => { onSuccess: (data: Message) => void; onError: (error: unknown, message?: string) => void; signal?: AbortSignal };
 
 export interface ChatStore {
     params: ChatParams;
@@ -22,13 +23,14 @@ export interface ChatStore {
         setChat: SetStateInternal<ChatStore>;
         getChat: () => ChatStore;
         handleSelectMessage: (message: Message) => void;
+        handleOptimisticUpdate: OptimisticFunc;
     };
 }
 
 export interface ChatParams {
     id: string;
     query: Record<string, any>;
-    type: 'conversation' | 'group';
+    type: SourceRefPath
 }
 
 export interface ChatProviderProps {

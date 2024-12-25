@@ -28,9 +28,9 @@ export const MembersTab = () => {
 
     if (isError) {
         return (
-            <div className='flex flex-col items-center justify-center gap-2 h-full'>
-                <Typography as='h2' weight='medium'>
-                    Error appears while fetching participants
+            <div className='flex flex-col items-center justify-center gap-2 h-full px-5'>
+                <Typography as='h2' weight='medium' align='center'>
+                    Error appears while trying to fetch participants
                 </Typography>
                 <Button onClick={refetch}>{isRefetching ? <Loader2 className='size-5 animate-spin' /> : 'try again'}</Button>
             </div>
@@ -42,7 +42,7 @@ export const MembersTab = () => {
             {participants?.data.map((participant, index, array) => (
                 <li key={participant._id} ref={index === array.length - 1 ? ref : null}>
                     <Link
-                        className='flex items-center gap-5 px-3 py-2 hover:bg-primary-dark-50 rounded-xl'
+                        className='flex items-center gap-5 px-3 py-2 hover:bg-primary-dark-50 rounded-xl transition-colors ease-in-out duration-200'
                         to={`/conversation/${participant.user._id}`}
                     >
                         <Image

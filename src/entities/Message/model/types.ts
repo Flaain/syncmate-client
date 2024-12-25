@@ -3,13 +3,10 @@ import { Recipient } from "@/pages/Conversation/model/types";
 
 export enum SourceRefPath {
     GROUP = 'Group',
-    CONVERSATION = 'CONVERSATION'
+    CONVERSATION = 'Conversation'
 }
 
-export interface REMOVE_THIS_LATER {
-    _id: string;
-    name: string;
-    avatar?: Avatar;
+export interface REMOVE_THIS_LATER extends Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'> {
     participant?: {
         _id: string;
         name?: string;

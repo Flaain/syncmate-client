@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
-import { MessageFormState, OptimisticFunc } from '@/features/SendMessage/model/types';
+import { MessageFormState } from '@/features/SendMessage/model/types';
 import { RequestStatuses } from '@/shared/model/types';
 
 export interface ConversationWithMeta {
@@ -34,7 +34,6 @@ export interface ConversationStore {
         getConversation: ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => Promise<void>;
         getPreviousMessages: () => Promise<void>;
         handleTypingStatus: () => (action: MessageFormState, reset?: boolean) => void;
-        handleOptimisticUpdate: OptimisticFunc;
     };
 }
 

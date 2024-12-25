@@ -1,6 +1,6 @@
-import { ChatParams } from '@/shared/lib/providers/chat/types';
+import { SourceRefPath } from './types';
 
-export const endpoints: Record<ChatParams['type'], string> = {
-    conversation: 'message',
-    group: 'group-message'
+export const endpoints: Record<SourceRefPath, string> = {
+    Conversation: 'message',
+    Group: 'group-message'
 };

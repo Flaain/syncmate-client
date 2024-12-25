@@ -12,7 +12,7 @@ import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { Placeholder } from './Placeholder';
 
-export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, restrictMessaging }: UseMessageParams) => {
+export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
         params: state.params,
         lastMessageRef: state.refs.lastMessageRef,
@@ -29,7 +29,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
         onEmojiSelect,
         isEmojiPickerOpen,
         value
-    } = useSendMessage({ onChange, handleTypingStatus, onOptimisticUpdate });
+    } = useSendMessage({ onChange, handleTypingStatus });
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
     const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
 

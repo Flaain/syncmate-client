@@ -4,23 +4,27 @@ import { groupApi } from '../api';
 import { redirect } from 'react-router-dom';
 import { ApiException } from '@/shared/api/error';
 import { useSocket } from '@/shared/model/store';
+import { useProfile } from '@/entities/profile';
+import { SourceRefPath } from '@/entities/Message/model/types';
 
 export const groupActions = ({ set, get, getChat, setChat }: ActionsProvider<GroupStore>): GroupStore['actions'] => ({
     getGroup: async (id, action, signal) => {
         try {
             action === 'refetch' && set({ isRefetching: true });
 
-            const { data: { messages, ...group } } = await groupApi.get(id, signal);
-
+            const { data: { messages, me, ...group } } = await groupApi.get(id, signal);
+            
+            useProfile.setState({ participant: me });
+            
             set({ group, status: 'idle', isRefetching: false });
-
+            
             setChat({
                 messages: messages.data,
                 previousMessagesCursor: messages.nextCursor,
                 params: {
                     id: group._id,
                     query: { groupId: group._id, session_id: useSocket.getState().session_id },
-                    type: 'group'
+                    type: SourceRefPath.GROUP
                 }
             })
         } catch (error) {

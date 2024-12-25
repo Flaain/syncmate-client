@@ -1,7 +1,5 @@
 import { OutletHeader } from '@/widgets/OutletHeader';
 import { OutletDetails } from '@/widgets/OutletDetails';
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Image } from '@/shared/ui/Image';
 import { useConversation } from '../../model/context';
 import { getConversationDescription } from '../../lib/getConversationDescription';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
@@ -21,7 +19,6 @@ export const Content = () => {
         recipient,
         isRecipientTyping,
         handleTypingStatus,
-        handleOptimisticUpdate,
         getPreviousMessages
     } = useConversation(useShallow(contentSelector));
 
@@ -39,7 +36,6 @@ export const Content = () => {
                 />
                 <MessagesList getPreviousMessages={getPreviousMessages} />
                 <SendMessage
-                    onOptimisticUpdate={handleOptimisticUpdate}
                     handleTypingStatus={handleTypingStatus()}
                     restrictMessaging={[
                         {

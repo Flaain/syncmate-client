@@ -29,11 +29,10 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
         
         observer.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
-                messageApi.read({ 
-                    endpoint: `${endpoints[params.type]}/read/${message._id}`,
-                    body: JSON.stringify(params.query)
-                })
+                messageApi.read({ endpoint: `${endpoints[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
+                
                 setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) }));
+                
                 observer.current?.unobserve(entries[0].target);
             }
         });
@@ -82,7 +81,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && params.type === 'group' && (
+                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && params.type === SourceRefPath.GROUP && (
                         <Typography variant='primary' weight='semibold'>
                             {sender.participant?.name || sender.name}
                         </Typography>
