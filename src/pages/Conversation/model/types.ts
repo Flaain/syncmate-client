@@ -1,8 +1,7 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
 import { MessageFormState, OptimisticFunc } from '@/features/SendMessage/model/types';
-
-export type ConversationStatuses = 'idle' | 'loading' | 'refetching' | 'error';
+import { RequestStatuses } from '@/shared/model/types';
 
 export interface ConversationWithMeta {
     conversation: Pick<Conversation, '_id' | 'recipient' | 'messages' | 'createdAt' | 'isInitiatorBlocked' | 'isRecipientBlocked'>;
@@ -27,8 +26,9 @@ export enum CONVERSATION_EVENTS {
 
 export interface ConversationStore {
     conversation: Omit<ConversationWithMeta['conversation'], 'messages'>;
-    status: ConversationStatuses;
+    status: RequestStatuses;
     error: string | null;
+    isRefetching: boolean;
     isRecipientTyping: boolean;
     actions: {
         getConversation: ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => Promise<void>;

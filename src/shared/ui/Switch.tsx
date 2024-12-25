@@ -4,19 +4,25 @@ import { cn } from '../lib/utils/cn';
 export const Switch = ({
     onChange,
     checked,
+    className,
+    checkboxClassName,
     children,
     ...rest
-}: HTMLAttributes<HTMLInputElement> & { checked?: boolean; children?: React.ReactNode }) => {
+}: HTMLAttributes<HTMLInputElement> & {
+    checked?: boolean;
+    checkboxClassName?: string;
+    children?: React.ReactNode;
+}) => {
     return (
-        <label className='h-10 px-4 py-2 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:hover:bg-primary-dark-50 flex items-center cursor-pointer rounded-none justify-start gap-4 w-full'>
+        <label className={cn('inline-flex items-center cursor-pointer', className)}>
             {children}
-            <input {...rest} type='checkbox' className='sr-only' onChange={onChange} />
-            <span
+            <input {...rest} onChange={onChange} type='checkbox' className='sr-only peer' />
+            <div
                 className={cn(
-                    'relative ml-auto dark:bg-primary-dark-150 bg-gray-200 h-5 w-10 rounded-full after:absolute after:top-1/2 after:-translate-y-1/2 after:duration-200 after:ease-in-out after:dark:bg-white after:bg-primary-dark-200 after:rounded-full after:h-4 after:w-4 after:transition-all',
-                    checked ? 'after:right-1' : 'after:left-1'
+                    'relative w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:top-0.5 after:start-[4px] after:bg-primary-dark-50 after:border-primary-dark-50 after:border after:border-solid after:rounded-full after:size-4 after:transition-all peer-checked:bg-primary-white',
+                    checkboxClassName
                 )}
-            ></span>
+            ></div>
         </label>
     );
 };

@@ -6,7 +6,7 @@ export type InterceptorResponseSuccessFunction = <T>(response: ApiBaseResult<T>)
 export type InterceptorResponseFailureFunction = (error: ApiException) => any;
 export type InterceptorRequestSuccessFunction = (options: RequestConfig) => RequestConfig | Promise<RequestConfig>;
 export type InterceptorRequestFailureFunction = (error: ApiException) => any;
-export type ApiSearchParams = Record<string, string | number | boolean | Array<string | number | boolean>>;
+export type ApiSearchParams = Record<string, undefined | null | string | number | boolean | Array<string | number | boolean>>;
 
 export interface BaseApi {
     baseUrl: string;
@@ -192,7 +192,7 @@ export class API extends ApiInterceptors {
         const url = new URL(endpoint, this.baseUrl);
 
         options.params && Object.entries(options.params).forEach(([key, value]) => {
-            Array.isArray(value) ? value.forEach((query) => url.searchParams.append(key, query.toString())) : url.searchParams.set(key, value.toString());
+            value && (Array.isArray(value) ? value.forEach((query) => url.searchParams.append(key, query.toString())) : url.searchParams.set(key, value.toString()));
         });
 
         const config = await this.invokeRequestInterceptors({

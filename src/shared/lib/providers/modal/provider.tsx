@@ -35,7 +35,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const handleEscapeDown = (event: KeyboardEvent) => {
-        !isModalDisabled && event.key === 'Escape' && onCloseModal();
+        !isModalDisabled && event.key === 'Escape' && onCloseModal(modals[modals.length - 1])();
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -73,10 +73,10 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
                 ReactDOM.createPortal(
                     <Modal
                         key={index}
-                        closeHandler={onCloseModal}
+                        {...modal}
                         disabled={isModalDisabled}
                         ref={index === array.length - 1 ? bodyRef : null}
-                        {...modal}
+                        closeHandler={onCloseModal(modal)}
                     >
                         {modal.content}
                     </Modal>,

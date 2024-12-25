@@ -44,7 +44,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
     const confirmationConfig: ModalConfig = {
         content: (
             <Confirm
-                onCancel={onCloseModal}
+                onCancel={onCloseModal()}
                 onConfirm={handleMessageDelete}
                 onConfirmText='Delete'
                 text='Are you sure you want to delete this message?'
@@ -84,10 +84,10 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
 
     return (
         <ContextMenuContent
-            onEscapeKeyDown={(event) => event.preventDefault()}
-            onCloseAutoFocus={() => textareaRef.current?.focus()}
             loop
             asChild
+            onEscapeKeyDown={(event) => event.preventDefault()}
+            onCloseAutoFocus={() => textareaRef.current?.focus()}
             className='z-[999] w-auto min-w-[200px] py-2 px-1 dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white border border-solid dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col'
         >
             <ul>

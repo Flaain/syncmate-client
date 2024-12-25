@@ -4,18 +4,18 @@ import { cn } from '@/shared/lib/utils/cn';
 import { MessageContextMenu } from './ContextMenu';
 import { Check, CheckCheck, Clock, Info } from 'lucide-react';
 import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
-import { MessageProps, SenderRefPath } from '../model/types';
+import { MessageProps, SourceRefPath } from '../model/types';
 import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '../api';
 import { messageSelector } from '@/shared/lib/providers/chat/selectors';
-
+import { endpoints } from '../model/constants';
 
 export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
     
-    const { _id, createdAt, senderRefPath, updatedAt, sender, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
+    const { _id, createdAt, updatedAt, sender, text, sourceRefPath, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     const { params, selectedMessages, lastMessageRef, isContextActionsBlocked, setChat } = useChat(useShallow(messageSelector));
     
     const observer = React.useRef<IntersectionObserver | null>(null);
@@ -30,7 +30,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
         observer.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 messageApi.read({ 
-                    endpoint: `${params.apiUrl}/read/${message._id}`,
+                    endpoint: `${endpoints[params.type]}/read/${message._id}`,
                     body: JSON.stringify(params.query)
                 })
                 setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) }));
@@ -82,9 +82,9 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && senderRefPath === SenderRefPath.PARTICIPANT && params.type === 'group' && (
+                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && params.type === 'group' && (
                         <Typography variant='primary' weight='semibold'>
-                            {sender.name || sender.user.name}
+                            {sender.participant?.name || sender.name}
                         </Typography>
                     )}
                     <div
@@ -107,7 +107,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                                     'line-clamp-1 dark:text-primary-blue text-xs flex flex-col py-1 px-2 w-full rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
                                 )}
                             >
-                                {!replyTo ? 'Deleted Message' : replyTo.senderRefPath === SenderRefPath.USER ? replyTo.sender.name : (replyTo.sender.name || replyTo.sender.user.name)}
+                                {!replyTo ? 'Deleted Message' : replyTo.sourceRefPath === SourceRefPath.CONVERSATION ? replyTo.sender.name : (replyTo.sender.participant?.name || replyTo.sender.name)}
                                 {!!replyTo && (
                                     <Typography
                                         className={cn(

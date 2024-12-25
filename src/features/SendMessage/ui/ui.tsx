@@ -86,9 +86,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                 ></textarea>
                 {showAnchor && (
                     <Button
-                        onClick={() => {
-                            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })
-                        }}
+                        onClick={() => lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })}
                         disabled={!showAnchor}
                         variant='text'
                         type='button'
@@ -114,7 +112,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                     <div className='absolute bottom-20 right-2 z-50'>
                         <React.Suspense fallback={<EmojiPickerFallback />}>
                             <EmojiPicker
-                                onClickOutside={() => setIsEmojiPickerOpen(false)}
+                                onClickOutside={({ target }: PointerEvent) => target !== textareaRef.current && setIsEmojiPickerOpen(false)}
                                 onEmojiSelect={onEmojiSelect}
                             />
                         </React.Suspense>

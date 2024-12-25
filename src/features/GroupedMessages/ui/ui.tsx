@@ -6,7 +6,7 @@ import { Message } from '@/entities/Message';
 import { useSession } from '@/entities/session';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
-import { SenderRefPath } from '@/entities/Message/model/types';
+import { SourceRefPath } from '@/entities/Message/model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
     const { mode, handleSelectMessage } = useChat(useShallow((state) => ({
@@ -16,14 +16,13 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
 
     const userId = useSession((state) => state.userId);
     const message = messages[0];
-    const isUser = message.senderRefPath === SenderRefPath.USER;
-    const isMessageFromMe = isUser ? message.sender._id === userId : false; // TODO: add participant store
+    const isMessageFromMe = message.sender._id === userId;
 
     return (
         <li className={cn('flex items-end gap-3 xl:self-start w-full', isMessageFromMe ? 'self-end' : 'self-start')}>
             <Image
-                src={isUser ? message.sender.avatar?.url : (message.sender.avatar?.url || message.sender.user.avatar?.url)}
-                skeleton={<AvatarByName name={isUser ? message.sender.name : (message.sender.name || message.sender.user.name)} className='sticky bottom-0 max-xl:hidden' />}
+                src={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.avatar?.url : (message.sender.participant?.avatar?.url || message.sender.avatar?.url)}
+                skeleton={<AvatarByName name={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.name : (message.sender.participant?.name || message.sender.name)} className='sticky bottom-0 max-xl:hidden' />}
                 className='object-cover size-10 sticky bottom-0 rounded-full max-xl:hidden z-[999]'
             />
             <ul className='flex flex-col gap-1 w-full'>

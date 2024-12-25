@@ -1,25 +1,36 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
+import { useGroup } from '../model/context';
+import { useShallow } from 'zustand/shallow';
+import { RequestStatuses } from '@/shared/model/types';
+import { OutletError } from '@/shared/ui/OutletError';
+import { Button } from '@/shared/ui/button';
+import { Loader2 } from 'lucide-react';
+import { Content } from './Content';
+import { OutletSkeleton } from '@/shared/ui/OutletSkeleton';
 
-const Group = () => {
-    const { id } = useParams<{ id: string }>(); 
-    React.useEffect(() => {
-        (async () => {
-            const group = await fetch(`http://localhost:3000/group/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
+export const Group = () => {
+    const { id } = useParams();
+    const { status, isRefetching, getGroup } = useGroup(useShallow((state) => ({ 
+        status: state.status,
+        isRefetching: state.isRefetching,
+        getGroup: state.actions.getGroup, 
+    })));
 
-            const json = await group.json();
-            
-            console.log(json);
-        })();
-    }, [])
-    return (
-        <div>Group</div>
-    )
-}
+    const components: Record<Exclude<RequestStatuses, 'refetching'>, React.ReactNode> = {
+        error: (
+            <OutletError
+                title='Something went wrong'
+                description='Cannot load group'
+                callToAction={
+                    <Button disabled={isRefetching} onClick={() => getGroup(id!, 'refetch')} className='mt-5'>
+                        {isRefetching ? <Loader2 className='size-6 animate-spin' /> : 'try again'}
+                    </Button>
+                }
+            />
+        ),
+        loading: <OutletSkeleton />,
+        idle: <Content />
+    };
 
-export default Group;
+    return components[status as keyof typeof components];
+};

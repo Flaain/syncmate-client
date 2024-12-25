@@ -1,9 +1,12 @@
 import { Message } from '@/entities/Message/model/types';
+import { ChatStore } from '../lib/providers/chat/types';
 
 export enum ChatType {
     CONVERSATION = 'conversation',
     GROUP = 'group',
 }
+
+export type RequestStatuses = 'idle' | 'loading' | 'error';
 
 export enum OutletDetailsTypes {
     EMAIL = 'email',
@@ -33,6 +36,13 @@ export enum USER_EVENTS {
     PRESENCE = 'user.presence',
     ONLINE = 'user.online',
     OFFLINE = 'user.offline'
+}
+
+export interface ActionsProvider<T> {
+    set: SetStateInternal<T>;
+    get: () => T;
+    setChat: SetStateInternal<ChatStore>;
+    getChat: () => ChatStore
 }
 
 export interface DeleteMessageEventParams {

@@ -5,6 +5,6 @@ export const MAX_GROUP_SIZE = 10;
 
 export const steps: Array<{ fields: Array<FieldPath<CreateGroupType>> }> = [
     { fields: ['name'] },
-    { fields: ['username'] },
+    { fields: ['query'] },
     { fields: ['login'] }
 ];

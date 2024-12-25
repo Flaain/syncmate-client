@@ -7,7 +7,7 @@ export const EmojiPicker = ({
     onEmojiSelect
 }: {
     onEmojiSelect: (emoji: EmojiData) => void;
-    onClickOutside: () => void;
+    onClickOutside: (event: PointerEvent) => void;
 }) => {
     const { theme } = useTheme();
 

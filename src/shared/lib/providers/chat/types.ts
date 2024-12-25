@@ -26,7 +26,6 @@ export interface ChatStore {
 }
 
 export interface ChatParams {
-    apiUrl: string;
     id: string;
     query: Record<string, any>;
     type: 'conversation' | 'group';

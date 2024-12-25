@@ -8,6 +8,7 @@ import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
+import { endpoints } from '@/entities/Message/model/constants';
 
 export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
@@ -23,8 +24,14 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
 
     const onEmojiSelect = React.useCallback(({ native }: EmojiData) => {
-        setValue((prev) => prev + native);
-        textareaRef.current?.focus();
+        const { selectionStart, selectionEnd } = textareaRef.current as HTMLTextAreaElement;
+        const newCaretPosition = selectionStart + native.length;
+
+        setValue((prev) => `${prev.slice(0, selectionStart)}${native}${prev.slice(selectionEnd)}`);
+        setTimeout(() => {
+            textareaRef.current?.focus();
+            textareaRef.current?.setSelectionRange(newCaretPosition, newCaretPosition)
+        }, 0);
     }, []);
 
     React.useEffect(() => { 
@@ -78,7 +85,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
 
     const handleDeleteMessage = React.useCallback(async () => {
         onAsyncActionModal(() => messageApi.delete({ 
-            endpoint: `${params.apiUrl}/delete/${params.id}`, 
+            endpoint: `${endpoints[params.type]}/delete/${params.id}`, 
             messageIds: [currentDraft!.selectedMessage!._id]
         }), {
             closeOnError: true,
@@ -116,7 +123,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
             return onOpenModal({
                 content: (
                     <Confirm
-                        onCancel={onCloseModal}
+                        onCancel={onCloseModal()}
                         onConfirm={handleDeleteMessage}
                         onConfirmText='Delete'
                         text='Are you sure you want to delete this message?'
@@ -137,7 +144,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
         try {
             const { data } = await messageApi.edit({ 
                 signal,
-                endpoint: `${params.apiUrl}/edit/${currentDraft!.selectedMessage!._id}`,
+                endpoint: `${endpoints[params.type]}/edit/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query }),
              })
             
@@ -158,7 +165,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
         try {
             const { data } = await messageApi.send({ 
                 signal, 
-                endpoint: `${params.apiUrl}/send/${params.id}`, 
+                endpoint: `${endpoints[params.type]}/send/${params.id}`, 
                 body: JSON.stringify({ message, ...params.query })
             });
             
@@ -181,7 +188,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdat
         try {
             const { data } = await messageApi.reply({
                 signal, 
-                endpoint: `${params.apiUrl}/reply/${currentDraft!.selectedMessage!._id}`,
+                endpoint: `${endpoints[params.type]}/reply/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query })
              })
             

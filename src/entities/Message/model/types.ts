@@ -1,25 +1,29 @@
 import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
 
-export enum SenderRefPath {
-    USER = 'User',
-    PARTICIPANT = 'Participant'
+export enum SourceRefPath {
+    GROUP = 'Group',
+    CONVERSATION = 'CONVERSATION'
 }
 
 export interface REMOVE_THIS_LATER {
     _id: string;
-    name?: string;
+    name: string;
     avatar?: Avatar;
-    user: Recipient;
+    participant?: {
+        _id: string;
+        name?: string;
+        avatar?: Avatar;
+    };
 }
 
 export type MessageSender =
-    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; senderRefPath: SenderRefPath.USER }
-    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION }
+    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
 
 export type ReplySender =
-    | { sender: Pick<Recipient, '_id' | 'name'>; senderRefPath: SenderRefPath.USER }
-    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+    | { sender: Pick<Recipient, '_id' | 'name'>; sourceRefPath: SourceRefPath.CONVERSATION  }
+    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
 
 export type Message = {
     _id: string;

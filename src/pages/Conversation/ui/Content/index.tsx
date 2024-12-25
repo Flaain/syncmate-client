@@ -5,13 +5,13 @@ import { Image } from '@/shared/ui/Image';
 import { useConversation } from '../../model/context';
 import { getConversationDescription } from '../../lib/getConversationDescription';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
-import { RecipientDetails } from '../RecipientDetails';
 import { ConversationDDM } from '../DropdownMenu';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { SendMessage } from '@/features/SendMessage/ui/ui';
 import { contentSelector } from '../../model/selectors';
 import { MessagesList } from '@/widgets/MessagesList';
+import { OutletDetailsTypes } from '@/shared/model/types';
 
 export const Content = () => {
     const {
@@ -26,10 +26,7 @@ export const Content = () => {
     } = useConversation(useShallow(contentSelector));
 
     const showDetails = useChat((state) => state.showDetails);
-    const description = getConversationDescription({
-        data: { recipient, isInitiatorBlocked, isRecipientBlocked },
-        isRecipientTyping
-    });
+    const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
 
     return (
         <OutletContainer>
@@ -47,9 +44,7 @@ export const Content = () => {
                     restrictMessaging={[
                         {
                             reason: !!(isInitiatorBlocked || isRecipientBlocked),
-                            message: isRecipientBlocked
-                                ? `You blocked ${recipient.name}`
-                                : `${recipient.name} has restricted incoming messages`
+                            message: isRecipientBlocked ? `You blocked ${recipient.name}` : `${recipient.name} has restricted incoming messages`
                         },
                         {
                             reason: !_id && recipient.isPrivate,
@@ -60,16 +55,15 @@ export const Content = () => {
             </div>
             {showDetails && (
                 <OutletDetails
+                    title='User Info'
                     name={recipient.name}
-                    avatarSlot={
-                        <Image
-                            src={recipient.avatar?.url}
-                            skeleton={<AvatarByName name={recipient.name} size='5xl' />}
-                            className='object-cover object-center size-28 rounded-full'
-                        />
-                    }
+                    avatarUrl={recipient.avatar?.url}
                     description={description}
-                    info={<RecipientDetails recipient={recipient} />}
+                    info={[
+                        { data: recipient.status, type: OutletDetailsTypes.BIO },
+                        { data: recipient.login, type: OutletDetailsTypes.LOGIN },
+                        { data: recipient.email, type: OutletDetailsTypes.EMAIL },
+                    ]}
                 />
             )}
         </OutletContainer>

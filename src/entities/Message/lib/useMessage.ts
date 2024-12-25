@@ -6,6 +6,7 @@ import { Draft, useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { messageApi } from '../api';
+import { endpoints } from '../model/constants';
 
 export const useMessage = (message: Message) => {
     const { params, isContextActionsBlocked } = useChat(useShallow((state) => ({
@@ -21,7 +22,7 @@ export const useMessage = (message: Message) => {
     }, []);
 
     const handleMessageDelete = React.useCallback(async () => {
-        onAsyncActionModal(() => messageApi.delete({ endpoint: `${params.apiUrl}/delete/${params.id}`, messageIds: [message._id] }), {
+        onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
             closeOnError: true,
             onReject: () => toast.error('Cannot delete message', { position: 'top-center' })
         });

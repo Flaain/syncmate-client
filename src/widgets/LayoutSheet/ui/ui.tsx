@@ -11,7 +11,7 @@ import { useTheme } from '@/entities/theme';
 import { SettingsProvider, Settings } from '@/widgets/Settings';
 import { useLayout } from '@/shared/model/store';
 import { useProfile } from '@/entities/profile';
-// import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup'; 
+import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
@@ -53,17 +53,17 @@ export const LayoutSheet = () => {
                     <Button
                         variant='ghost'
                         className='rounded-none flex items-center justify-start gap-4 w-full'
-                        // onClick={() =>
-                        //     onSheetAction({
-                        //         withHeader: false,
-                        //         content: (
-                        //             <CreateGroupProvider>
-                        //                 <CreateGroup />
-                        //             </CreateGroupProvider>
-                        //         ),
-                        //         bodyClassName: 'w-[450px] p-3 h-auto'
-                        //     })
-                        // }
+                        onClick={() =>
+                            onSheetAction({
+                                withHeader: false,
+                                content: (
+                                    <CreateGroupProvider>
+                                        <CreateGroup />
+                                    </CreateGroupProvider>
+                                ),
+                                bodyClassName: 'w-[450px] p-3 h-auto'
+                            })
+                        }
                     >
                         <Users className={listIconStyle} />
                         <Typography weight='medium'>New Group</Typography>
@@ -90,7 +90,12 @@ export const LayoutSheet = () => {
                     </Button>
                 </li>
                 <li className='flex items-center'>
-                    <Switch onChange={() => useTheme.setState({ theme: theme === 'dark' ? 'light' : 'dark' })} checked={theme === 'dark'}>
+                    <Switch
+                        checkboxClassName='ml-auto'
+                        className='h-10 px-4 py-2 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:hover:bg-primary-dark-50 flex items-center cursor-pointer rounded-none justify-start gap-4 w-full'
+                        onChange={() => useTheme.setState({ theme: theme === 'dark' ? 'light' : 'dark' })}
+                        checked={theme === 'dark'}
+                    >
                         <Moon className={listIconStyle} />
                         <Typography weight='medium'>Night Mode</Typography>
                     </Switch>
@@ -98,9 +103,7 @@ export const LayoutSheet = () => {
             </ul>
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
                 FChat Web, {new Date().getFullYear()}
-                <Typography variant='secondary'>
-                    Version {import.meta.env.VITE_APP_VERSION}
-                </Typography>
+                <Typography variant='secondary'>Version {import.meta.env.VITE_APP_VERSION}</Typography>
             </Typography>
         </div>
     );

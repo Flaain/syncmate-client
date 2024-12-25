@@ -2,22 +2,17 @@ import { CONVERSATION_EVENTS, ConversationStore } from './types';
 import { toast } from 'sonner';
 import { useSocket } from '@/shared/model/store';
 import { redirect } from 'react-router-dom';
-import { SetStateInternal } from '@/shared/model/types';
+import { ActionsProvider } from '@/shared/model/types';
 import { conversationApi } from '../api';
 import { ApiException } from '@/shared/api/error';
 import { ChatStore } from '@/shared/lib/providers/chat/types';
-import { Message, SenderRefPath } from '@/entities/Message/model/types';
+import { Message, SourceRefPath } from '@/entities/Message/model/types';
 import { useProfile } from '@/entities/profile';
 import { uuidv4 } from '@/shared/lib/utils/uuidv4';
 import { MessageFormState } from '@/features/SendMessage/model/types';
 import { api } from '@/shared/api';
 
-export const conversationActions = (
-    set: SetStateInternal<ConversationStore>,
-    get: () => ConversationStore,
-    setChat: SetStateInternal<ChatStore>,
-    getChat: () => ChatStore
-): ConversationStore['actions'] => ({
+export const conversationActions = ({ set, get, setChat, getChat }: ActionsProvider<ConversationStore>): ConversationStore['actions'] => ({
     getConversation: async ({
         action,
         recipientId,
@@ -28,15 +23,14 @@ export const conversationActions = (
         abortController?: AbortController;
     }) => {
         try {
-            set({ status: action === 'init' ? 'loading' : 'refetching' });
+            action === 'refetch' && set({ isRefetching: true });
 
             const { data } = await conversationApi.get(recipientId, abortController?.signal);
 
-            set({ conversation: data.conversation, status: 'idle', error: null });
+            set({ conversation: data.conversation, status: 'idle', error: null, isRefetching: false });
 
             setChat({
                 params: {
-                    apiUrl: '/message',
                     id: data.conversation.recipient._id,
                     query: { recipientId: data.conversation.recipient._id, session_id: useSocket.getState().session_id },
                     type: 'conversation'
@@ -47,7 +41,7 @@ export const conversationActions = (
         } catch (error) {
             console.error(error);
 
-            error instanceof ApiException && (error.response.status === 404 ? redirect('/') : set({ error: error.message, status: 'error' }));
+            error instanceof ApiException && (error.response.status === 404 ? redirect('/') : set({ error: error.message, status: 'error', isRefetching: false }));
         }
     },
     getPreviousMessages: async () => {
@@ -102,7 +96,7 @@ export const conversationActions = (
         const optimisticMessage: Message = {
             _id: uuidv4(),
             text: message,
-            senderRefPath: SenderRefPath.USER,
+            sourceRefPath: SourceRefPath.CONVERSATION,
             sender: {
                 _id: profile._id,
                 name: profile.name,
@@ -121,7 +115,7 @@ export const conversationActions = (
                     ? {
                           _id: currentDraft.selectedMessage?._id!,
                           text: currentDraft.selectedMessage?.text!,
-                          senderRefPath: SenderRefPath.USER,
+                          sourceRefPath: SourceRefPath.CONVERSATION,
                           sender: {
                               _id: currentDraft.selectedMessage?.sender._id!,
                               name: currentDraft.selectedMessage?.sender.name!

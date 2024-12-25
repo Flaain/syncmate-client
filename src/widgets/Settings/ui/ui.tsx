@@ -22,7 +22,7 @@ const components: Record<Exclude<SettingMenu, 'deleteAccount'>, React.ReactNode>
 };
 
 export const Settings = () => {
-    const { isModalDisabled, onCloseModal } = useModal( useShallow((state) => ({
+    const { isModalDisabled, onCloseModal } = useModal(useShallow((state) => ({
         isModalDisabled: state.isModalDisabled,
         onCloseModal: state.actions.onCloseModal
     })));
@@ -49,7 +49,7 @@ export const Settings = () => {
                     variant='text'
                     size='icon'
                     className='h-auto p-0 ml-auto'
-                    onClick={onCloseModal}
+                    onClick={onCloseModal()}
                     disabled={isModalDisabled}
                 >
                     <X className='w-6 h-6' />

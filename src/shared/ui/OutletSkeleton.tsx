@@ -5,7 +5,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 
-export const ConversationSkeleton = () => {
+export const OutletSkeleton = () => {
     const { state } = useLocation();
 
     return (

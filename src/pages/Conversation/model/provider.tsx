@@ -15,7 +15,8 @@ const initialState: Omit<ConversationStore, 'actions'> = {
     conversation: null!,
     error: null,
     isRecipientTyping: false,
-    status: 'loading'
+    status: 'loading',
+    isRefetching: false
 };
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
@@ -24,7 +25,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     const { id: recipientId } = useParams() as { id: string };
     const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ 
         ...initialState, 
-        actions: conversationActions(set, get, setChat, getChat) 
+        actions: conversationActions({ set, get, setChat, getChat }) 
     })));
     
     const socket = useSocket((state) => state.socket);

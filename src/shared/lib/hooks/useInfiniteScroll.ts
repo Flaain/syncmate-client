@@ -1,29 +1,37 @@
 import React from 'react';
+import { UseQueryCallback, useQuery } from './useQuery';
 
-export interface UseInfiniteScrollOptions extends IntersectionObserverInit {
-    callback: () => Promise<void> | void;
+interface UseInfiniteScrollOptions<T> extends IntersectionObserverInit {
     deps: React.DependencyList;
+    onSuccess?: (data: T) => void;
 }
 
-export const useInfiniteScroll = <T extends HTMLElement>({
-    callback,
-    root,
-    rootMargin,
-    threshold,
-    deps
-}: UseInfiniteScrollOptions) => {
+export const useInfiniteScroll = <T extends HTMLElement, U>(
+    callback: UseQueryCallback<U>,
+    { deps, onSuccess, root, rootMargin, threshold }: UseInfiniteScrollOptions<U>
+) => {
+    const { isLoading, isRefetching, isError, data, error, call } = useQuery(callback, { enabled: false, onSuccess });
+
     const observer = React.useRef<IntersectionObserver | null>(null);
 
     const ref = React.useCallback((node: T) => {
-        if (deps.every(Boolean)) {
+        if (!isLoading && !isRefetching && deps.every(Boolean)) {
             observer.current?.disconnect();
 
             observer.current = new IntersectionObserver((entries) => {
-                entries[0].isIntersecting && callback();
+                entries[0].isIntersecting && call();
             }, { root, rootMargin, threshold });
-            
-            node && observer.current.observe(node);
-        }}, [deps, callback]);
 
-    return ref;
+            node && observer.current.observe(node);
+        }
+    }, [deps, isLoading, isRefetching, callback, call]);
+
+    return {
+        ref,
+        isLoading,
+        isRefetching,
+        isError,
+        data,
+        error
+    };
 };
