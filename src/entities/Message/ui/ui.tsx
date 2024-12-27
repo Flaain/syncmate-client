@@ -31,7 +31,12 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
             if (entries[0].isIntersecting) {
                 messageApi.read({ endpoint: `${endpoints[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
                 
-                setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) }));
+                setChat(({ messages }) => ({ 
+                    messages: { 
+                        ...messages, 
+                        data: messages.data.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) 
+                    } 
+                }));
                 
                 observer.current?.unobserve(entries[0].target);
             }

@@ -8,7 +8,9 @@ interface UseQueryOptions<T> {
     keys: React.DependencyList;
     retry: boolean | number;
     enabled: boolean;
+    retrieveLastError: boolean;
     refetchInterval: number;
+    retryDelay: number;
     onSuccess: (data: T) => void;
     onSelect: (data: T) => void;
     onError: (error: unknown) => void;
@@ -53,28 +55,48 @@ interface UseQueryReducerState<T> {
     error?: ApiException;
 }
 
-type UseQueryReducerAction<T> =
+type UseQueryReducerAction<T = unknown> =
     | { type: UseQueryTypes.LOADING; payload: { isLoading: boolean } }
-    | { type: UseQueryTypes.SUCCESS; payload: { data: T, isSuccess: true, isLoading: false, isRefetching: false } }
-    | { type: UseQueryTypes.ERROR; payload: { error: ApiException, isError: true, isRefetching: false } }
+    | { type: UseQueryTypes.SUCCESS; payload: { data: T } }
+    | { type: UseQueryTypes.ERROR; payload: { error: ApiException } }
     | { type: UseQueryTypes.REFETCH; payload: { isRefething: true } }
     | { type: UseQueryTypes.RESET; payload: { isLoading: false, isRefetching: false } }
     | { type: UseQueryTypes.SET; payload: { data: T } };
 
 type UseRunQueryAction = 'init' | 'refetch';
 
+const errorAction = (error: ApiException): Extract<UseQueryReducerAction, { type: UseQueryTypes.ERROR }> => ({
+    type: UseQueryTypes.ERROR,
+    payload: { error }
+});
+
 const queryReducer = <T>(state: UseQueryReducerState<T>, action: UseQueryReducerAction<T>) => {
     switch (action.type) {
         case UseQueryTypes.LOADING:
             return { ...state, isLoading: action.payload.isLoading };
         case UseQueryTypes.SUCCESS:
-            return { ...state, ...action.payload };
+            return {
+                ...state,
+                data: action.payload.data,
+                isSuccess: true,
+                isLoading: false,
+                isRefetching: false,
+                isError: false,
+                error: undefined
+            };
         case UseQueryTypes.SET:
             return { ...state, data: action.payload.data };
         case UseQueryTypes.REFETCH:
             return { ...state, isRefetching: action.payload.isRefething };
         case UseQueryTypes.ERROR:
-            return { ...state, error: action.payload.error };
+            return {
+                ...state,
+                error: action.payload.error,
+                isError: true,
+                isSuccess: false,
+                isRefetching: false,
+                isLoading: false
+            };
         case UseQueryTypes.RESET:
             return { ...state, ...action.payload };
         default:
@@ -85,7 +107,7 @@ const queryReducer = <T>(state: UseQueryReducerState<T>, action: UseQueryReducer
 export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
     const [state, dispatch] = React.useReducer<React.Reducer<UseQueryReducerState<T>, UseQueryReducerAction<T>>>(queryReducer, {
         isError: false,
-        isLoading: false,
+        isLoading: options?.enabled ?? true,
         isSuccess: false,
         isRefetching: false,
         data: undefined,
@@ -119,13 +141,10 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
     const runQuery = React.useCallback(async (action: UseRunQueryAction) => {
         try {
             dispatch(actions[action]);
-
+            if (config.current.retry) throw new ApiException({ message: 'just test', config: null!, response: null! })
             const { data } = await callback({ signal: config.current.abortController.signal });
 
-            dispatch({
-                type: UseQueryTypes.SUCCESS,
-                payload: { data: options?.onSelect?.(data) ?? data, isSuccess: true, isLoading: false, isRefetching: false }
-            });
+            dispatch({ type: UseQueryTypes.SUCCESS, payload: { data: options?.onSelect?.(data) ?? data } });
 
             options?.onSuccess?.(data);
 
@@ -138,21 +157,25 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
                 config.current.interval = interval;
             }
         } catch (error) {
+            console.log(error instanceof ApiException)
             if (error instanceof ApiException) {
+                console.log(config.current)
                 if (config.current.retry > 0) {
                     config.current.retry -= 1;
-
+                    
                     const timeout = setTimeout(() => {
                         runQuery(action);
                         clearTimeout(timeout);
-                    }, options?.refetchInterval ?? 1000);
-
+                    }, options?.retryDelay ?? 1000);
+                    
                     config.current.timeout = timeout;
+                    
+                    !(options?.retrieveLastError ?? true) && dispatch(errorAction(error));
+                } else {
+                    dispatch(errorAction(error));
                 }
-
+                
                 options?.onError?.(error);
-
-                dispatch({ type: UseQueryTypes.ERROR, payload: { error, isError: true, isRefetching: false } });
             }
         }
     }, [callback]);

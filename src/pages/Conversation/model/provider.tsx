@@ -1,5 +1,5 @@
 import React from 'react';
-import { CONVERSATION_EVENTS, ConversationStore } from './types';
+import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationContext } from './context';
 import { Message } from '@/entities/Message/model/types';
@@ -11,33 +11,21 @@ import { useChat } from '@/shared/lib/providers/chat/context';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { useShallow } from 'zustand/shallow';
 
-const initialState: Omit<ConversationStore, 'actions'> = {
-    conversation: null!,
-    error: null,
-    isRecipientTyping: false,
-    status: 'loading',
-    isRefetching: false
-};
-
-export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
-    const { setChat, getChat } = useChat(useShallow((state) => ({ setChat: state.actions.setChat, getChat: state.actions.getChat })));
-
+export const ConversationProvider = ({ conversation, children }: { conversation: Omit<Conversation, 'messages'>; children: React.ReactNode }) => {
     const { id: recipientId } = useParams() as { id: string };
-    const { 0: store } = React.useState(() => createStore<ConversationStore>((set, get) => ({ 
-        ...initialState, 
-        actions: conversationActions({ set, get, setChat, getChat }) 
+    const { 0: store } = React.useState(() => createStore<ConversationStore>((_, get) => ({ 
+        conversation, 
+        isRecipientTyping: false, 
+        actions: conversationActions({ get }) 
     })));
     
-    const socket = useSocket((state) => state.socket);
+    const socket = useSocket(useShallow((state) => state.socket));
     const userId = useSession((state) => state.userId);
-
+    
+    const setChat = useChat(useShallow((state) => state.actions.setChat));
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        const abortController = new AbortController();
-
-        store.getState().actions.getConversation({ action: 'init', recipientId, abortController });
-
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
         socket?.io.on('reconnect', () => socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId }));
@@ -84,50 +72,51 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
-            console.log(_id, readedAt)
-            setChat((prevState) => ({ messages: prevState.messages.map((message) => message._id === _id ? { ...message, readedAt, hasBeenRead: true } : message ) }))
+            setChat(({ messages }) => ({
+                messages: {
+                    ...messages,
+                    data: messages.data.map((message) => message._id === _id ? { ...message, readedAt, hasBeenRead: true } : message)
+                }
+            }));
         })
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
-            setChat((prevState) => ({ messages: [...prevState.messages, message]}))
+            setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }))
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, (editedMessage: Message) => {
-            setChat((prevState) => ({
-                messages: prevState.messages.map((message) => {
-                    if (message._id === editedMessage._id) return editedMessage;
-                    if (message.inReply && message.replyTo?._id === editedMessage._id) return { ...message, replyTo: { ...message.replyTo, text: editedMessage.text } };
+            setChat(({ messages }) => ({
+                messages: {
+                    ...messages,
+                    data: messages.data.map((message) => {
+                        if (message._id === editedMessage._id) return editedMessage;
+                        if (message.inReply && message.replyTo?._id === editedMessage._id) return { ...message, replyTo: { ...message.replyTo, text: editedMessage.text } };
 
-                    return message;
-                })
-            }))
+                        return message;
+                    })
+                }
+            }));
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
-            setChat((prevState) => {
-                const array = prevState.messages.reduce((acc, message) => {
-                    if (messageIds.includes(message._id)) {
-                        useLayout.setState((prevState) => {
-                            if (prevState.drafts.get(recipientId)?.selectedMessage?._id === message._id) {
-                                const newDrafts = new Map([...prevState.drafts]);
-                                
-                                newDrafts.delete(recipientId);
+            setChat(({ messages }) => {
+                const array = messages.data.reduce((acc, message) => {
+                    if (messageIds.includes(message._id) && useLayout.getState().drafts.get(recipientId)?.selectedMessage?._id === message._id) {
+                        useLayout.setState(({ drafts }) => {
+                            const newDrafts = new Map([...drafts]);
 
-                                return { drafts: newDrafts };
-                            }
+                            newDrafts.delete(recipientId);
 
-                            return prevState;
-                        })
+                            return { drafts: newDrafts };
+                        });
 
                         return acc;
                     };
 
-                    if (message.inReply && messageIds.includes(message.replyTo!._id)) return [...acc, { ...message, replyTo: undefined }];
-
-                    return [...acc, message];
+                    return [...acc, message.inReply && messageIds.includes(message.replyTo!._id) ? { ...message, replyTo: undefined } : message];
                 }, [] as Array<Message>);
 
-                return { messages: array };
+                return { messages: { ...messages, data: array } };
             });
         });
 
@@ -140,8 +129,6 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
         return () => {
             setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
-
-            abortController.abort('Signal aborted due to new incoming request');
 
             socket?.emit(CONVERSATION_EVENTS.LEAVE, { recipientId });
 

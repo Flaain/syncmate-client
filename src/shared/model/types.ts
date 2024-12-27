@@ -16,6 +16,11 @@ export enum OutletDetailsTypes {
     LOGIN = 'login'
 }
 
+export interface DataWithCursor<T> {
+    data: Array<T>;
+    nextCursor: string | null;
+}
+
 export type SetStateInternal<T> = {
     _(partial: T | Partial<T> | {
         _(state: T): T | Partial<T>;

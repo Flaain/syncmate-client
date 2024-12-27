@@ -6,7 +6,7 @@ import { OutletError } from '@/shared/ui/OutletError';
 import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
 import { Content } from './Content';
-import { OutletSkeleton } from '@/shared/ui/OutletSkeleton';
+import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
 export const Group = () => {
     const { id } = useParams();
@@ -28,7 +28,7 @@ export const Group = () => {
                 }
             />
         ),
-        loading: <OutletSkeleton />,
+        loading: <ChatSkeleton />,
         idle: <Content />
     };
 

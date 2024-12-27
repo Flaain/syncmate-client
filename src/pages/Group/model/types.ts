@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { Avatar, Profile } from '@/entities/profile/model/types';
-import { RequestStatuses } from '@/shared/model/types';
+import { DataWithCursor, RequestStatuses } from '@/shared/model/types';
 
 export enum DisplayAs {
     PARTICIPANT = 'participant',
@@ -23,11 +23,6 @@ export interface GroupParticipant {
     name?: string;
     avatar?: Avatar;
     user: Pick<Profile, '_id' | 'name' | 'avatar' | 'lastSeenAt'>;
-}
-
-export interface DataWithCursor<T> {
-    data: Array<T>;
-    nextCursor: string | null;
 }
 
 export interface Group {

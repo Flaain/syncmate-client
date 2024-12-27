@@ -1,12 +1,12 @@
 import { Button } from '@/shared/ui/button';
-import { Loader2 } from 'lucide-react';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
 import { MessagesListProps } from '../model/types';
 import { Typography } from '@/shared/ui/Typography';
+import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
-    const { groupedMessages, canFetch, isPreviousMessagesLoading, previousMessagesCursor, listRef } = useMessagesList(getPreviousMessages);
+    const { groupedMessages, canFetch, isLoading, listRef } = useMessagesList(getPreviousMessages);
 
     if (!groupedMessages.length) {
         return (
@@ -21,10 +21,17 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
 
     return (
         <ul
-            ref={listRef}
+            // ref={listRef}
             className='relative flex flex-col justify-start w-full h-full p-5 max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
         >
-            {previousMessagesCursor && (
+            {true && (
+                <>
+                    <MessageSkeleton />
+                    <MessageSkeleton />
+                    <MessageSkeleton />
+                </>
+            )}
+            {false && (
                 <li className='flex justify-center items-center'>
                     <Button
                         variant='text'
@@ -32,20 +39,12 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                         disabled={!canFetch}
                         onClick={getPreviousMessages}
                     >
-                        {isPreviousMessagesLoading ? (
-                            <Loader2 className='w-6 h-6 animate-spin' />
-                        ) : (
-                            'Load previous messages'
-                        )}
+                        Load previous messages
                     </Button>
                 </li>
             )}
             {groupedMessages.map((messages, index, array) => (
-                <GroupedMessages
-                    key={messages[0]._id}
-                    messages={messages}
-                    isLastGroup={index === array.length - 1}
-                />
+                <GroupedMessages key={messages[0]._id} messages={messages} isLastGroup={index === array.length - 1} />
             ))}
         </ul>
     );

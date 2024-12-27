@@ -1,12 +1,7 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
 import { MessageFormState } from '@/features/SendMessage/model/types';
-import { RequestStatuses } from '@/shared/model/types';
-
-export interface ConversationWithMeta {
-    conversation: Pick<Conversation, '_id' | 'recipient' | 'messages' | 'createdAt' | 'isInitiatorBlocked' | 'isRecipientBlocked'>;
-    nextCursor: string | null;
-}
+import { DataWithCursor, RequestStatuses } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',
@@ -25,14 +20,9 @@ export enum CONVERSATION_EVENTS {
 }
 
 export interface ConversationStore {
-    conversation: Omit<ConversationWithMeta['conversation'], 'messages'>;
-    status: RequestStatuses;
-    error: string | null;
-    isRefetching: boolean;
+    conversation: Omit<Conversation, 'messages'>;
     isRecipientTyping: boolean;
     actions: {
-        getConversation: ({ action, recipientId, abortController }: { action: 'init' | 'refetch'; recipientId: string; abortController?: AbortController }) => Promise<void>;
-        getPreviousMessages: () => Promise<void>;
         handleTypingStatus: () => (action: MessageFormState, reset?: boolean) => void;
     };
 }
@@ -40,13 +30,11 @@ export interface ConversationStore {
 export interface Conversation {
     _id: string;
     recipient: Recipient;
-    messages: Array<Message>;
-    lastMessage?: Message;
-    lastMessageSentAt: string;
-    createdAt: string;
-    updatedAt: string;
+    messages: DataWithCursor<Message>;
     isInitiatorBlocked?: boolean;
     isRecipientBlocked?: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface GetDescriptionParams {
@@ -55,4 +43,4 @@ export interface GetDescriptionParams {
     isRecipientTyping: boolean;
 }
 
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'email' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;

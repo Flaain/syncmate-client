@@ -6,12 +6,12 @@ import { Button } from '@/shared/ui/button';
 import { View } from './model/view';
 import { ChatProvider } from '@/shared/lib/providers/chat/provider';
 import { GroupProvider } from './model/provider';
-import { OutletSkeleton } from '@/shared/ui/OutletSkeleton';
+import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
 export const GroupPage: RouteObject = {
     path: routerList.GROUP,
     element: (
-        <React.Suspense fallback={<OutletSkeleton />}>
+        <React.Suspense fallback={<ChatSkeleton />}>
             <ChatProvider>
                 <GroupProvider>
                     <View />

@@ -5,17 +5,21 @@ import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
 import { Message } from "@/entities/Message/model/types";
 import { useShallow } from "zustand/shallow";
 import { MessagesListProps } from "./types";
-
+import { useQuery } from "@/shared/lib/hooks/useQuery";
+    
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
-    const { refs: { listRef, lastMessageRef }, isPreviousMessagesLoading, previousMessagesCursor, setChat, messages } = useChat(useShallow((state) => ({
+    const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow((state) => ({
         refs: state.refs,
-        isPreviousMessagesLoading: state.isPreviousMessagesLoading,
+        params: state.params,
         messages: state.messages,
-        previousMessagesCursor: state.previousMessagesCursor,
         setChat: state.actions.setChat,
     })));
+    const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
+        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { ...messages, data: [...data, ...messages.data], nextCursor } })),
+        enabled: false,
+    });
 
-    const groupedMessages = React.useMemo(() => messages.reduce<Array<Array<Message>>>((acc, message) => {
+    const groupedMessages = React.useMemo(() => messages.data.reduce<Array<Array<Message>>>((acc, message) => {
         const lastGroup = acc[acc.length - 1];
 
         lastGroup && lastGroup[0].sender._id === message.sender._id ? lastGroup.push(message) : acc.push([message]);
@@ -33,7 +37,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         const handleScrollContainer = () => {
             const { scrollTop } = listRef.current as HTMLUListElement;
 
-            !isPreviousMessagesLoading && previousMessagesCursor && !scrollTop && getPreviousMessages();
+            !isLoading && messages.nextCursor && !scrollTop && call();
 
             setChat({ showAnchor: getScrollBottom(listRef.current!) >= MAX_SCROLL_BOTTOM });
         };
@@ -43,7 +47,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         return () => {
             listRef.current?.removeEventListener('scroll', handleScrollContainer);
         };
-    }, [previousMessagesCursor, isPreviousMessagesLoading]);
+    }, [messages.nextCursor, isLoading]);
 
     React.useEffect(() => {
         if (!listRef.current || !lastMessageRef.current) return;
@@ -53,5 +57,11 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         scrollBottom <= MIN_SCROLL_BOTTOM ? lastMessageRef.current.scrollIntoView({ behavior: 'smooth' }) : setChat({ showAnchor: scrollBottom >= MAX_SCROLL_BOTTOM });
     }, [messages]);
 
-    return { listRef, groupedMessages, canFetch: !isPreviousMessagesLoading && previousMessagesCursor, previousMessagesCursor, isPreviousMessagesLoading };
+    return {
+        listRef,
+        groupedMessages,
+        canFetch: !isLoading && messages.nextCursor,
+        previousMessagesCursor: messages.nextCursor,
+        isPreviousMessagesLoading: isLoading
+    };
 }

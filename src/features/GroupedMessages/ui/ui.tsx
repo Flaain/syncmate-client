@@ -23,7 +23,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
             <Image
                 src={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.avatar?.url : (message.sender.participant?.avatar?.url || message.sender.avatar?.url)}
                 skeleton={<AvatarByName name={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.name : (message.sender.participant?.name || message.sender.name)} className='sticky bottom-0 max-xl:hidden' />}
-                className='object-cover size-10 sticky bottom-0 rounded-full max-xl:hidden z-[999]'
+                className='object-cover min-w-[40px] max-w-[40px] h-10 sticky bottom-0 rounded-full max-xl:hidden z-[999]'
             />
             <ul className='flex flex-col gap-1 w-full'>
                 {messages.map((message, index, array) => (

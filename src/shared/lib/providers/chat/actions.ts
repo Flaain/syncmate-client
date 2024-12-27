@@ -60,14 +60,22 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
                     : undefined
         };
 
-        const rollback = (prevState: ChatStore) => ({ messages: currentDraft?.state === 'edit' ? prevState.messages.map((m) => m._id === optimisticMessage._id ? currentDraft.selectedMessage! : m) : prevState.messages.filter((m) => m._id !== optimisticMessage._id) });
+        const rollback = ({ messages }: ChatStore) => ({
+            messages: {
+                ...messages,
+                data: currentDraft?.state === 'edit' ? messages.data.map((m) => m._id === optimisticMessage._id ? currentDraft.selectedMessage! : m) : messages.data.filter((m) => m._id !== optimisticMessage._id)
+            }
+        });
 
         abortController.signal.onabort = () => set(rollback);
 
         const handleResend = async (error: ApiException) => {
             try {
-                set((prevState) => ({ 
-                    messages: prevState.messages.map((m) => m._id === optimisticMessage._id ? { ...m, actions: { abort: () => abortController.abort('Request was cancelled') }, status: 'pending' } : m) 
+                set(({ messages }) => ({ 
+                    messages: {
+                        ...messages,
+                        data: messages.data.map((m) => m._id === optimisticMessage._id ? { ...m, actions: { abort: () => abortController.abort('Request was cancelled') }, status: 'pending' } : m)
+                    } 
                 }));
 
                 onSuccess(await api.call<Message>(error.config))
@@ -77,21 +85,34 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
         };
 
         const onSuccess = (data: Message) => {
-            set((prevState) => ({
-                messages: prevState.messages.map((message) => {
-                    if (message._id === optimisticMessage._id) return data;
-                    if (message.inReply && message.replyTo?._id === data._id) return { ...message, replyTo: { ...message.replyTo, text: data.text } };
-
-                    return message;
-                })
+            set(({ messages }) => ({
+                messages: {
+                    ...messages,
+                    data: messages.data.map((message) => {
+                        if (message._id === optimisticMessage._id) return data;
+                        if (message.inReply && message.replyTo?._id === data._id) return { ...message, replyTo: { ...message.replyTo, text: data.text } };
+    
+                        return message;
+                    })
+                }
             }));
         }
 
         const onError = (error: unknown, _?: string) => {
-            error instanceof ApiException && set((prevState) => ({ messages: prevState.messages.map((m) => m._id === optimisticMessage._id ? { ...m, status: 'error', actions: { resend: () => handleResend(error), remove: () => set(rollback) } } : m) }));
+            error instanceof ApiException && set(({ messages }) => ({
+                messages: {
+                    ...messages,
+                    data: messages.data.map((m) => m._id === optimisticMessage._id ? { ...m, status: 'error', actions: { resend: () => handleResend(error), remove: () => set(rollback) } } : m)
+                }
+            }));
         };
 
-        set((prevState): any => ({ messages: currentDraft?.state === 'edit' ? prevState.messages.map((m) => m._id === currentDraft.selectedMessage?._id ? optimisticMessage : m) : [...prevState.messages, optimisticMessage] }));
+        set(({ messages }): any => ({
+            messages: {
+                ...messages,
+                data: currentDraft?.state === 'edit' ? messages.data.map((m) => m._id === currentDraft.selectedMessage?._id ? optimisticMessage : m) : [...messages.data, optimisticMessage]
+            }
+        }));
 
         return { signal: abortController.signal, onSuccess, onError };
     }
