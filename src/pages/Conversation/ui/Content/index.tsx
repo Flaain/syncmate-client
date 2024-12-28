@@ -30,7 +30,7 @@ export const Content = () => {
         data: { recipient, isInitiatorBlocked, isRecipientBlocked },
         isRecipientTyping
     });
-
+console.log('rerender in content');
     return (
         <OutletContainer>
             <div className='flex-1 flex flex-col'>
