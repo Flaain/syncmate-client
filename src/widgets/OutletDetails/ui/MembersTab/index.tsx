@@ -11,10 +11,11 @@ import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
 import { MembersTabSkeleton } from '../Skeletons/MembersTabSkeleton';
 import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll';
-import { DataWithCursor, GroupParticipant } from '@/pages/Group/model/types';
+import { GroupParticipant } from '@/pages/Group/model/types';
+import { DataWithCursor } from '@/shared/model/types';
 
 export const MembersTab = () => {
-    const { groupId, mySelf } = useGroup(useShallow((state) => ({ groupId: state.group._id, mySelf: state.group.me })));
+    const { groupId, me } = useGroup(useShallow((state) => ({ groupId: state.group._id, me: state.group.me })));
     const { data: participants, setData, refetch, isRefetching, isLoading, isError } = useQuery(({ signal }) => groupApi.participants(groupId, signal));
     const { ref } = useInfiniteScroll<HTMLLIElement, DataWithCursor<GroupParticipant>>(
         ({ signal }) => groupApi.participants(groupId, signal, participants?.nextCursor),

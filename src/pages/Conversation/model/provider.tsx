@@ -26,6 +26,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     const navigate = useNavigate();
 
     React.useEffect(() => {
+        store.setState({ conversation });
+
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
         socket?.io.on('reconnect', () => socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId }));
@@ -146,7 +148,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             socket?.off(CONVERSATION_EVENTS.START_TYPING);
             socket?.off(CONVERSATION_EVENTS.STOP_TYPING);
         };
-    }, [recipientId]);
+    }, [recipientId, conversation]);
 
     return (
         <ConversationContext.Provider value={store}>

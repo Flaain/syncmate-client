@@ -91,10 +91,10 @@ export const LayoutSheet = () => {
                 </li>
                 <li className='flex items-center'>
                     <Switch
-                        checkboxClassName='ml-auto'
+                        checked={theme === 'dark'}
+                        checkboxClassName='ml-auto dark:bg-primary-white transition-colors ease-in-out duration-200'
                         className='h-10 px-4 py-2 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:hover:bg-primary-dark-50 flex items-center cursor-pointer rounded-none justify-start gap-4 w-full'
                         onChange={() => useTheme.setState({ theme: theme === 'dark' ? 'light' : 'dark' })}
-                        checked={theme === 'dark'}
                     >
                         <Moon className={listIconStyle} />
                         <Typography weight='medium'>Night Mode</Typography>

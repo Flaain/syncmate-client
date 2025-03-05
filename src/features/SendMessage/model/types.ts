@@ -2,11 +2,9 @@ export type MessageFormState = 'send' | 'edit' | 'reply';
 
 export interface MessageTopBarProps {
     onClose: () => void;
-    title: string;
-    mainIconSlot: React.ReactNode;
+    state: MessageFormState;
+    description: string;
     preventClose?: boolean;
-    description?: string;
-    closeIconSlot?: React.ReactNode;
 }
 
 export interface UseMessageParams {

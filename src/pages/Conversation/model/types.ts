@@ -1,7 +1,7 @@
 import { Message } from '@/entities/Message/model/types';
 import { Profile } from '@/entities/profile/model/types';
 import { MessageFormState } from '@/features/SendMessage/model/types';
-import { DataWithCursor, RequestStatuses } from '@/shared/model/types';
+import { DataWithCursor } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',
@@ -17,6 +17,15 @@ export enum CONVERSATION_EVENTS {
     USER_UNBLOCK = 'conversation.user.unblock',
     START_TYPING = 'conversation.start.typing',
     STOP_TYPING = 'conversation.stop.typing'
+}
+
+export enum GROUP_EVENTS {
+    JOIN = 'group.join',
+    LEAVE = 'group.leave',
+    MESSAGE_READ = 'group.message.read',
+    MESSAGE_SEND = 'group.message.send',
+    MESSAGE_EDIT = 'group.message.edit',
+    MESSAGE_DELETE = 'group.message.delete',
 }
 
 export interface ConversationStore {

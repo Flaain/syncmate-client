@@ -69,7 +69,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
             />
         ),
         pending: <PendingContextMenu actions={{ copy: handleCopyToClipboard, abort: message.actions?.abort! }} />,
-        error: <ErrorContextMenu actions={{ copy: handleCopyToClipboard, resend: message.actions?.resend!, remove: () => message.actions?.remove! }} />
+        error: <ErrorContextMenu actions={{ copy: handleCopyToClipboard, resend: message.actions?.resend!, remove: message.actions?.remove! }} />
     };
 
     React.useEffect(() => {

@@ -5,7 +5,6 @@ import { RouteObject } from 'react-router-dom';
 import { Button } from '@/shared/ui/button';
 import { View } from './model/view';
 import { ChatProvider } from '@/shared/lib/providers/chat/provider';
-import { GroupProvider } from './model/provider';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
 export const GroupPage: RouteObject = {
@@ -13,9 +12,7 @@ export const GroupPage: RouteObject = {
     element: (
         <React.Suspense fallback={<ChatSkeleton />}>
             <ChatProvider>
-                <GroupProvider>
-                    <View />
-                </GroupProvider>
+                <View />
             </ChatProvider>
         </React.Suspense>
     ),

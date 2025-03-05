@@ -39,8 +39,9 @@ export enum FEED_EVENTS {
     STOP_TYPING = 'feed.stop.typing'
 }
 
-export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
+export type ConversationFeed = Pick<Conversation, '_id' | 'recipient'> & {
     unreadMessages?: number;
+    lastMessage?: Message;
     participantsTyping?: Array<TypingParticipant>;
 };
 

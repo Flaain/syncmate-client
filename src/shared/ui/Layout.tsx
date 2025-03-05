@@ -4,7 +4,7 @@ import { Sheet } from './Sheet';
 import { LayoutSheetSkeleton } from '@/widgets/LayoutSheet/ui/Skeletons/LayoutSheetSkeleton';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { LayoutSheetView } from '@/widgets/LayoutSheet';
+import { LayoutSheetView } from '@/widgets/LayoutSheet/model/view';
 import { useLayout } from '../model/store';
 import { Sidebar, SidebarProvider } from '@/widgets/Sidebar';
 

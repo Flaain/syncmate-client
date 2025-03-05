@@ -16,7 +16,7 @@ export const Switch = ({
     return (
         <label className={cn('inline-flex items-center cursor-pointer', className)}>
             {children}
-            <input {...rest} onChange={onChange} type='checkbox' className='sr-only peer' />
+            <input {...rest} checked={checked} onChange={onChange} type='checkbox' className='sr-only peer' />
             <div
                 className={cn(
                     'relative w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:absolute after:top-0.5 after:start-[4px] after:bg-primary-dark-50 after:border-primary-dark-50 after:border after:border-solid after:rounded-full after:size-4 after:transition-all peer-checked:bg-primary-white',

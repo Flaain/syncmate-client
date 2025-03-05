@@ -8,9 +8,9 @@ interface UseQueryOptions<T> {
     keys: React.DependencyList;
     retry: boolean | number;
     enabled: boolean;
-    retrieveLastError: boolean;
     refetchInterval: number;
     retryDelay: number;
+    cleanup: () => void;
     onSuccess: (data: T) => void;
     onSelect: (data: T) => void;
     onError: (error: unknown) => void;
@@ -26,8 +26,10 @@ enum UseQueryTypes {
 }
 
 interface UseQueryConfig {
+    currentAction: UseRunQueryAction | null;
     abortController: AbortController;
     retry: number;
+    requested: boolean;
     mounted: boolean;
     interval: ReturnType<typeof setInterval> | null;
     timeout: ReturnType<typeof setTimeout> | null;
@@ -121,7 +123,9 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
 
     const config = React.useRef<UseQueryConfig>({
         abortController: new AbortController(),
+        currentAction: null,
         mounted: false, 
+        requested: false,
         retry: Number(options?.retry) || 0, 
         interval: null, 
         timeout: null 
@@ -140,26 +144,21 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
 
     const runQuery = React.useCallback(async (action: UseRunQueryAction) => {
         try {
-            dispatch(actions[action]);
-            if (config.current.retry) throw new ApiException({ message: 'just test', config: null!, response: null! })
+            abort();
+
+            config.current.currentAction !== action && (dispatch(actions[action]), (config.current.currentAction = action));
+
             const { data } = await callback({ signal: config.current.abortController.signal });
 
             dispatch({ type: UseQueryTypes.SUCCESS, payload: { data: options?.onSelect?.(data) ?? data } });
 
             options?.onSuccess?.(data);
 
-            if (options?.refetchInterval) {
-                const interval = setInterval(() => {
-                    runQuery('refetch');
-                    clearInterval(interval);
-                }, options.refetchInterval);
+            config.current.currentAction = null;
 
-                config.current.interval = interval;
-            }
+            options?.refetchInterval && (config.current.interval = setInterval(runQuery, options.refetchInterval, 'refetch'));
         } catch (error) {
-            console.log(error instanceof ApiException)
             if (error instanceof ApiException) {
-                console.log(config.current)
                 if (config.current.retry > 0) {
                     config.current.retry -= 1;
                     
@@ -169,10 +168,10 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
                     }, options?.retryDelay ?? 1000);
                     
                     config.current.timeout = timeout;
-                    
-                    !(options?.retrieveLastError ?? true) && dispatch(errorAction(error));
                 } else {
                     dispatch(errorAction(error));
+
+                    config.current.currentAction = null;
                 }
                 
                 options?.onError?.(error);
@@ -183,12 +182,12 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
     React.useEffect(() => {
         config.current.mounted = true;
 
-        const enabled = options?.enabled ?? true;
-
-        enabled && runQuery('init');
+        (options?.enabled ?? true) && runQuery('init');
 
         return () => {
-            enabled && abort();
+            abort();
+
+            options?.cleanup?.();
 
             config.current.interval && clearInterval(config.current.interval);
             config.current.timeout && clearTimeout(config.current.timeout);

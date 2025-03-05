@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { Avatar, Profile } from '@/entities/profile/model/types';
-import { DataWithCursor, RequestStatuses } from '@/shared/model/types';
+import { DataWithCursor } from '@/shared/model/types';
 
 export enum DisplayAs {
     PARTICIPANT = 'participant',
@@ -11,11 +11,6 @@ export enum DisplayAs {
 
 export interface GroupStore {
     group: Omit<Group, 'messages'>;
-    actions: {
-        getGroup: (id: string, action: 'init' | 'refetch', signal?: AbortSignal) => Promise<void>;
-    },
-    isRefetching: boolean;
-    status: RequestStatuses;
 }
 
 export interface GroupParticipant {

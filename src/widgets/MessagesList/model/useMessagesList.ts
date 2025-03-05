@@ -14,9 +14,12 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         messages: state.messages,
         setChat: state.actions.setChat,
     })));
+    
     const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
         onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { ...messages, data: [...data, ...messages.data], nextCursor } })),
+        retryDelay: 2000,
         enabled: false,
+        retry: 5,
     });
 
     const groupedMessages = React.useMemo(() => messages.data.reduce<Array<Array<Message>>>((acc, message) => {
@@ -29,7 +32,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
 
     React.useEffect(() => {
         lastMessageRef.current?.scrollIntoView({ behavior: 'instant' });
-    }, []);
+    }, [params.id]);
 
     React.useEffect(() => {
         if (!listRef.current) return;
@@ -37,7 +40,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         const handleScrollContainer = () => {
             const { scrollTop } = listRef.current as HTMLUListElement;
 
-            !isLoading && messages.nextCursor && !scrollTop && call();
+            !isLoading && !isRefetching && messages.nextCursor && !scrollTop && (isError ? refetch() : call());
 
             setChat({ showAnchor: getScrollBottom(listRef.current!) >= MAX_SCROLL_BOTTOM });
         };
@@ -47,7 +50,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         return () => {
             listRef.current?.removeEventListener('scroll', handleScrollContainer);
         };
-    }, [messages.nextCursor, isLoading]);
+    }, [messages.nextCursor, isLoading, isRefetching, isError, call, refetch]);
 
     React.useEffect(() => {
         if (!listRef.current || !lastMessageRef.current) return;
@@ -60,8 +63,11 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
     return {
         listRef,
         groupedMessages,
-        canFetch: !isLoading && messages.nextCursor,
-        previousMessagesCursor: messages.nextCursor,
-        isPreviousMessagesLoading: isLoading
+        canFetch: !!(!isLoading && messages.nextCursor),
+        isLoading,
+        isRefetching,
+        isError,
+        call,
+        refetch
     };
 }

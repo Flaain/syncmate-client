@@ -4,9 +4,10 @@ import { useMessagesList } from '../model/useMessagesList';
 import { MessagesListProps } from '../model/types';
 import { Typography } from '@/shared/ui/Typography';
 import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
+import { Loader2 } from 'lucide-react';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
-    const { groupedMessages, canFetch, isLoading, listRef } = useMessagesList(getPreviousMessages);
+    const { groupedMessages, canFetch, isLoading, isError, isRefetching, refetch, call, listRef } = useMessagesList(getPreviousMessages);
 
     if (!groupedMessages.length) {
         return (
@@ -21,25 +22,25 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
 
     return (
         <ul
-            // ref={listRef}
+            ref={listRef}
             className='relative flex flex-col justify-start w-full h-full p-5 max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
         >
-            {true && (
+            {isLoading && (
                 <>
                     <MessageSkeleton />
                     <MessageSkeleton />
                     <MessageSkeleton />
                 </>
             )}
-            {false && (
+            {canFetch && (
                 <li className='flex justify-center items-center'>
                     <Button
                         variant='text'
                         className='p-0 dark:text-primary-white/30 text-primary-white'
-                        disabled={!canFetch}
-                        onClick={getPreviousMessages}
+                        disabled={isLoading || isRefetching}
+                        onClick={isError ? refetch : call}
                     >
-                        Load previous messages
+                        {isError ? (isRefetching ? (<Loader2 className='size-6 animate-spin' />) : 'try again') : 'Load previous messages'}
                     </Button>
                 </li>
             )}

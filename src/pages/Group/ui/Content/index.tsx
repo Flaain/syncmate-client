@@ -12,13 +12,13 @@ export const Content = () => {
     const group = useGroup((state) => state.group);
     const showDetails = useChat((state) => state.showDetails);
     const description = `${group.participants} ${group.participants > 1 ? 'members' : 'member'}`;
-    
+
     return (
         <OutletContainer>
             <div className='flex-1 flex flex-col'>
                 <OutletHeader name={group.name} isOfficial={group.isOfficial} description={description} />
-                <MessagesList getPreviousMessages={() => {}} />
-                <SendMessage onOptimisticUpdate={() => {}} />
+                <MessagesList getPreviousMessages={(id, cursor) => {}} />
+                <SendMessage />
             </div>
             {showDetails && (
                 <OutletDetails

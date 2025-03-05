@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { OutletError } from '@/shared/ui/OutletError';
 import { ConversationProvider } from '../model/provider';
 import { Content } from './Content';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { conversationApi } from '../api';
@@ -14,7 +14,7 @@ import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
 export const Conversation = () => {
     const { id } = useParams() as { id: string };
-
+    
     const setChat = useChat((state) => state.actions.setChat);
     const navigate = useNavigate();
     
@@ -36,7 +36,7 @@ export const Conversation = () => {
         onError: (error) => error instanceof ApiException && error.response.status === 404 && navigate('/')
     });
 
-    if (isLoading) return <ChatSkeleton />;
+    if (!data && isLoading) return <ChatSkeleton />;
 
     if (isError) {
         return (
@@ -45,7 +45,7 @@ export const Conversation = () => {
                 description='Cannot load conversation'
                 callToAction={
                     <Button onClick={refetch} className='mt-5' disabled={isRefetching}>
-                        {isRefetching ? <Loader2 className='w-6 h-6 animate-spin' /> : 'try again'}
+                        {isRefetching ? <Loader2 className='size-6 animate-spin' /> : 'try again'}
                     </Button>
                 }
             />

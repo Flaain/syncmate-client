@@ -4,25 +4,16 @@ import { useConversation } from '../../model/context';
 import { getConversationDescription } from '../../lib/getConversationDescription';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { ConversationDDM } from '../DropdownMenu';
-import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { SendMessage } from '@/features/SendMessage/ui/ui';
 import { contentSelector } from '../../model/selectors';
 import { MessagesList } from '@/widgets/MessagesList';
 import { OutletDetailsTypes } from '@/shared/model/types';
+import { conversationApi } from '../../api';
 
 export const Content = () => {
-    const {
-        _id,
-        isInitiatorBlocked,
-        isRecipientBlocked,
-        recipient,
-        isRecipientTyping,
-        handleTypingStatus,
-        getPreviousMessages
-    } = useConversation(useShallow(contentSelector));
+    const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
 
-    const showDetails = useChat((state) => state.showDetails);
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
 
     return (
@@ -34,7 +25,7 @@ export const Content = () => {
                     description={description}
                     dropdownMenu={<ConversationDDM />}
                 />
-                <MessagesList getPreviousMessages={getPreviousMessages} />
+                <MessagesList getPreviousMessages={(id, cursor) => conversationApi.getPreviousMessages(id, cursor)} />
                 <SendMessage
                     handleTypingStatus={handleTypingStatus()}
                     restrictMessaging={[
@@ -49,19 +40,16 @@ export const Content = () => {
                     ]}
                 />
             </div>
-            {showDetails && (
-                <OutletDetails
-                    title='User Info'
-                    name={recipient.name}
-                    avatarUrl={recipient.avatar?.url}
-                    description={description}
-                    info={[
-                        { data: recipient.status, type: OutletDetailsTypes.BIO },
-                        { data: recipient.login, type: OutletDetailsTypes.LOGIN },
-                        { data: recipient.email, type: OutletDetailsTypes.EMAIL },
-                    ]}
-                />
-            )}
+            <OutletDetails
+                title='User Info'
+                name={recipient.name}
+                avatarUrl={recipient.avatar?.url}
+                description={description}
+                info={[
+                    { data: recipient.status, type: OutletDetailsTypes.BIO },
+                    { data: recipient.login, type: OutletDetailsTypes.LOGIN },
+                ]}
+            />
         </OutletContainer>
     );
 };

@@ -11,6 +11,7 @@ export interface ProfileStore {
     isUploadingAvatar: boolean;
     actions: {
         getProfile: () => Promise<void>;
+        setGroupParticipant: (participant?: GroupParticipant) => void;
         handleUploadAvatar: (event: React.ChangeEvent<HTMLInputElement>) => void;
         handleSetStatus: (status: string) => void;
     };

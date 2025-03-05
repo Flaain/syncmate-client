@@ -11,7 +11,7 @@ export const useModal = create<ModalStore>((set, get) => ({
 
             set((prevState) => ({ modals: [...prevState.modals, { id: uuidv4(), ...config }] }));
         },
-        onCloseModal: (modal?: ModalConfig) => () => {
+        onCloseModal: (modal?: ModalConfig) => () => { // 05.03.2025 i do not fucking rememeber why i do this way
             modal?.closeHandler?.(modal);
             set((prevState) => ({ modals: prevState.modals.slice(0, -1) }));
         },
