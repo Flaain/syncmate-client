@@ -17,6 +17,13 @@ export interface LocalFeedItemWrapper<T extends FeedTypes, I extends Conversatio
     type: T;
 }
 
+export interface FeedUnreadCounterEvent {
+    itemId: string;
+    count?: number;
+    action: 'set' | 'dec';
+    ctx: 'conversation' | 'group';
+}
+
 export type ExctactLocalFeedItem<T extends FeedTypes> = Extract<LocalFeed, { type: T }>;
 
 export type LocalFeed =

@@ -1,13 +1,16 @@
+import React from "react";
 import { messageApi } from "@/entities/Message";
 import { useChat } from "@/shared/lib/providers/chat/context";
 import { useModal } from "@/shared/lib/providers/modal";
 import { selectModalActions } from "@/shared/lib/providers/modal/store";
+import { useEvents } from "@/shared/model/store";
 import { Button } from "@/shared/ui/button";
 import { Confirm } from "@/shared/ui/Confirm";
 import { Typography } from "@/shared/ui/Typography";
 import { Trash, X } from "lucide-react";
 import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
+import { endpoints } from "@/entities/Message/model/constants";
 
 export const SelectState = () => {
     const { onOpenModal, onAsyncActionModal, onCloseModal } = useModal(useShallow(selectModalActions));
@@ -17,24 +20,34 @@ export const SelectState = () => {
         setChat: state.actions.setChat
     })));
 
+    const addEventListener = useEvents((state) => state.addEventListener);
+
+    React.useEffect(() => {
+        const removeListener = addEventListener('keydown', ({ key }) => {
+            key === 'Escape' && setChat({ mode: 'default', selectedMessages: new Map() })
+        });
+
+        return () => removeListener();
+    }, []);
+
     const handleDelete = () => {
+        const size = selectedMessages.size;
+
         onOpenModal({
             content: (
                 <Confirm
-                    text={`Do you want to delete ${selectedMessages.size > 1 ? `${selectedMessages.size} messages` : 'this message'}?`}
+                    text={`Do you want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
                     onCancel={onCloseModal()}
                     onConfirmButtonVariant='destructive'
                     onConfirmText='Delete'
                     onConfirm={() => onAsyncActionModal(() => messageApi.delete({
-                        endpoint: `${params.apiUrl}/delete/${params.id}`,
+                        endpoint: `${endpoints[params.type]}/delete/${params.id}`,
                         messageIds: [...selectedMessages.keys()]
-                    }), 
+                    }),
                     {
                         closeOnError: true,
                         onResolve: () => {
-                            toast.success(`${selectedMessages.size} ${selectedMessages.size > 1 ? 'messages' : 'message'} was deleted`, { 
-                                position: 'top-center' 
-                            });
+                            toast.success(`${size} ${size > 1 ? 'messages' : 'message'} was deleted`, { position: 'top-center' });
                             setChat({ mode: 'default', selectedMessages: new Map() })
                         },
                         onReject: () => toast.error('Cannot delete messages')

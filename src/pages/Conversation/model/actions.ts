@@ -9,24 +9,18 @@ export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationSt
 
         return (action: MessageFormState, reset?: boolean) => {
             if (action === 'edit') return;
-
+            
+            const { conversation: { _id, recipient } } = get(), { socket } = useSocket.getState();
+            const typingData = { conversationId: _id, recipientId: recipient._id };
+            
             if (reset) {
                 ctx.isTyping = false;
+                socket?.emit(CONVERSATION_EVENTS.STOP_TYPING, typingData);
                 clearTimeout(ctx.typingTimeout!);
                 return;
             }
 
-            const { conversation: { _id, recipient } } = get();
-            const { socket } = useSocket.getState();
-
-            const typingData = { conversationId: _id, recipientId: recipient._id };
-
-            if (!ctx.isTyping) {
-                ctx.isTyping = true;
-                socket?.emit(CONVERSATION_EVENTS.START_TYPING, typingData);
-            } else {
-                clearTimeout(ctx.typingTimeout!);
-            }
+            !ctx.isTyping ? ((ctx.isTyping = true), socket?.emit(CONVERSATION_EVENTS.START_TYPING, typingData)) : clearTimeout(ctx.typingTimeout!);
 
             ctx.typingTimeout = setTimeout(() => {
                 ctx.isTyping = false;

@@ -1,48 +1,53 @@
 import React from 'react';
-import { toast } from 'sonner';
 import { Message } from '../model/types';
-import { useModal } from '@/shared/lib/providers/modal';
-import { Draft, useLayout } from '@/shared/model/store';
+import { endpoints } from '../model/constants';
+import { messageApi } from '..';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
-import { messageApi } from '../api';
-import { endpoints } from '../model/constants';
+import { messageSelector } from '@/shared/lib/providers/chat/selectors';
 
-export const useMessage = (message: Message) => {
-    const { params, isContextActionsBlocked } = useChat(useShallow((state) => ({
-        params: state.params,
-        isContextActionsBlocked: state.isContextActionsBlocked,
-    })))
-    
-    const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
-    
-    const handleCopyToClipboard = React.useCallback(() => {
-        navigator.clipboard.writeText(message.text);
-        toast.success('Message copied to clipboard', { position: 'top-center' });
+export const useMessage = ({
+    message,
+    isMessageFromMe,
+    isLast,
+    isLastGroup
+}: {
+    isMessageFromMe: boolean;
+    isLastGroup?: boolean;
+    isLast?: boolean;
+    message: Message;
+}) => {
+    const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
+
+    const { params, selectedMessages, lastMessageRef } = useChat(useShallow(messageSelector));
+
+    const observer = React.useRef<IntersectionObserver | null>(null);
+
+    const ref = React.useCallback((node: HTMLLIElement) => {
+        isLastGroup && isLast && (lastMessageRef.current = node);
+
+        if (isMessageFromMe || message.alreadyRead) return;
+
+        observer.current?.disconnect();
+
+        observer.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                messageApi.read({ endpoint: `${endpoints[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
+
+                observer.current?.unobserve(entries[0].target);
+            }
+        });
+        node && observer.current.observe(node);
     }, []);
 
-    const handleMessageDelete = React.useCallback(async () => {
-        onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
-            closeOnError: true,
-            onReject: () => toast.error('Cannot delete message', { position: 'top-center' })
-        });
-    }, [params.id, message]);
-
-    const handleContextAction = React.useCallback((draft: Draft) => {
-        if (isContextActionsBlocked) return;
-        
-        useLayout.setState((prevState) => {
-            const newState = new Map([...prevState.drafts]);
-
-            newState.set(params.id, draft);
-
-            return { drafts: newState };
-        })
-    }, [isContextActionsBlocked]);
+    const isSelected = selectedMessages.has(message._id);
+    const createTime = new Date(message.createdAt);
 
     return {
-        handleCopyToClipboard,
-        handleMessageDelete,
-        handleContextAction
-    };
+        isContextMenuOpen,
+        setIsContextMenuOpen,
+        ref,
+        isSelected,
+        createTime
+    }
 };

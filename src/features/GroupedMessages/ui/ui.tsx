@@ -6,17 +6,32 @@ import { Message } from '@/entities/Message';
 import { useSession } from '@/entities/session';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
-import { SourceRefPath } from '@/entities/Message/model/types';
+import { Message as IMessage, SourceRefPath } from '@/entities/Message/model/types';
+import { useLayout } from '@/shared/model/store';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
-    const { mode, handleSelectMessage } = useChat(useShallow((state) => ({
-        mode: state.mode,
-        handleSelectMessage: state.actions.handleSelectMessage
+    const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow((state) => ({
+        textareaRef: state.refs.textareaRef,
+        params: state.params, 
+        mode: state.mode, 
+        handleSelectMessage: state.actions.handleSelectMessage 
     })));
 
     const userId = useSession((state) => state.userId);
     const message = messages[0];
     const isMessageFromMe = message.sender._id === userId;
+
+    const handleDoubleClick = (message: IMessage) => {
+        useLayout.setState((prevState) => {
+            const newState = new Map([...prevState.drafts]);
+
+            newState.set(params.id, { state: 'reply', value: '', selectedMessage: message });
+
+            return { drafts: newState };
+        })
+
+        textareaRef.current?.focus();
+    }
 
     return (
         <li className={cn('flex items-end gap-3 xl:self-start w-full', isMessageFromMe ? 'self-end' : 'self-start')}>
@@ -35,6 +50,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
                         isLast={index === array.length - 1}
                         message={message}
                         onClick={mode === 'selecting' && isMessageFromMe ? () => handleSelectMessage(message) : undefined}
+                        onDoubleClick={mode !== 'selecting' ? () => handleDoubleClick(message) : undefined}
                     />
                 ))}
             </ul>

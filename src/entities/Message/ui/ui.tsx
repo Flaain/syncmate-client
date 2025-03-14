@@ -7,51 +7,21 @@ import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
 import { MessageProps, SourceRefPath } from '../model/types';
 import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
-import { useShallow } from 'zustand/shallow';
-import { messageApi } from '../api';
-import { messageSelector } from '@/shared/lib/providers/chat/selectors';
-import { endpoints } from '../model/constants';
+import { useMessage } from '../lib/useMessage';
 
 export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
-    const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
+    const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
+    const { updatedAt, sender, text, sourceRefPath, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
-    const { _id, createdAt, updatedAt, sender, text, sourceRefPath, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
-    const { params, selectedMessages, lastMessageRef, isContextActionsBlocked, setChat } = useChat(useShallow(messageSelector));
+    const isContextActionsBlocked = useChat((state) => state.isContextActionsBlocked);
+   
+    const stylesForBottomIcon = cn('size-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
     
-    const observer = React.useRef<IntersectionObserver | null>(null);
-    
-    const ref = React.useCallback((node: HTMLLIElement) => {
-        isLastGroup && isLast && (lastMessageRef.current = node);
-        
-        if (isMessageFromMe || hasBeenRead) return;
-        
-        observer.current?.disconnect();
-        
-        observer.current = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                messageApi.read({ endpoint: `${endpoints[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
-                
-                setChat(({ messages }) => ({ 
-                    messages: { 
-                        ...messages, 
-                        data: messages.data.map((message) => message._id === _id ? { ...message, hasBeenRead: true } : message) 
-                    } 
-                }));
-                
-                observer.current?.unobserve(entries[0].target);
-            }
-        });
-        node && observer.current.observe(node);
-    }, [])
-    
-    const isSelected = selectedMessages.has(message._id);
-    const createTime = new Date(createdAt);
-    const stylesForBottomIcon = cn('w-4 h-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
-    const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = {
+    const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = React.useMemo(() => ({
         idle: hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />,
         pending: <Clock className={stylesForBottomIcon} />,
         error: <Info className={stylesForBottomIcon} />,
-    }
+    }), [hasBeenRead, status]);
 
     return (
         <ContextMenu onOpenChange={setIsContextMenuOpen}>
@@ -74,8 +44,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             viewBox='0 0 11 20'
                             fill='currentColor'
                             className={cn('absolute z-10 bottom-0 w-[11px] h-5 block', {
-                                ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']:
-                                    isMessageFromMe,
+                                ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']: isMessageFromMe,
                                 ['dark:text-primary-dark-50 text-primary-gray -left-[11px]']: !isMessageFromMe
                             })}
                             xmlns='http://www.w3.org/2000/svg'
@@ -86,7 +55,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && params.type === SourceRefPath.GROUP && (
+                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && (
                         <Typography variant='primary' weight='semibold'>
                             {sender.participant?.name || sender.name}
                         </Typography>
@@ -146,7 +115,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             >
                                 {createTime.toLocaleTimeString(navigator.language ?? 'en-US', { timeStyle: 'short' })}
                                 {hasBeenEdited && ', edited'}
-                                {statusIcons[status ?? 'idle']}
+                                {isMessageFromMe && statusIcons[status ?? 'idle']}
                             </Typography>
                         </Typography>
                     </div>

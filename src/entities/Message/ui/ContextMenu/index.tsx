@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@/shared/ui/Typography';
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { CheckCheck } from 'lucide-react';
-import { useMessage } from '../../lib/useMessage';
+import { useCtxMenuMessage } from '../../lib/useCtxMenuMessage';
 import { ContextMenuProps } from '../../model/types';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
 import { Confirm } from '@/shared/ui/Confirm';
@@ -32,7 +32,7 @@ export const CMItem = ({ variant = 'default', onClick, text, icon }: { variant?:
 );
 
 export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps) => {
-    const { handleCopyToClipboard, handleMessageDelete, handleContextAction } = useMessage(message);
+    const { handleCopyToClipboard, handleMessageDelete, handleContextAction } = useCtxMenuMessage(message);
     const { onOpenModal, onCloseModal } = useModal(useShallow(selectModalActions));
     const { textareaRef, handleSelectMessage } = useChat(useShallow((state) => ({
         textareaRef: state.refs.textareaRef,

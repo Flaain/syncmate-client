@@ -24,12 +24,13 @@ export type ReplySender =
 
 export type Message = {
     _id: string;
-    hasBeenRead: boolean;
     hasBeenEdited: boolean;
     text: string;
     replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
     inReply?: boolean;
     readedAt?: string;
+    hasBeenRead?: boolean;
+    alreadyRead?: boolean;
     createdAt: string;
     updatedAt: string;
     status?: 'pending' | 'error';

@@ -77,7 +77,15 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             setChat(({ messages }) => ({
                 messages: {
                     ...messages,
-                    data: messages.data.map((message) => message._id === _id ? { ...message, readedAt, hasBeenRead: true } : message)
+                    data: messages.data.map((message) =>
+                        message._id === _id
+                            ? {
+                                  ...message,
+                                  readedAt,
+                                  [message.sender._id === userId ? 'hasBeenRead' : 'alreadyRead']: true
+                              }
+                            : message
+                    )
                 }
             }));
         })

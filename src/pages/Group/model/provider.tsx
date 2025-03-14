@@ -28,7 +28,10 @@ export const GroupProvider = ({ group, children }: { group: GroupStore['group'];
             setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }))
         })
 
+        socket?.on(`${GROUP_EVENTS.MESSAGE_READ}:${id}`, () => {});
+
         return () => {
+            socket?.off(`${GROUP_EVENTS.MESSAGE_READ}:${id}`);
             socket?.off(GROUP_EVENTS.MESSAGE_SEND);
             
             socket?.io.off('reconnect');

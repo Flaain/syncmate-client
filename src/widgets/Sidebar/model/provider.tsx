@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore } from 'zustand';
-import { FeedUpdateParams, LocalFeed, SidebarStore } from './types';
+import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } from './types';
 import { sidebarActions } from './actions';
 import { useSocket } from '@/shared/model/store';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
@@ -35,7 +35,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 if (index !== -1) {
                     const feed = [...prevState.localResults.feed];
                     
-                    feed[index] = createFeedItem;
+                    feed[index] = {
+                        ...feed[index],
+                        lastActionAt: createFeedItem.lastActionAt,
+                        item: { ...feed[index].item, ...createFeedItem.item }
+                    } as any;
                     
                     return { localResults: { ...prevState.localResults, feed: feed.sort(getSortedFeedByLastMessage) } };
                 }
@@ -66,7 +70,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                         return {
                             ...feedItem,
                             lastActionAt: lastActionAt ?? feedItem.lastActionAt,
-                            item: { ...feedItem.item, lastMessage }
+                            item: { ...feedItem.item, lastMessage: { ...feedItem.item.lastMessage, ...lastMessage } }
                         };
                     }
 
@@ -82,34 +86,35 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             })
         });
 
-        socket?.on(FEED_EVENTS.UNREAD_COUNTER, ({ itemId, count, action }: { itemId: string; count?: number; action: 'set' | 'inc' | 'dec' }) => {
+        socket?.on(FEED_EVENTS.UNREAD_COUNTER, ({ itemId, count, action, ctx }: FeedUnreadCounterEvent) => {
             store.setState((prevState) => {
                 const actions: Record<typeof action, (unreadMessages?: number) => number> = {
                     set: () => count ?? 0,
-                    inc: (unread) => (unread ?? 0) + (count ?? 1),
                     dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
-                }
+                };
+
+                const source: Record<typeof ctx, (feedItem: any) => any> = {
+                    conversation: (feedItem: any) => {
+                        if (feedItem.item._id === itemId) {
+                            return {
+                                ...feedItem,
+                                item: {
+                                    ...feedItem.item,
+                                    unreadMessages: actions[action](feedItem.item.unreadMessages)
+                                }
+                            };
+                        }
+
+                        return feedItem;
+                    },
+                    group: () => {}
+                };
 
                 return {
-                    localResults: {
-                        ...prevState.localResults,
-                        feed: prevState.localResults.feed.map((feedItem: any) => {
-                            if (feedItem.item._id === itemId) {
-                                return {
-                                    ...feedItem,
-                                    item: {
-                                        ...feedItem.item,
-                                        unreadMessages: actions[action](feedItem.item.unreadMessages)
-                                    }
-                                };
-                            }
-    
-                            return feedItem;
-                        })
-                    }
-                }
-            })
-        })
+                    localResults: { ...prevState.localResults, feed: prevState.localResults.feed.map(source[ctx]) }
+                };
+            });
+        });
 
         socket?.on(FEED_EVENTS.DELETE, (id: string) => {
             store.setState((prevState) => ({
