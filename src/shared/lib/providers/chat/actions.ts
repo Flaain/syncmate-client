@@ -43,23 +43,10 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
             createdAt: date,
             updatedAt: date,
             hasBeenEdited: false,
-            inReply: isReply || currentDraft?.selectedMessage?.inReply,
+            inReply: isReply,
             status: 'pending',
             actions: { abort: () => abortController.abort('Request was cancelled') },
-            replyTo: isReply
-                ? {
-                      _id: smId,
-                      text: currentDraft.value,
-                      sourceRefPath: type,
-                      sender: {
-                          _id: currentDraft.selectedMessage?.sender._id,
-                          name: currentDraft.selectedMessage?.sender.name,
-                          isDeleted: currentDraft.selectedMessage?.sender.isDeleted,
-                          avatar: currentDraft.selectedMessage?.sender.avatar,
-                          participant: (currentDraft.selectedMessage?.sender as any).participant
-                      }
-                  }
-                : undefined
+            replyTo: isReply ? currentDraft.selectedMessage : undefined
         };
 
         const rollback = ({ messages }: ChatStore) => ({
@@ -100,7 +87,7 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
                     ...messages,
                     data: messages.data.map((message) => {
                         if (message._id === optimisticMessage._id) return data;
-                        if (isEdit && message._id === data._id) return { ...message, ...data };
+                        if (isEdit && message._id === data._id) return { ...currentDraft.selectedMessage, ...data };
                         if (message.inReply && message.replyTo?._id === data._id) return { ...message, replyTo: { ...message.replyTo, text: data.text } };
 
                         return message;

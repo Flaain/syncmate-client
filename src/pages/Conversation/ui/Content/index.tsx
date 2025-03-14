@@ -10,11 +10,13 @@ import { contentSelector } from '../../model/selectors';
 import { MessagesList } from '@/widgets/MessagesList';
 import { OutletDetailsTypes } from '@/shared/model/types';
 import { conversationApi } from '../../api';
+import { useChat } from '@/shared/lib/providers/chat/context';
 
 export const Content = () => {
     const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
 
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
+    const showDetails = useChat((state) => state.showDetails);
 
     return (
         <OutletContainer>
@@ -40,16 +42,18 @@ export const Content = () => {
                     ]}
                 />
             </div>
-            <OutletDetails
-                title='User Info'
-                name={recipient.name}
-                avatarUrl={recipient.avatar?.url}
-                description={description}
-                info={[
-                    { data: recipient.status, type: OutletDetailsTypes.BIO },
-                    { data: recipient.login, type: OutletDetailsTypes.LOGIN },
-                ]}
-            />
+            {showDetails && (
+                <OutletDetails
+                    title='User Info'
+                    name={recipient.name}
+                    avatarUrl={recipient.avatar?.url}
+                    description={description}
+                    info={[
+                        { data: recipient.status, type: OutletDetailsTypes.BIO },
+                        { data: recipient.login, type: OutletDetailsTypes.LOGIN }
+                    ]}
+                />
+            )}
         </OutletContainer>
     );
 };

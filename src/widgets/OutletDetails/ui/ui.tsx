@@ -4,7 +4,6 @@ import { X } from 'lucide-react';
 import { Typography } from '@/shared/ui/Typography';
 import { useEvents } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
-import { useShallow } from 'zustand/shallow';
 import { OutletDetailsButton } from '@/shared/ui/OutletDetailsButton';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
@@ -22,11 +21,7 @@ export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info 
     const [activeTab, setActiveTab] = React.useState(0);
 
     const addEventListener = useEvents((state) => state.addEventListener);
-
-    const { showDetails, setChat } = useChat(useShallow((state) => ({
-        showDetails: state.showDetails,
-        setChat: state.actions.setChat
-    })));
+    const setChat = useChat((state) => state.actions.setChat);
 
     React.useEffect(() => {
         const removeEventListener = addEventListener('keydown', (event) => {
@@ -39,8 +34,6 @@ export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info 
             removeEventListener();
         };
     }, []);
-
-    if (!showDetails) return null;
 
     return (
         <div className='flex flex-col max-xl:absolute max-xl:top-0 max-xl:right-0 z-[999] py-3 dark:bg-primary-dark-100 h-full max-w-[390px] w-full border-l-2 border-primary-dark-50'>

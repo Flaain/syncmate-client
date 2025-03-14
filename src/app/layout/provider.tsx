@@ -38,7 +38,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 
     React.useEffect(() => {
         if (!listeners.size) return;
-
+        console.log('listeners', listeners);
         const entries = [...new Map([...listeners]).entries()];
 
         const mappedListeners = entries.map(([type, listeners]) => {
