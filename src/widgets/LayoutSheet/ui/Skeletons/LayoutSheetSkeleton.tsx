@@ -5,6 +5,7 @@ import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 import { cn } from '@/shared/lib/utils/cn';
 import { Image } from '@/shared/ui/Image';
 import { useProfile } from '@/entities/profile';
+import { APP_VERSION } from '@/shared/constants';
 
 export const LayoutSheetSkeleton = () => {
     const { profile } = useProfile();
@@ -39,7 +40,7 @@ export const LayoutSheetSkeleton = () => {
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
                 FChat Web, {new Date().getFullYear()}
                 <Typography variant='secondary'>
-                    Version {import.meta.env.VITE_APP_VERSION}
+                    Version {APP_VERSION}
                 </Typography>
             </Typography>
         </div>

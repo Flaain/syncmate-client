@@ -6,14 +6,10 @@ import { Message } from "@/entities/Message/model/types";
 import { useShallow } from "zustand/shallow";
 import { MessagesListProps } from "./types";
 import { useQuery } from "@/shared/lib/hooks/useQuery";
+import { messagesListSelector } from "./selectors";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
-    const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow((state) => ({
-        refs: state.refs,
-        params: state.params,
-        messages: state.messages,
-        setChat: state.actions.setChat,
-    })));
+    const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
     
     const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
         onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { ...messages, data: [...data, ...messages.data], nextCursor } })),

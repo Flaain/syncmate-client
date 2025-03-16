@@ -12,6 +12,7 @@ import { SidebarContext } from './context';
 const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
     searchRef: React.createRef(),
+    abortController: new AbortController(),
     localResultsError: null,
     globalResults: null,
     isSearching: false,
@@ -24,10 +25,8 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
     const socket = useSocket((state) => state.socket);
 
     React.useEffect(() => {
-        store.getState().actions.getFeed();
-    }, [])
+        store.getState().actions.getFeed(store.getState().abortController.signal);
 
-    React.useEffect(() => {
         socket?.on(FEED_EVENTS.CREATE, (createFeedItem: LocalFeed) => {
             store.setState((prevState) => {
                 const index = prevState.localResults.feed.findIndex((feedItem) => feedItem._id === createFeedItem._id);
@@ -168,6 +167,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
         })
 
         return () => {
+            store.getState().abortController.abort();
+            store.setState({ abortController: new AbortController() });
+
+            socket?.off(FEED_EVENTS.UNREAD_COUNTER);
+            
             socket?.off(FEED_EVENTS.CREATE);
             socket?.off(FEED_EVENTS.UPDATE);
             socket?.off(FEED_EVENTS.DELETE);

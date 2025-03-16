@@ -12,6 +12,7 @@ import { SettingsProvider, Settings } from '@/widgets/Settings';
 import { useLayout } from '@/shared/model/store';
 import { useProfile } from '@/entities/profile';
 import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
+import { APP_VERSION } from '@/shared/constants';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
@@ -103,7 +104,7 @@ export const LayoutSheet = () => {
             </ul>
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
                 FChat Web, {new Date().getFullYear()}
-                <Typography variant='secondary'>Version {import.meta.env.VITE_APP_VERSION}</Typography>
+                <Typography variant='secondary'>Version {APP_VERSION}</Typography>
             </Typography>
         </div>
     );

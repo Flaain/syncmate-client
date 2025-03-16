@@ -48,6 +48,7 @@ export interface LocalResults {
 
 export interface SidebarStore {
     localResults: LocalResults;
+    abortController: AbortController;
     globalResults: WrappedInPagination<UserFeed | GroupGlobalFeed> | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
@@ -58,6 +59,6 @@ export interface SidebarStore {
         handleLogout: () => Promise<void>;
         handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
         delayedSearch: (value: string) => void;
-        getFeed: () => Promise<void>;
+        getFeed: (signal?: AbortSignal) => Promise<void>;
     };
 }

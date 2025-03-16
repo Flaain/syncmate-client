@@ -94,13 +94,13 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }))
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, (editedMessage: Message) => {
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
             setChat(({ messages }) => ({
                 messages: {
                     ...messages,
                     data: messages.data.map((message) => {
-                        if (message._id === editedMessage._id) return editedMessage;
-                        if (message.inReply && message.replyTo?._id === editedMessage._id) return { ...message, replyTo: { ...message.replyTo, text: editedMessage.text } };
+                        if (message._id === _id) return { ...message, text, updatedAt, hasBeenEdited: true };
+                        if (message.replyTo?._id === _id) return { ...message, replyTo: { ...message.replyTo, text } };
 
                         return message;
                     })

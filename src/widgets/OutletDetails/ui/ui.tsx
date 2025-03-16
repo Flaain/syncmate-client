@@ -14,7 +14,10 @@ import { DETAILS_TABS, OutletDetailsProps } from '../model/types';
 
 const tabsMap: Record<DETAILS_TABS, React.ReactNode> = {
     members: <MembersTab />,
-    media: <MediaTab />
+    media: <MediaTab />,
+    files: <div>files</div>,
+    music: <div>music</div>,
+    voice: <div>voice</div>
 };
 
 export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info }: OutletDetailsProps) => {

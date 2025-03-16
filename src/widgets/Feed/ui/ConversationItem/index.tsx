@@ -53,9 +53,9 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLoca
                             </Typography>
                         )}
                         {!!item.unreadMessages && (
-                            <span className='text-primary-dark-200 font-semibold text-sm flex items-center justify-center ml-auto size-5 rounded-full bg-primary-white'>
+                            <Typography className='dark:text-primary-dark-200 font-semibold text-sm flex items-center justify-center ml-auto size-5 rounded-full bg-primary-white'>
                                 {item.unreadMessages}
-                            </span>
+                            </Typography>
                         )}
                     </Typography>
                     {!!item.participantsTyping?.length ? (

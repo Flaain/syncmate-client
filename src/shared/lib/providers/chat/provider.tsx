@@ -28,9 +28,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     const addEventListener = useEvents((state) => state.addEventListener);
 
     React.useEffect(() => {
-        console.log('test');
         const removeEventListener = addEventListener('keydown', (event) => {
-            console.log(event.key);
             event.key === 'Escape' && navigate('/');
         });
 
