@@ -146,6 +146,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
         })
 
         socket?.on(FEED_EVENTS.STOP_TYPING, (data: { _id: string; participant: Omit<TypingParticipant, 'name'> }) => {
+            console.log(data);
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
@@ -171,7 +172,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState({ abortController: new AbortController() });
 
             socket?.off(FEED_EVENTS.UNREAD_COUNTER);
-            
+
             socket?.off(FEED_EVENTS.CREATE);
             socket?.off(FEED_EVENTS.UPDATE);
             socket?.off(FEED_EVENTS.DELETE);
