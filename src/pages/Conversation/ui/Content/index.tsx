@@ -17,7 +17,7 @@ export const Content = () => {
 
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
     const showDetails = useChat((state) => state.showDetails);
-
+  
     return (
         <OutletContainer>
             <div className='flex-1 flex flex-col'>
