@@ -1,3 +1,4 @@
+import { Message } from "@/entities/Message/model/types";
 import { Avatar, PRESENCE } from "@/entities/profile/model/types";
 import { Conversation } from "@/pages/Conversation/model/types";
 import { Group } from "@/pages/Group/model/types";
@@ -23,6 +24,7 @@ export interface SearchUser {
     _id: string;
     name: string;
     isOfficial: boolean;
+    avatar?: Avatar;
     presence: PRESENCE;
     login: string;
 }
@@ -31,16 +33,20 @@ export enum FEED_EVENTS {
     CREATE = 'feed.create',
     UPDATE = 'feed.update',
     DELETE = 'feed.delete',
+    UNREAD_COUNTER = 'feed.unread.counter',
     USER_PRESENCE = 'feed.user.presence',
     START_TYPING = 'feed.start.typing',
     STOP_TYPING = 'feed.stop.typing'
 }
 
-export type ConversationFeed = Pick<Conversation, '_id' | 'lastMessage' | 'recipient'> & {
+export type ConversationFeed = Pick<Conversation, '_id' | 'recipient'> & {
+    unreadMessages?: number;
+    lastMessage?: Message;
     participantsTyping?: Array<TypingParticipant>;
 };
 
-export type GroupFeed = Pick<Group, '_id' | 'lastMessage' | 'isOfficial' | 'name' | 'login'> & {
+export type GroupFeed = Pick<Group, '_id'| 'isOfficial' | 'name' | 'login'> & {
+    lastMessage?: Message;
     participantsTyping?: Array<TypingParticipant>;
 };
 

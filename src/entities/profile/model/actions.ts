@@ -41,9 +41,8 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
             if (validator) return toast.error(validator.message, { position: 'top-center' });
 
             const form = new FormData();
-            const blob = new Blob([file], { type: file.type });
 
-            form.append('image', blob);
+            form.append('image', new Blob([file], { type: file.type }));
 
             const { data } = await profileApi.avatar(form);
 
@@ -56,5 +55,6 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
         } finally {
             set({ isUploadingAvatar: false });
         }
-    }
+    },
+    setGroupParticipant: (participant) => set({ participant })
 })

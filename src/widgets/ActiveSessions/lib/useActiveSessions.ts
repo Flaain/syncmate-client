@@ -1,27 +1,12 @@
 import React from 'react';
 import { toast } from 'sonner';
-import { GetSessionsReturn } from '@/entities/session/model/types';
 import { useModal } from '@/shared/lib/providers/modal';
 import { sessionApi } from '@/entities/session';
+import { useQuery } from '@/shared/lib/hooks/useQuery';
 
 export const useActiveSessions = () => {
-    const [data, setSessions] = React.useState<GetSessionsReturn | null>(null);
-    const [isLoading, setIsLoading] = React.useState(true);
+    const { data, isLoading, setData: setSessions } = useQuery(() => sessionApi.getSessions());
     const [isTerminating, setIsTerminating] = React.useState(false);
-    
-    React.useEffect(() => {
-        (async () => {
-            try {
-                const { data } = await sessionApi.getSessions();
-
-                setSessions(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        })();
-    }, []);
 
     const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
     
@@ -31,9 +16,7 @@ export const useActiveSessions = () => {
         await onAsyncActionModal(sessionApi.terminateAllSessions, {
             onResolve: ({ data: { deletedCount } }) => {
                 setSessions((prevState) => ({ ...prevState!, sessions: [] }));
-                toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`, {
-                    position: 'top-center'
-                });
+                toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`, { position: 'top-center' });
             },
             onReject: (error) => {
                 console.error(error);

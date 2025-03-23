@@ -3,19 +3,16 @@ import { routerList } from '@/shared/constants';
 import { RouteObject } from 'react-router-dom';
 import { View } from './model/view';
 import { Button } from '@/shared/ui/button';
-import { ConversationSkeleton } from './ui/Skeleton';
 import { OutletError } from '@/shared/ui/OutletError';
-import { ConversationProvider } from './model/provider';
 import { ChatProvider } from '@/shared/lib/providers/chat/provider';
+import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
 export const ConversationPage: RouteObject = {
     path: routerList.CONVERSATION,
     element: (
-        <React.Suspense fallback={<ConversationSkeleton />}>
+        <React.Suspense fallback={<ChatSkeleton />}>
             <ChatProvider>
-                <ConversationProvider>
-                    <View />
-                </ConversationProvider>
+                <View />
             </ChatProvider>
         </React.Suspense>
     ),

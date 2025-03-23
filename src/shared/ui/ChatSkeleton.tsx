@@ -2,10 +2,10 @@ import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@/shared/ui/Typography';
-import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
+import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
 
-export const ConversationSkeleton = () => {
+export const ChatSkeleton = () => {
     const { state } = useLocation();
 
     return (
@@ -28,21 +28,8 @@ export const ConversationSkeleton = () => {
                     </Typography>
                 )}
             </div>
-            <ul className='flex flex-col px-5 gap-5 pb-2 overflow-hidden'>
-                {[...new Array(12)].map((_, index) => (
-                    <li
-                        key={index}
-                        className={cn('flex items-center w-full gap-5', index % 2 ? 'justify-end' : 'justify-start')}
-                    >
-                        {!(index % 2) && (
-                            <PreAnimatedSkeleton className='self-end dark:bg-primary-dark-50/50 min-w-[50px] h-[50px] space-y-5 rounded-full' />
-                        )}
-                        <PreAnimatedSkeleton
-                            style={{ height: `${Math.floor(Math.random() * 101) + 35}px` }}
-                            className='dark:bg-primary-dark-50/50 box-border pl-5 pr-12 py-1 mt-2 w-full rounded-xl max-w-[500px] flex items-end gap-3 self-start'
-                        />
-                    </li>
-                ))}
+            <ul className='flex flex-col px-5 gap-5 py-2 overflow-hidden'>
+                {[...new Array(12)].map((_, index) => <MessageSkeleton key={index} />)}
             </ul>
             <div className='sticky bottom-0 w-full min-h-[70px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'></div>
         </OutletContainer>

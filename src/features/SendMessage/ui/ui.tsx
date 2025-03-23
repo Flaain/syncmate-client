@@ -2,23 +2,24 @@ import React from 'react';
 import EmojiPickerFallback from '@emoji-mart/react';
 import { TopBar } from './TopBar';
 import { Button } from '@/shared/ui/button';
-import { ArrowDown, Edit2Icon, Paperclip, Reply, SendHorizonal, Smile } from 'lucide-react';
+import { ArrowDown, Paperclip, SendHorizonal, Smile } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSendMessage } from '../lib/useSendMessage';
 import { EmojiPicker } from '@/shared/model/view';
-import { MessageFormState, UseMessageParams } from '../model/types';
+import { UseMessageParams } from '../model/types';
 import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { Placeholder } from './Placeholder';
 
-export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, restrictMessaging }: UseMessageParams) => {
+export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
         params: state.params,
         lastMessageRef: state.refs.lastMessageRef,
         textareaRef: state.refs.textareaRef,
         showAnchor: state.showAnchor
     })));
+
     const {
         handleSubmitMessage,
         onKeyDown,
@@ -29,38 +30,24 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
         onEmojiSelect,
         isEmojiPickerOpen,
         value
-    } = useSendMessage({ onChange, handleTypingStatus, onOptimisticUpdate });
+    } = useSendMessage({ onChange, handleTypingStatus });
+    
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
     const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
 
     if (typeof restrictedIndex !== 'undefined' && restrictedIndex !== -1) {
-        return (
-            <Placeholder text={restrictMessaging![restrictedIndex].message} />
-        )
-    };
-
-    const bars: Record<Exclude<MessageFormState, 'send'>, React.ReactNode> = {
-        edit: (
-            <TopBar
-                title='Edit message'
-                mainIconSlot={<Edit2Icon className='dark:text-primary-white text-primary-gray min-w-5 h-5' />}
-                onClose={setDefaultState}
-                description={currentDraft?.selectedMessage?.text}
-            />
-        ),
-        reply: (
-            <TopBar
-                title={`Reply to ${currentDraft?.selectedMessage?.sender?.name}`}
-                mainIconSlot={<Reply className='dark:text-primary-white text-primary-gray min-w-5 h-5' />}
-                onClose={setDefaultState}
-                description={currentDraft?.selectedMessage?.text}
-            />
-        )
+        return <Placeholder text={restrictMessaging![restrictedIndex].message} />;
     };
 
     return (
         <div className='flex flex-col sticky bottom-0 w-full z-[999]'>
-            {bars[currentDraft?.state as keyof typeof bars]}
+            {(currentDraft?.state ?? 'send') !== 'send' && (
+                <TopBar
+                    onClose={setDefaultState}
+                    state={currentDraft?.state!}
+                    description={currentDraft?.selectedMessage?.text!}
+                />
+            )}
             <form
                 className='w-full max-h-[120px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'
                 onSubmit={handleSubmitMessage}
@@ -86,9 +73,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                 ></textarea>
                 {showAnchor && (
                     <Button
-                        onClick={() => {
-                            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })
-                        }}
+                        onClick={() => lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })}
                         disabled={!showAnchor}
                         variant='text'
                         type='button'
@@ -114,7 +99,9 @@ export const SendMessage = ({ onChange, handleTypingStatus, onOptimisticUpdate, 
                     <div className='absolute bottom-20 right-2 z-50'>
                         <React.Suspense fallback={<EmojiPickerFallback />}>
                             <EmojiPicker
-                                onClickOutside={() => setIsEmojiPickerOpen(false)}
+                                onClickOutside={({ target }: PointerEvent) =>
+                                    target !== textareaRef.current && setIsEmojiPickerOpen(false)
+                                }
                                 onEmojiSelect={onEmojiSelect}
                             />
                         </React.Suspense>

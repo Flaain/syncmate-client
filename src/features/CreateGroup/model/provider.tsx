@@ -9,7 +9,7 @@ import { useModal } from "@/shared/lib/providers/modal";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
 import { CreateGroupContext } from "./context";
 import { useShallow } from "zustand/shallow";
-import { SearchUser } from "@/widgets/Feed/types";
+import { SearchUser } from "@/widgets/Feed/model/types";
 import { profileApi } from "@/entities/profile";
 import { createGroupApi } from "../api";
 import { ApiException } from "@/shared/api/error";
@@ -31,7 +31,7 @@ export const CreateGroupProvider = ({ children }: { children: React.ReactNode })
         resolver: zodResolver(createGroupSchema),
         defaultValues: {
             name: '',
-            username: '',
+            query: '',
             login: ''
         },
         mode: 'onChange',
@@ -69,7 +69,7 @@ export const CreateGroupProvider = ({ children }: { children: React.ReactNode })
     const handleSearchUser = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
         const trimmedValue = value.trim();
 
-        if (!value || !trimmedValue.length) return setSearchedUsers([]);
+        if (!trimmedValue.length) return setSearchedUsers([]);
 
         if (trimmedValue.length > MIN_USER_SEARCH_LENGTH) {
             useModal.setState({ isModalDisabled: true });
@@ -95,16 +95,14 @@ export const CreateGroupProvider = ({ children }: { children: React.ReactNode })
 
         if (!isValid) return;
 
-        const { username, ...rest } = form.getValues();
+        const { query, ...rest } = form.getValues();
 
         if (step === steps.length - 1) {
             onAsyncActionModal(() => createGroupApi.create({ ...rest, participants: [...selectedUsers.keys()] }), {
                 onReject: (error) => {
-                    if (error instanceof ApiException) {
-                        error.response.data.errors?.forEach(({ path, message }) => {
-                            steps[step].fields.includes(path as FieldPath<CreateGroupType>) && form.setError(path as FieldPath<CreateGroupType>, { message }, { shouldFocus: true });  
-                        })
-                    }
+                    error instanceof ApiException && error.response.data.errors?.forEach(({ path, message }) => {
+                        steps[step].fields.includes(path as FieldPath<CreateGroupType>) && form.setError(path as FieldPath<CreateGroupType>, { message }, { shouldFocus: true });  
+                    })
                 },
                 onResolve: ({ data }) => navigate(`/group/${data._id}`)
             });

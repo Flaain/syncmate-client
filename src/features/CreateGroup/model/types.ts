@@ -2,7 +2,7 @@ import React from 'react';
 import { z } from 'zod';
 import { createGroupSchema } from './schemas';
 import { UseFormReturn } from 'react-hook-form';
-import { SearchUser } from '@/widgets/Feed/types';
+import { SearchUser } from '@/widgets/Feed/model/types';
 
 export type CreateGroupType = z.infer<typeof createGroupSchema>;
 export type CreateGroupParams = Omit<CreateGroupType, 'username'> & { participants: Array<string> };

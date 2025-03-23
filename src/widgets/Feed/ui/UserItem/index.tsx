@@ -4,7 +4,8 @@ import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useLayout } from '@/shared/model/store';
-import { UserFeed } from '../../types';
+import { UserFeed } from '../../model/types';
+import { Image } from '@/shared/ui/Image';
 
 export const UserItem = ({ user }: { user: UserFeed }) => {
     const draft = useLayout((state) => state.drafts).get(user._id);
@@ -23,7 +24,11 @@ export const UserItem = ({ user }: { user: UserFeed }) => {
                     )
                 }
             >
-                <AvatarByName name={user.name} size='lg' />
+                <Image
+                    src={user.avatar?.url}
+                    skeleton={<AvatarByName name={user.name} size='lg' />}
+                    className='object-cover object-center max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] size-full rounded-full'
+                />
                 <div className='flex flex-col items-start w-full'>
                     <Typography as='h2' weight='medium' className={cn(user.isOfficial && 'flex items-center')}>
                         {user.name}

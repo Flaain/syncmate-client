@@ -63,19 +63,13 @@ export const CreateGroup = () => {
                         size='lg'
                         variant='secondary'
                         className='w-1/3'
-                        onClick={!step ? onCloseModal : handleBack}
+                        onClick={!step ? onCloseModal() : handleBack}
                         disabled={isModalDisabled}
                     >
                         {!step ? 'Cancel' : 'Back'}
                     </Button>
                     <Button type='submit' className='w-full' disabled={isNextButtonDisabled}>
-                        {isModalDisabled ? (
-                            <LoaderCircle className='w-5 h-5 animate-loading' />
-                        ) : step === steps.length - 1 ? (
-                            'Create'
-                        ) : (
-                            'Next'
-                        )}
+                        {isModalDisabled ? <LoaderCircle className='w-5 h-5 animate-loading' /> : step === steps.length - 1 ? 'Create' : 'Next'}
                     </Button>
                 </div>
             </form>

@@ -1,10 +1,9 @@
 import { cva } from 'class-variance-authority';
 import { cn } from '../lib/utils/cn';
-import { User } from 'lucide-react';
 import { ProfileIndicator }  from './ProfileIndicator';
 
 export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement> {
-    name?: string;
+    name: string;
     size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
     isOnline?: boolean;
 }
@@ -14,14 +13,14 @@ const avatarVariants = cva(
     {
         variants: {
             size: {
-                sm: 'w-8 h-8 text-md',
-                md: 'w-10 h-10 text-xl',
-                lg: 'w-[50px] h-[50px] text-2xl',
-                xl: 'w-14 h-14 text-3xl',
-                '2xl': 'w-16 h-16 text-4xl',
-                '3xl': 'w-20 h-20 text-5xl',
-                '4xl': 'w-24 h-24 text-6xl',
-                '5xl': 'w-28 h-28 text-7xl'
+                sm: 'size-8 text-md',
+                md: 'size-10 text-xl',
+                lg: 'size-[50px] text-2xl',
+                xl: 'size-14 text-3xl',
+                '2xl': 'size-16 text-4xl',
+                '3xl': 'size-20 text-5xl',
+                '4xl': 'size-24 text-6xl',
+                '5xl': 'size-28 text-7xl'
             }
         },
         defaultVariants: {
@@ -31,14 +30,6 @@ const avatarVariants = cva(
 );
 
 export const AvatarByName = ({ name, className, children, size, isOnline, ...rest }: AvatarByNameProps) => {
-    if (!name) {
-        return (
-            <span {...rest} className={cn(avatarVariants({ size, className }))}>
-                {children || <User />}
-            </span>
-        );
-    }
-
     const nameParts = name.split(' ');
     const firstNameInitial = nameParts[0] ? nameParts[0][0] : '';
     const lastNameInitial = nameParts[1] ? nameParts[1][0] : '';

@@ -41,7 +41,7 @@ export const EditName = () => {
                         )}
                     />
                     <div className='flex items-center gap-2 justify-end mt-2'>
-                        <Button type='button' variant='secondary' onClick={onCloseModal} disabled={isModalDisabled}>
+                        <Button type='button' variant='secondary' onClick={onCloseModal()} disabled={isModalDisabled}>
                             Cancel
                         </Button>
                         <Button type='submit' size='lg' disabled={isModalDisabled}>

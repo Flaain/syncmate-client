@@ -1,39 +1,44 @@
 import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
-import { ApiException } from "@/shared/api/error";
 
-export enum SenderRefPath {
-    USER = 'User',
-    PARTICIPANT = 'Participant'
+export enum SourceRefPath {
+    GROUP = 'Group',
+    CONVERSATION = 'Conversation'
 }
 
-export interface REMOVE_THIS_LATER {
-    _id: string;
-    name?: string;
-    avatar?: Avatar;
-    user: Recipient;
+export interface REMOVE_THIS_LATER extends Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'> {
+    participant?: {
+        _id: string;
+        name?: string;
+        avatar?: Avatar;
+    };
 }
 
 export type MessageSender =
-    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; senderRefPath: SenderRefPath.USER }
-    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION }
+    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
 
 export type ReplySender =
-    | { sender: Pick<Recipient, '_id' | 'name'>; senderRefPath: SenderRefPath.USER }
-    | { sender: REMOVE_THIS_LATER; senderRefPath: SenderRefPath.PARTICIPANT };
+    | { sender: Pick<Recipient, '_id' | 'name'>; sourceRefPath: SourceRefPath.CONVERSATION  }
+    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
 
 export type Message = {
     _id: string;
-    hasBeenRead: boolean;
     hasBeenEdited: boolean;
     text: string;
     replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
     inReply?: boolean;
+    readedAt?: string;
+    hasBeenRead?: boolean;
+    alreadyRead?: boolean;
     createdAt: string;
     updatedAt: string;
-    abort?: () => void;
-    isPending?: boolean;
-    error?: ApiException['config'];
+    status?: 'pending' | 'error';
+    actions?: {
+        abort?: () => void;
+        remove?: () => void;
+        resend?: () => void;
+    }
 } & MessageSender;
 
 export interface UseMessageProps {

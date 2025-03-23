@@ -9,11 +9,12 @@ import { ApiException } from "@/shared/api/error";
 export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => SidebarStore): SidebarStore['actions'] => ({
     handleLogout: async () => {
         await sessionApi.logout();
+
         useSession.getState().actions.onSignout();
     },
-    getFeed: async () => {
+    getFeed: async (signal?: AbortSignal) => {
         try {
-            const { data } = await sidebarApi.get();
+            const { data } = await sidebarApi.get(signal);
 
             set({ localResults: data });
         } catch (error) {
@@ -22,8 +23,12 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
         }
     },
     resetSearch: () => {
-        set({ searchValue: '', globalResults: null });
-        get().searchRef?.current?.focus();
+        const { abortController, searchRef } = get();
+        
+        abortController.abort('Search request was cancelled');
+        searchRef?.current?.focus();
+
+        set({ searchValue: '', globalResults: null, isSearching: false, abortController: new AbortController() });
     },
     handleSearch: ({ target: { value } }) => {
         if (!value) return get().actions.resetSearch();
@@ -39,7 +44,7 @@ export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => S
     },
     delayedSearch: debounce(async (value: string) => {
         try {
-            const { data } = await sidebarApi.search({ query: value });
+            const { data } = await sidebarApi.search({ query: value, signal: get().abortController.signal });
 
             set({ globalResults: data });
         } catch (error) {

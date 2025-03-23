@@ -10,9 +10,7 @@ const initialState: Omit<ChatStore, 'actions'> = {
     params: null!,
     isContextActionsBlocked: false,
     showDetails: false,
-    previousMessagesCursor: null,
-    messages: [],
-    isPreviousMessagesLoading: false,
+    messages: { data: [], nextCursor: null },
     selectedMessages: new Map(),
     mode: 'default',
     showAnchor: false,
@@ -34,7 +32,9 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
             event.key === 'Escape' && navigate('/');
         });
 
-        return () => removeEventListener();
+        return () => {
+            removeEventListener();
+        };
     }, [])
 
     return <ChatContext.Provider value={store}>{children}</ChatContext.Provider>;

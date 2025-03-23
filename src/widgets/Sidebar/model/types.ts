@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { WrappedInPagination } from '@/shared/model/types';
-import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/types';
+import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/model/types';
 
 export interface FeedUpdateParams {
     lastActionAt?: string;
@@ -15,6 +15,13 @@ export interface LocalFeedItemWrapper<T extends FeedTypes, I extends Conversatio
     createdAt: string;
     item: I;
     type: T;
+}
+
+export interface FeedUnreadCounterEvent {
+    itemId: string;
+    count?: number;
+    action: 'set' | 'dec';
+    ctx: 'conversation' | 'group';
 }
 
 export type ExctactLocalFeedItem<T extends FeedTypes> = Extract<LocalFeed, { type: T }>;
@@ -41,6 +48,7 @@ export interface LocalResults {
 
 export interface SidebarStore {
     localResults: LocalResults;
+    abortController: AbortController;
     globalResults: WrappedInPagination<UserFeed | GroupGlobalFeed> | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
@@ -51,6 +59,6 @@ export interface SidebarStore {
         handleLogout: () => Promise<void>;
         handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
         delayedSearch: (value: string) => void;
-        getFeed: () => Promise<void>;
+        getFeed: (signal?: AbortSignal) => Promise<void>;
     };
 }

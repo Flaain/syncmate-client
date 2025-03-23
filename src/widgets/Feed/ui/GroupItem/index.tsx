@@ -5,7 +5,7 @@ import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useSession } from '@/entities/session';
 import { useLayout } from '@/shared/model/store';
-import { GroupFeedItemProps } from '../../types';
+import { GroupFeedItemProps } from '../../model/types';
 
 export const GroupItem = (props: GroupFeedItemProps) => {
     const group = props.isGlobal ? props.group : props.group.item;
@@ -26,7 +26,7 @@ export const GroupItem = (props: GroupFeedItemProps) => {
                     )
                 }
             >
-                <AvatarByName size='lg' />
+                <AvatarByName name={group.name} size='lg' />
                 <div className='flex flex-col items-start w-full'>
                     <Typography as='h2' weight='medium' className={cn(group.isOfficial && 'flex items-center')}>
                         {group.name}

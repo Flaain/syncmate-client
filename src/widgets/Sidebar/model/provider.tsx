@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStore } from 'zustand';
-import { FeedUpdateParams, LocalFeed, SidebarStore } from './types';
+import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } from './types';
 import { sidebarActions } from './actions';
 import { useSocket } from '@/shared/model/store';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
-import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/types';
+import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { TypingParticipant } from '@/shared/ui/Typography';
 import { SidebarContext } from './context';
@@ -12,6 +12,7 @@ import { SidebarContext } from './context';
 const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
     searchRef: React.createRef(),
+    abortController: new AbortController(),
     localResultsError: null,
     globalResults: null,
     isSearching: false,
@@ -24,10 +25,8 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
     const socket = useSocket((state) => state.socket);
 
     React.useEffect(() => {
-        store.getState().actions.getFeed();
-    }, [])
+        store.getState().actions.getFeed(store.getState().abortController.signal);
 
-    React.useEffect(() => {
         socket?.on(FEED_EVENTS.CREATE, (createFeedItem: LocalFeed) => {
             store.setState((prevState) => {
                 const index = prevState.localResults.feed.findIndex((feedItem) => feedItem._id === createFeedItem._id);
@@ -35,7 +34,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 if (index !== -1) {
                     const feed = [...prevState.localResults.feed];
                     
-                    feed[index] = createFeedItem;
+                    feed[index] = {
+                        ...feed[index],
+                        lastActionAt: createFeedItem.lastActionAt,
+                        item: { ...feed[index].item, ...createFeedItem.item }
+                    } as any;
                     
                     return { localResults: { ...prevState.localResults, feed: feed.sort(getSortedFeedByLastMessage) } };
                 }
@@ -61,18 +64,55 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
 
         socket?.on(FEED_EVENTS.UPDATE, ({ itemId, lastActionAt, lastMessage, shouldSort }: FeedUpdateParams) => {
             store.setState((prevState) => { 
-                const updatedFeed = prevState.localResults.feed.map((feedItem) => {
-                    return feedItem.item._id === itemId
-                        ? {
-                              ...feedItem,
-                              lastActionAt: lastActionAt ?? feedItem.lastActionAt,
-                              item: { ...feedItem.item, lastMessage }
-                          }
-                        : feedItem;
-                }) as Array<LocalFeed>;
+                const updatedFeed = prevState.localResults.feed.map((feedItem: any) => {
+                    if (feedItem.item._id === itemId) {
+                        return {
+                            ...feedItem,
+                            lastActionAt: lastActionAt ?? feedItem.lastActionAt,
+                            item: { ...feedItem.item, lastMessage: { ...feedItem.item.lastMessage, ...lastMessage } }
+                        };
+                    }
+
+                    return feedItem;
+                });
     
-                return { localResults: { ...prevState.localResults, feed: shouldSort ? updatedFeed.sort(getSortedFeedByLastMessage) : updatedFeed } };
+                return {
+                    localResults: {
+                        ...prevState.localResults,
+                        feed: shouldSort ? updatedFeed.sort(getSortedFeedByLastMessage) : updatedFeed
+                    }
+                };
             })
+        });
+
+        socket?.on(FEED_EVENTS.UNREAD_COUNTER, ({ itemId, count, action, ctx }: FeedUnreadCounterEvent) => {
+            store.setState((prevState) => {
+                const actions: Record<typeof action, (unreadMessages?: number) => number> = {
+                    set: () => count ?? 0,
+                    dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
+                };
+
+                const source: Record<typeof ctx, (feedItem: any) => any> = {
+                    conversation: (feedItem: any) => {
+                        if (feedItem.item._id === itemId) {
+                            return {
+                                ...feedItem,
+                                item: {
+                                    ...feedItem.item,
+                                    unreadMessages: actions[action](feedItem.item.unreadMessages)
+                                }
+                            };
+                        }
+
+                        return feedItem;
+                    },
+                    group: () => {}
+                };
+
+                return {
+                    localResults: { ...prevState.localResults, feed: prevState.localResults.feed.map(source[ctx]) }
+                };
+            });
         });
 
         socket?.on(FEED_EVENTS.DELETE, (id: string) => {
@@ -92,8 +132,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                         if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
-                                item: { ...feedItem.item, participantsTyping: [...(feedItem.item.participantsTyping ?? []), data.participant] } 
-                            }
+                                item: {
+                                    ...feedItem.item,
+                                    participantsTyping: [...(feedItem.item.participantsTyping ?? []), data.participant]
+                                }
+                            };
                         }
         
                         return feedItem;
@@ -124,6 +167,11 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
         })
 
         return () => {
+            store.getState().abortController.abort();
+            store.setState({ abortController: new AbortController() });
+
+            socket?.off(FEED_EVENTS.UNREAD_COUNTER);
+
             socket?.off(FEED_EVENTS.CREATE);
             socket?.off(FEED_EVENTS.UPDATE);
             socket?.off(FEED_EVENTS.DELETE);

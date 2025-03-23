@@ -1,7 +1,7 @@
 import { ConversationItem, GroupItem, UserItem } from '@/widgets/Feed';
 import { AdsItem } from '@/widgets/Feed/ui/AdsItem';
 import { ExctactLocalFeedItem, LocalResults } from './types';
-import { AdsFeed, FeedTypes, GroupFeed, UserFeed } from '@/widgets/Feed/types';
+import { AdsFeed, FeedTypes, GroupFeed, UserFeed } from '@/widgets/Feed/model/types';
 
 export const localFilters: Record<FeedTypes.CONVERSATION | FeedTypes.GROUP, (item: any, value: string) => boolean> = {
     Conversation: ({ item: { recipient: { name, login } } }: ExctactLocalFeedItem<FeedTypes.CONVERSATION>, value) => {

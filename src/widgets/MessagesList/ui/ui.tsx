@@ -1,12 +1,13 @@
 import { Button } from '@/shared/ui/button';
-import { Loader2 } from 'lucide-react';
 import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
 import { useMessagesList } from '../model/useMessagesList';
 import { MessagesListProps } from '../model/types';
 import { Typography } from '@/shared/ui/Typography';
+import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
+import { Loader2 } from 'lucide-react';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
-    const { groupedMessages, canFetch, isPreviousMessagesLoading, previousMessagesCursor, listRef } = useMessagesList(getPreviousMessages);
+    const { groupedMessages, canFetch, isLoading, isError, isRefetching, refetch, call, listRef } = useMessagesList(getPreviousMessages);
 
     if (!groupedMessages.length) {
         return (
@@ -24,28 +25,27 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
             ref={listRef}
             className='relative flex flex-col justify-start w-full h-full p-5 max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
         >
-            {previousMessagesCursor && (
+            {isLoading && (
+                <>
+                    <MessageSkeleton />
+                    <MessageSkeleton />
+                    <MessageSkeleton />
+                </>
+            )}
+            {canFetch && (
                 <li className='flex justify-center items-center'>
                     <Button
                         variant='text'
                         className='p-0 dark:text-primary-white/30 text-primary-white'
-                        disabled={!canFetch}
-                        onClick={getPreviousMessages}
+                        disabled={isLoading || isRefetching}
+                        onClick={isError ? refetch : call}
                     >
-                        {isPreviousMessagesLoading ? (
-                            <Loader2 className='w-6 h-6 animate-spin' />
-                        ) : (
-                            'Load previous messages'
-                        )}
+                        {isError ? (isRefetching ? (<Loader2 className='size-6 animate-spin' />) : 'try again') : 'Load previous messages'}
                     </Button>
                 </li>
             )}
             {groupedMessages.map((messages, index, array) => (
-                <GroupedMessages
-                    key={messages[0]._id}
-                    messages={messages}
-                    isLastGroup={index === array.length - 1}
-                />
+                <GroupedMessages key={messages[0]._id} messages={messages} isLastGroup={index === array.length - 1} />
             ))}
         </ul>
     );

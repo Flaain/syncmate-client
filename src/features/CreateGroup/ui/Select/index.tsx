@@ -14,13 +14,13 @@ export const Select = () => {
     const { form, handleSearchUser, handleSelect, handleRemove, searchedUsers, selectedUsers } = useCreateGroup();
     
     const isModalDisabled = useModal((state) => state.isModalDisabled);
-    const searchQuery = form.getValues('username');
+    const searchQuery = form.getValues('query');
     const isResultsEmpty = searchQuery?.trim().length! > MIN_USER_SEARCH_LENGTH && !isModalDisabled && !searchedUsers.length;
 
     return (
         <>
             <FormField
-                name='username'
+                name='query'
                 control={form.control}
                 rules={{ onChange: handleSearchUser }}
                 render={({ field }) => (
