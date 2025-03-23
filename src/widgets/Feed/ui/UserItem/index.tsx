@@ -4,7 +4,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useLayout } from '@/shared/model/store';
-import { UserFeed } from '../../types';
+import { UserFeed } from '../../model/types';
 import { Image } from '@/shared/ui/Image';
 
 export const UserItem = ({ user }: { user: UserFeed }) => {

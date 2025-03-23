@@ -6,7 +6,7 @@ import { ProfileIndicator } from '@/shared/ui/ProfileIndicator';
 import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useLayout } from '@/shared/model/store';
-import { FeedTypes } from '../../types';
+import { FeedTypes } from '../../model/types';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { ExctactLocalFeedItem } from '@/widgets/Sidebar/model/types';
 

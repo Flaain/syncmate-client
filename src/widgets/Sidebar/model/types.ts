@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { WrappedInPagination } from '@/shared/model/types';
-import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/types';
+import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/model/types';
 
 export interface FeedUpdateParams {
     lastActionAt?: string;

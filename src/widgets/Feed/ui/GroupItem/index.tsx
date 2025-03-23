@@ -5,7 +5,7 @@ import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { useSession } from '@/entities/session';
 import { useLayout } from '@/shared/model/store';
-import { GroupFeedItemProps } from '../../types';
+import { GroupFeedItemProps } from '../../model/types';
 
 export const GroupItem = (props: GroupFeedItemProps) => {
     const group = props.isGlobal ? props.group : props.group.item;

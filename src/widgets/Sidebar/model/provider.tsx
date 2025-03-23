@@ -4,7 +4,7 @@ import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } fro
 import { sidebarActions } from './actions';
 import { useSocket } from '@/shared/model/store';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
-import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/types';
+import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { TypingParticipant } from '@/shared/ui/Typography';
 import { SidebarContext } from './context';
@@ -146,7 +146,6 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
         })
 
         socket?.on(FEED_EVENTS.STOP_TYPING, (data: { _id: string; participant: Omit<TypingParticipant, 'name'> }) => {
-            console.log(data);
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,

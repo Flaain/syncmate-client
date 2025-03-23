@@ -2,19 +2,15 @@ import FeedSkeleton from './Skeletons/FeedSkeleton';
 import { Typography } from '@/shared/ui/Typography';
 import { useSidebar } from '@/widgets/Sidebar/model/context';
 import { useShallow } from 'zustand/shallow';
-import { FeedTypes } from '../types';
+import { FeedTypes } from '../model/types';
 import { Image } from '@/shared/ui/Image';
 import { getImageUrl } from '@/shared/lib/utils/getImageUrl';
 import { Button } from '@/shared/ui/button';
 import { globalFeedItems, globalFilters, localFeedItems, localFilters } from '@/widgets/Sidebar/model/constants';
+import { feedSelector } from '../model/selectors';
 
 export const Feed = () => {
-    const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow((state) => ({
-        isSearching: state.isSearching,
-        searchValue: state.searchValue,
-        localResults: state.localResults.feed,
-        globalResults: state.globalResults
-    })));
+    const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow(feedSelector));
 
     const filteredLocalResults = localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue));
     const filteredGlobalResults = globalResults?.items?.filter((item) => !globalFilters[item.type](item, localResults));

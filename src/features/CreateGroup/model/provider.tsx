@@ -9,7 +9,7 @@ import { useModal } from "@/shared/lib/providers/modal";
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
 import { CreateGroupContext } from "./context";
 import { useShallow } from "zustand/shallow";
-import { SearchUser } from "@/widgets/Feed/types";
+import { SearchUser } from "@/widgets/Feed/model/types";
 import { profileApi } from "@/entities/profile";
 import { createGroupApi } from "../api";
 import { ApiException } from "@/shared/api/error";
