@@ -62,7 +62,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                     )}
                     <div
                         className={cn(
-                            'py-2 px-3 xl:m-0 relative max-w-[500px]',
+                            'py-2 px-3 xl:m-0 relative max-w-[480px]',
                             isMessageFromMe ? 'ml-auto' : 'mr-auto',
                             inReply && 'flex flex-col gap-2',
                             getBubblesStyles({
@@ -77,14 +77,14 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                                 as='p'
                                 weight='semibold'
                                 className={cn(
-                                    'line-clamp-1 dark:text-primary-blue text-xs flex flex-col py-1 px-2 w-full rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
+                                    'dark:text-primary-blue flex flex-col text-xs box-border py-1 px-2 rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
                                 )}
                             >
                                 {!replyTo ? 'Deleted Message' : replyTo.sourceRefPath === SourceRefPath.CONVERSATION ? replyTo.sender.name : (replyTo.sender.participant?.name || replyTo.sender.name)}
                                 {!!replyTo && (
                                     <Typography
                                         className={cn(
-                                            'text-xs line-clamp-1',
+                                            'text-xs line-clamp-1 min-w-[100px]',
                                             isMessageFromMe
                                                 ? 'dark:text-primary-dark-200 text-primary-white'
                                                 : 'dark:text-primary-white text-primary-dark-50'
@@ -98,7 +98,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                         <Typography
                             as='p'
                             className={cn(
-                                'flex items-center gap-2 flex-wrap break-all overflow-y-hidden',
+                                'flex items-center gap-2 flex-wrap whitespace-pre-wrap overflow-y-hidden',
                                 isMessageFromMe ? 'dark:text-primary-dark-200' : 'text-primary-white'
                             )}
                         >
@@ -106,7 +106,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             <Typography
                                 size='sm'
                                 className={cn(
-                                    'mt-0.5 ml-auto flex items-center gap-2',
+                                    'ml-auto flex items-center gap-2 self-end',
                                     isMessageFromMe
                                         ? 'dark:text-primary-dark-50/20 text-primary-white'
                                         : 'dark:text-primary-white/20'
