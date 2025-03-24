@@ -23,7 +23,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     return (
         <ul
             ref={listRef}
-            className='relative flex flex-col justify-start w-full h-full p-5 max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
+            className='relative flex flex-col justify-start w-full h-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
         >
             {isLoading && (
                 <>

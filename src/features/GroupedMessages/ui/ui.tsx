@@ -1,13 +1,13 @@
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 import { MessageGroupProps } from '../model/types';
-import { cn } from '@/shared/lib/utils/cn';
 import { Message } from '@/entities/Message';
 import { useSession } from '@/entities/session';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
 import { Message as IMessage, SourceRefPath } from '@/entities/Message/model/types';
 import { useLayout } from '@/shared/model/store';
+import { cn } from '@/shared/lib/utils/cn';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
     const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow((state) => ({
@@ -20,6 +20,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     const userId = useSession((state) => state.userId);
     const message = messages[0];
     const isMessageFromMe = message.sender._id === userId;
+    const isSelecting = mode === 'selecting';
 
     const handleDoubleClick = (message: IMessage) => {
         useLayout.setState((prevState) => {
@@ -34,13 +35,13 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     }
 
     return (
-        <li className={cn('flex items-end gap-3 xl:self-start w-full', isMessageFromMe ? 'self-end' : 'self-start')}>
+        <li className='flex items-end gap-3 xl:self-start w-full'>
             <Image
                 src={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.avatar?.url : (message.sender.participant?.avatar?.url || message.sender.avatar?.url)}
-                skeleton={<AvatarByName name={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.name : (message.sender.participant?.name || message.sender.name)} className='sticky bottom-0 max-xl:hidden' />}
+                skeleton={<AvatarByName name={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.name : (message.sender.participant?.name || message.sender.name)} className='sticky bottom-0 max-xl:hidden z-[999]' />}
                 className='object-cover min-w-[40px] max-w-[40px] h-10 sticky bottom-0 rounded-full max-xl:hidden z-[999]'
             />
-            <ul className='flex flex-col gap-1 w-full'>
+            <ul className={cn('flex flex-col gap-1 w-full xl:items-start', isMessageFromMe ? 'items-end' : 'items-start')}>
                 {messages.map((message, index, array) => (
                     <Message
                         key={message._id}
@@ -49,8 +50,8 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
                         isLastGroup={isLastGroup}
                         isLast={index === array.length - 1}
                         message={message}
-                        onClick={mode === 'selecting' && isMessageFromMe ? () => handleSelectMessage(message) : undefined}
-                        onDoubleClick={mode !== 'selecting' ? () => handleDoubleClick(message) : undefined}
+                        onClick={isSelecting && isMessageFromMe ? () => handleSelectMessage(message) : undefined}
+                        onDoubleClick={!isSelecting ? () => handleDoubleClick(message) : undefined}
                     />
                 ))}
             </ul>

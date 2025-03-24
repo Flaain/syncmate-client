@@ -3,10 +3,11 @@ import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 
 export const MessageSkeleton = () => {
     const index = Math.round(Math.random());
+    const isEven = !(index % 2);
 
     return (
         <li className='flex gap-2'>
-            <PreAnimatedSkeleton className='max-xl:hidden self-end dark:bg-primary-dark-50/50 min-w-[40px] max-w-[40px] h-10 space-y-5 rounded-full' />
+            <PreAnimatedSkeleton className='max-xl:hidden self-end dark:bg-primary-dark-50 min-w-[40px] max-w-[40px] h-10 space-y-5 rounded-full' />
             <div
                 className={cn(
                     'flex items-center w-full gap-5 relative',
@@ -16,8 +17,8 @@ export const MessageSkeleton = () => {
                 <PreAnimatedSkeleton
                     style={{ height: `${Math.floor(Math.random() * 101) + 40}px` }}
                     className={cn(
-                        'dark:bg-primary-dark-50/50 box-border pl-5 pr-12 py-1 mt-2 w-full max-w-[500px] flex items-end gap-3 self-start',
-                        index % 2
+                        'dark:bg-primary-dark-50 box-border pl-5 pr-12 py-1 mt-2 w-full max-w-[500px] flex items-end gap-3 self-start',
+                        !isEven
                             ? 'rounded-es-[15px] rounded-ss-[15px] xl:rounded-ee-[15px] rounded-se-[15px] rounded-ee-[0px] xl:rounded-ss-[15px] xl:rounded-es-[0px]'
                             : 'rounded-ss-[15px] rounded-es-[0px] rounded-se-[15px] rounded-ee-[15px]'
                     )}
@@ -27,9 +28,9 @@ export const MessageSkeleton = () => {
                     height='20'
                     viewBox='0 0 11 20'
                     fill='currentColor'
-                    className={cn('text-gray-200/10 absolute z-10 bottom-0 w-[11px] h-5 block', {
-                        ['-right-[11px] xl:-left-[11px] max-xl:scale-x-[-1]']: index % 2,
-                        ['-left-[11px]']: !(index % 2)
+                    className={cn('text-primary-dark-50 absolute z-10 bottom-0 w-[11px] h-5 block', {
+                        ['-right-[11px] xl:-left-[11px] max-xl:scale-x-[-1]']: !isEven,
+                        ['-left-[11px]']: isEven
                     })}
                     xmlns='http://www.w3.org/2000/svg'
                 >

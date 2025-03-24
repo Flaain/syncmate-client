@@ -4,13 +4,16 @@ import { useLocation } from 'react-router-dom';
 import { Typography } from '@/shared/ui/Typography';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
+import { Pattern } from './Pattern';
+import { PreAnimatedSkeleton } from './PreAnimatedSkeleton';
 
 export const ChatSkeleton = () => {
     const { state } = useLocation();
 
     return (
-        <OutletContainer className='flex-col'>
-            <div className='min-h-[70px] flex items-center self-start w-full px-5 py-3 box-border dark:bg-primary-dark-100 sticky top-0 z-[999]'>
+        <OutletContainer className='relative flex-col'>
+            <Pattern />
+            <div className='sticky min-h-[70px] flex items-center self-start w-full px-5 py-3 box-border dark:bg-primary-dark-100 top-0 z-[999]'>
                 {state && (
                     <Typography
                         as='h2'
@@ -31,7 +34,7 @@ export const ChatSkeleton = () => {
             <ul className='flex flex-col px-5 gap-5 py-2 overflow-hidden'>
                 {[...new Array(12)].map((_, index) => <MessageSkeleton key={index} />)}
             </ul>
-            <div className='sticky bottom-0 w-full min-h-[70px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'></div>
+            <PreAnimatedSkeleton className='sticky bottom-0 w-full min-h-[70px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white' />
         </OutletContainer>
     );
 };

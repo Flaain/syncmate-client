@@ -9,7 +9,7 @@ export const getBubblesStyles = ({ isMessageFromMe, isFirst, isLast }: { isMessa
         }
     } else {
         return {
-            ['self-start dark:bg-primary-dark-50 bg-primary-gray rounded-se-[15px] rounded-ee-[15px]']: true,
+            ['dark:bg-primary-dark-50 bg-primary-gray rounded-se-[15px] rounded-ee-[15px]']: true,
             ['rounded-ss-[5px] rounded-es-[0px] rounded-ee-[15px]']: isLast,
             ['rounded-ss-[15px] rounded-es-[5px]']: isFirst,
             ['rounded-es-[5px] rounded-ee-[15px] rounded-ss-[5px]']: !isFirst && !isLast,

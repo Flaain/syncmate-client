@@ -30,10 +30,9 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                     {...rest}
                     ref={ref}
                     className={cn(
-                        'flex gap-2 relative w-full z-10',
+                        'flex gap-2 relative z-10 items-start',
                         !isMessageFromMe && isFirst && 'flex-col',
-                        isSelected &&
-                            'xl:after:-left-1/2 after:-right-1/2 after:w-[200%] after:z-[-1] after:absolute after:-top-1 after:bottom-0 after:dark:bg-primary-dark-50',
+                        isSelected && 'xl:after:-left-full after:-right-full after:w-svw after:z-[-1] after:absolute after:-top-1 after:-bottom-1 after:dark:bg-primary-dark-50',
                         className
                     )}
                 >
@@ -62,8 +61,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                     )}
                     <div
                         className={cn(
-                            'py-2 px-3 xl:m-0 relative max-w-[480px]',
-                            isMessageFromMe ? 'ml-auto' : 'mr-auto',
+                            'py-2 px-3 xl:m-0 relative max-w-[480px] box-border',
                             inReply && 'flex flex-col gap-2',
                             getBubblesStyles({
                                 isFirst,
@@ -77,17 +75,15 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                                 as='p'
                                 weight='semibold'
                                 className={cn(
-                                    'dark:text-primary-blue flex flex-col text-xs box-border py-1 px-2 rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
+                                    'dark:text-primary-blue flex flex-col self-stretch text-xs py-1 px-2 rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
                                 )}
                             >
                                 {!replyTo ? 'Deleted Message' : replyTo.sourceRefPath === SourceRefPath.CONVERSATION ? replyTo.sender.name : (replyTo.sender.participant?.name || replyTo.sender.name)}
                                 {!!replyTo && (
                                     <Typography
                                         className={cn(
-                                            'text-xs line-clamp-1 min-w-[100px]',
-                                            isMessageFromMe
-                                                ? 'dark:text-primary-dark-200 text-primary-white'
-                                                : 'dark:text-primary-white text-primary-dark-50'
+                                            'text-xs min-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap',
+                                            isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-50'
                                         )}
                                     >
                                         {replyTo.text}
@@ -98,7 +94,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                         <Typography
                             as='p'
                             className={cn(
-                                'flex items-center gap-2 flex-wrap whitespace-pre-wrap overflow-y-hidden',
+                                'flex items-center self-stretch gap-2 flex-wrap whitespace-pre-wrap overflow-y-hidden',
                                 isMessageFromMe ? 'dark:text-primary-dark-200' : 'text-primary-white'
                             )}
                         >

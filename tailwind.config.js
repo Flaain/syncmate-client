@@ -44,6 +44,9 @@ export default {
             animation: {
                 loading: 'loading .5s linear infinite',
                 'caret-blink': 'caret-blink 1.25s ease-out infinite'
+            },
+            backgroundImage: {
+                'chat-pattern': "url('../src/shared/lib/assets/pattern.svg')",
             }
         }
     },

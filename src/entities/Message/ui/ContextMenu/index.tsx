@@ -88,7 +88,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
             asChild
             onEscapeKeyDown={(event) => event.preventDefault()}
             onCloseAutoFocus={() => textareaRef.current?.focus()}
-            className='z-[999] w-auto min-w-[200px] py-2 px-1 dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white border border-solid dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col'
+            className='z-[999] w-[194px] py-2 px-1 dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white border border-solid dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col'
         >
             <ul>
                 <>

@@ -11,16 +11,18 @@ import { MessagesList } from '@/widgets/MessagesList';
 import { OutletDetailsTypes } from '@/shared/model/types';
 import { conversationApi } from '../../api';
 import { useChat } from '@/shared/lib/providers/chat/context';
+import { Pattern } from '@/shared/ui/Pattern';
 
 export const Content = () => {
     const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
 
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
     const showDetails = useChat((state) => state.showDetails);
-  
+
     return (
         <OutletContainer>
-            <div className='flex-1 flex flex-col'>
+            <div className='flex-1 flex flex-col relative'>
+                <Pattern />
                 <OutletHeader
                     name={recipient.name}
                     isOfficial={recipient.isOfficial}

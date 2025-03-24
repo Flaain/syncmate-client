@@ -111,8 +111,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat(({ messages }) => {
                 const array = messages.data.reduce((acc, message) => {
-                    if (messageIds.includes(message._id) && useLayout.getState().drafts.get(recipientId)?.selectedMessage?._id === message._id) {
-                        useLayout.setState(({ drafts }) => {
+                    if (messageIds.includes(message._id)) {
+                        useLayout.getState().drafts.get(recipientId)?.selectedMessage?._id === message._id && useLayout.setState(({ drafts }) => {
                             const newDrafts = new Map([...drafts]);
 
                             newDrafts.delete(recipientId);
@@ -123,7 +123,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
                         return acc;
                     };
 
-                    return [...acc, message.inReply && messageIds.includes(message.replyTo!._id) ? { ...message, replyTo: undefined } : message];
+                    return [...acc, message.inReply && messageIds.includes(message.replyTo?._id!) ? { ...message, replyTo: undefined } : message];
                 }, [] as Array<Message>);
 
                 return { messages: { ...messages, data: array } };
