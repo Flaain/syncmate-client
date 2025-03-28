@@ -1,32 +1,14 @@
-import { Avatar } from "@/entities/profile/model/types";
 import { Recipient } from "@/pages/Conversation/model/types";
 
 export enum SourceRefPath {
-    GROUP = 'Group',
     CONVERSATION = 'Conversation'
 }
-
-export interface REMOVE_THIS_LATER extends Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'> {
-    participant?: {
-        _id: string;
-        name?: string;
-        avatar?: Avatar;
-    };
-}
-
-export type MessageSender =
-    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION }
-    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
-
-export type ReplySender =
-    | { sender: Pick<Recipient, '_id' | 'name'>; sourceRefPath: SourceRefPath.CONVERSATION  }
-    | { sender: REMOVE_THIS_LATER; sourceRefPath: SourceRefPath.GROUP };
 
 export type Message = {
     _id: string;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & ReplySender;
+    replyTo?: Pick<Message, '_id' | 'text'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION };
     inReply?: boolean;
     readedAt?: string;
     hasBeenRead?: boolean;
@@ -38,8 +20,9 @@ export type Message = {
         abort?: () => void;
         remove?: () => void;
         resend?: () => void;
-    }
-} & MessageSender;
+    };
+    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION;
+}
 
 export interface UseMessageProps {
     message: Message;

@@ -19,15 +19,6 @@ export enum CONVERSATION_EVENTS {
     STOP_TYPING = 'conversation.stop.typing'
 }
 
-export enum GROUP_EVENTS {
-    JOIN = 'group.join',
-    LEAVE = 'group.leave',
-    MESSAGE_READ = 'group.message.read',
-    MESSAGE_SEND = 'group.message.send',
-    MESSAGE_EDIT = 'group.message.edit',
-    MESSAGE_DELETE = 'group.message.delete',
-}
-
 export interface ConversationStore {
     conversation: Omit<Conversation, 'messages'>;
     isRecipientTyping: boolean;

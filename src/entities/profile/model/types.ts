@@ -1,5 +1,3 @@
-import { GroupParticipant } from "@/pages/Group/model/types";
-
 export enum PRESENCE {
     ONLINE = 'online',
     OFFLINE = 'offline'
@@ -7,11 +5,9 @@ export enum PRESENCE {
 
 export interface ProfileStore {
     profile: Profile;
-    participant?: GroupParticipant;
     isUploadingAvatar: boolean;
     actions: {
         getProfile: () => Promise<void>;
-        setGroupParticipant: (participant?: GroupParticipant) => void;
         handleUploadAvatar: (event: React.ChangeEvent<HTMLInputElement>) => void;
         handleSetStatus: (status: string) => void;
     };

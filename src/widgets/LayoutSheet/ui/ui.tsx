@@ -1,18 +1,17 @@
+import { useProfile } from '@/entities/profile';
+import { useTheme } from '@/entities/theme';
+import { APP_VERSION } from '@/shared/constants';
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
-import { Switch } from '@/shared/ui/Switch';
-import { Typography } from '@/shared/ui/Typography';
+import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
+import { cn } from '@/shared/lib/utils/cn';
+import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
+import { Switch } from '@/shared/ui/Switch';
+import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
-import { Archive, Moon, Users, Settings as SettingsIcon } from 'lucide-react';
-import { cn } from '@/shared/lib/utils/cn';
-import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
-import { useTheme } from '@/entities/theme';
-import { SettingsProvider, Settings } from '@/widgets/Settings';
-import { useLayout } from '@/shared/model/store';
-import { useProfile } from '@/entities/profile';
-import { CreateGroup, CreateGroupProvider } from '@/features/CreateGroup';
-import { APP_VERSION } from '@/shared/constants';
+import { Settings, SettingsProvider } from '@/widgets/Settings';
+import { Moon, Settings as SettingsIcon } from 'lucide-react';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
@@ -44,32 +43,6 @@ export const LayoutSheet = () => {
                 </Typography>
             </div>
             <ul className='flex flex-col gap-2'>
-                <li className='first:my-4 first:py-1 first:border-y dark:first:border-primary-dark-50 first:border-primary-dark-200'>
-                    <Button variant='ghost' className='rounded-none flex items-center justify-start gap-4 w-full'>
-                        <Archive className={listIconStyle} />
-                        <Typography weight='medium'>Archived chats</Typography>
-                    </Button>
-                </li>
-                <li className='first:my-4 first:py-1 first:border-y dark:first:border-primary-dark-50 first:border-primary-dark-200'>
-                    <Button
-                        variant='ghost'
-                        className='rounded-none flex items-center justify-start gap-4 w-full'
-                        onClick={() =>
-                            onSheetAction({
-                                withHeader: false,
-                                content: (
-                                    <CreateGroupProvider>
-                                        <CreateGroup />
-                                    </CreateGroupProvider>
-                                ),
-                                bodyClassName: 'w-[450px] p-3 h-auto'
-                            })
-                        }
-                    >
-                        <Users className={listIconStyle} />
-                        <Typography weight='medium'>New Group</Typography>
-                    </Button>
-                </li>
                 <li className='first:my-4 first:py-1 first:border-y dark:first:border-primary-dark-50 first:border-primary-dark-200'>
                     <Button
                         variant='ghost'

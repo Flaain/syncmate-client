@@ -1,6 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
 import { WrappedInPagination } from '@/shared/model/types';
-import { AdsFeed, ConversationFeed, FeedTypes, GroupFeed, GroupGlobalFeed, UserFeed } from '@/widgets/Feed/model/types';
+import { AdsFeed, ConversationFeed, FeedTypes, UserFeed } from '@/widgets/Feed/model/types';
 
 export interface FeedUpdateParams {
     lastActionAt?: string;
@@ -9,7 +9,7 @@ export interface FeedUpdateParams {
     shouldSort?: boolean;
 }
 
-export interface LocalFeedItemWrapper<T extends FeedTypes, I extends ConversationFeed | GroupFeed | AdsFeed> {
+export interface LocalFeedItemWrapper<T extends FeedTypes, I extends ConversationFeed | AdsFeed> {
     _id: string;
     lastActionAt: string;
     createdAt: string;
@@ -21,14 +21,13 @@ export interface FeedUnreadCounterEvent {
     itemId: string;
     count?: number;
     action: 'set' | 'dec';
-    ctx: 'conversation' | 'group';
+    ctx: 'conversation';
 }
 
 export type ExctactLocalFeedItem<T extends FeedTypes> = Extract<LocalFeed, { type: T }>;
 
 export type LocalFeed =
     | LocalFeedItemWrapper<FeedTypes.CONVERSATION, ConversationFeed>
-    | LocalFeedItemWrapper<FeedTypes.GROUP, GroupFeed>
     | LocalFeedItemWrapper<FeedTypes.ADS, AdsFeed>;
 
 export interface SidebarAnouncement {
@@ -38,7 +37,7 @@ export interface SidebarAnouncement {
 }
 
 export interface UseSidebarEventsProps {
-    setLocalResults: React.Dispatch<React.SetStateAction<Array<ConversationFeed | GroupFeed>>>;
+    setLocalResults: React.Dispatch<React.SetStateAction<Array<ConversationFeed>>>;
 }
 
 export interface LocalResults {
@@ -49,7 +48,7 @@ export interface LocalResults {
 export interface SidebarStore {
     localResults: LocalResults;
     abortController: AbortController;
-    globalResults: WrappedInPagination<UserFeed | GroupGlobalFeed> | null;
+    globalResults: WrappedInPagination<UserFeed> | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
     isSearching: boolean;

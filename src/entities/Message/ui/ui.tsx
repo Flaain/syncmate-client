@@ -1,17 +1,17 @@
-import React from 'react';
-import { Typography } from '@/shared/ui/Typography';
-import { cn } from '@/shared/lib/utils/cn';
-import { MessageContextMenu } from './ContextMenu';
-import { Check, CheckCheck, Clock, Info } from 'lucide-react';
-import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
-import { MessageProps, SourceRefPath } from '../model/types';
-import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useChat } from '@/shared/lib/providers/chat/context';
+import { cn } from '@/shared/lib/utils/cn';
+import { Typography } from '@/shared/ui/Typography';
+import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
+import { Check, CheckCheck, Clock, Info } from 'lucide-react';
+import React from 'react';
+import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useMessage } from '../lib/useMessage';
+import { MessageProps } from '../model/types';
+import { MessageContextMenu } from './ContextMenu';
 
 export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
-    const { updatedAt, sender, text, sourceRefPath, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
+    const { updatedAt, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
     const isContextActionsBlocked = useChat((state) => state.isContextActionsBlocked);
    
@@ -54,11 +54,6 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             />
                         </svg>
                     )}
-                    {!isMessageFromMe && isFirst && sourceRefPath === SourceRefPath.GROUP && (
-                        <Typography variant='primary' weight='semibold'>
-                            {sender.participant?.name || sender.name}
-                        </Typography>
-                    )}
                     <div
                         className={cn(
                             'py-2 px-3 xl:m-0 relative max-w-[480px] box-border',
@@ -78,7 +73,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                                     'dark:text-primary-blue flex flex-col self-stretch text-xs py-1 px-2 rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
                                 )}
                             >
-                                {!replyTo ? 'Deleted Message' : replyTo.sourceRefPath === SourceRefPath.CONVERSATION ? replyTo.sender.name : (replyTo.sender.participant?.name || replyTo.sender.name)}
+                                {!replyTo ? 'Deleted Message' : replyTo.sender.name}
                                 {!!replyTo && (
                                     <Typography
                                         className={cn(

@@ -1,20 +1,18 @@
-import React from 'react';
-import { Button } from '@/shared/ui/button';
-import { X } from 'lucide-react';
-import { Typography } from '@/shared/ui/Typography';
-import { useEvents } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
-import { OutletDetailsButton } from '@/shared/ui/OutletDetailsButton';
+import { cn } from '@/shared/lib/utils/cn';
+import { useEvents } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
-import { cn } from '@/shared/lib/utils/cn';
-import { MembersTab } from './MembersTab';
-import { MediaTab } from './MediaTab';
+import { OutletDetailsButton } from '@/shared/ui/OutletDetailsButton';
+import { Typography } from '@/shared/ui/Typography';
+import { Button } from '@/shared/ui/button';
+import { X } from 'lucide-react';
+import React from 'react';
 import { DETAILS_TABS, OutletDetailsProps } from '../model/types';
 
 const tabsMap: Record<DETAILS_TABS, React.ReactNode> = {
-    members: <MembersTab />,
-    media: <MediaTab />,
+    members: <div>members</div>,
+    media: <div>media</div>,
     files: <div>files</div>,
     music: <div>music</div>,
     voice: <div>voice</div>

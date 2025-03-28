@@ -1,10 +1,10 @@
-import { ProfileStore } from "./types";
 import { useSession } from "@/entities/session";
 import { debounce } from "@/shared/lib/utils/debounce";
-import { imageValidators } from "./constants";
-import { toast } from "sonner";
 import { SetStateInternal } from "@/shared/model/types";
+import { toast } from "sonner";
 import { profileApi } from "../api";
+import { imageValidators } from "./constants";
+import { ProfileStore } from "./types";
 
 export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => ProfileStore): ProfileStore['actions'] => ({
     getProfile: async () => {
@@ -56,5 +56,4 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
             set({ isUploadingAvatar: false });
         }
     },
-    setGroupParticipant: (participant) => set({ participant })
 })

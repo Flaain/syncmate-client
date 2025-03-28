@@ -1,13 +1,13 @@
+import { PRESENCE } from '@/entities/profile/model/types';
+import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
+import { useSocket } from '@/shared/model/store';
+import { TypingParticipant } from '@/shared/ui/Typography';
+import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
 import React from 'react';
 import { createStore } from 'zustand';
-import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } from './types';
 import { sidebarActions } from './actions';
-import { useSocket } from '@/shared/model/store';
-import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
-import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
-import { PRESENCE } from '@/entities/profile/model/types';
-import { TypingParticipant } from '@/shared/ui/Typography';
 import { SidebarContext } from './context';
+import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } from './types';
 
 const initialState: Omit<SidebarStore, 'actions'> = {
     localResults: { feed: [], nextCursor: null },
@@ -105,8 +105,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                         }
 
                         return feedItem;
-                    },
-                    group: () => {}
+                    }
                 };
 
                 return {

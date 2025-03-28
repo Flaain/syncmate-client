@@ -1,13 +1,13 @@
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Image } from '@/shared/ui/Image';
-import { MessageGroupProps } from '../model/types';
 import { Message } from '@/entities/Message';
+import { Message as IMessage } from '@/entities/Message/model/types';
 import { useSession } from '@/entities/session';
 import { useChat } from '@/shared/lib/providers/chat/context';
-import { useShallow } from 'zustand/shallow';
-import { Message as IMessage, SourceRefPath } from '@/entities/Message/model/types';
-import { useLayout } from '@/shared/model/store';
 import { cn } from '@/shared/lib/utils/cn';
+import { useLayout } from '@/shared/model/store';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Image } from '@/shared/ui/Image';
+import { useShallow } from 'zustand/shallow';
+import { MessageGroupProps } from '../model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
     const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow((state) => ({
@@ -37,8 +37,8 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     return (
         <li className='flex items-end gap-3 xl:self-start w-full'>
             <Image
-                src={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.avatar?.url : (message.sender.participant?.avatar?.url || message.sender.avatar?.url)}
-                skeleton={<AvatarByName name={message.sourceRefPath === SourceRefPath.CONVERSATION ? message.sender.name : (message.sender.participant?.name || message.sender.name)} className='sticky bottom-0 max-xl:hidden z-[999]' />}
+                src={message.sender.avatar?.url}
+                skeleton={<AvatarByName name={message.sender.name} className='sticky bottom-0 max-xl:hidden z-[999]' />}
                 className='object-cover min-w-[40px] max-w-[40px] h-10 sticky bottom-0 rounded-full max-xl:hidden z-[999]'
             />
             <ul className={cn('flex flex-col gap-1 w-full xl:items-start', isMessageFromMe ? 'items-end' : 'items-start')}>
