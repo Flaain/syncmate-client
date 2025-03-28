@@ -1,11 +1,11 @@
-import { SetStateInternal } from '@/shared/model/types';
-import { ChatStore } from './types';
-import { useProfile } from '@/entities/profile';
-import { useLayout } from '@/shared/model/store';
 import { Message } from '@/entities/Message/model/types';
-import { uuidv4 } from '../../utils/uuidv4';
-import { ApiException } from '@/shared/api/error';
+import { useProfile } from '@/entities/profile';
 import { api } from '@/shared/api';
+import { ApiException } from '@/shared/api/error';
+import { useLayout } from '@/shared/model/store';
+import { SetStateInternal } from '@/shared/model/types';
+import { uuidv4 } from '../../utils/uuidv4';
+import { ChatStore } from './types';
 
 export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatStore): ChatStore['actions'] => ({
     setChat: set,
@@ -26,7 +26,7 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
     },
     handleOptimisticUpdate: (message) => {
         const { params: { id, type } } = get();
-        const { profile: { _id, name, avatar, isDeleted }, participant } = useProfile.getState();
+        const { profile: { _id, name, avatar, isDeleted } } = useProfile.getState();
 
         const abortController = new AbortController();
         const currentDraft = useLayout.getState().drafts.get(id);
@@ -39,7 +39,7 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
             _id: uuidv4(),
             text: message,
             sourceRefPath: type,
-            sender: { _id, name, avatar, isDeleted, participant },
+            sender: { _id, name, avatar, isDeleted },
             createdAt: date,
             updatedAt: date,
             hasBeenEdited: false,
