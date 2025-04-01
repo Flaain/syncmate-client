@@ -35,7 +35,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     }
 
     return (
-        <li className='flex items-end gap-3 xl:self-start w-full mt-auto'>
+        <li className='flex items-end gap-3 xl:self-start w-full first-of-type:mt-auto'>
             <Image
                 src={message.sender.avatar?.url}
                 skeleton={<AvatarByName name={message.sender.name} className='sticky bottom-0 max-xl:hidden z-[999]' />}
