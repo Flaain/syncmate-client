@@ -1,10 +1,10 @@
-import { Button } from '@/shared/ui/button';
-import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
-import { useMessagesList } from '../model/useMessagesList';
-import { MessagesListProps } from '../model/types';
-import { Typography } from '@/shared/ui/Typography';
 import { MessageSkeleton } from '@/entities/Message/ui/Skeletons';
+import { GroupedMessages } from '@/features/GroupedMessages/ui/ui';
+import { Typography } from '@/shared/ui/Typography';
+import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
+import { MessagesListProps } from '../model/types';
+import { useMessagesList } from '../model/useMessagesList';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     const { groupedMessages, canFetch, isLoading, isError, isRefetching, refetch, call, listRef } = useMessagesList(getPreviousMessages);
@@ -23,7 +23,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     return (
         <ul
             ref={listRef}
-            className='relative flex flex-col justify-start w-full h-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-x-hidden outline-none'
+            className='relative flex flex-col size-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
         >
             {isLoading && (
                 <>
@@ -33,7 +33,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                 </>
             )}
             {canFetch && (
-                <li className='flex justify-center items-center'>
+                <li className='flex justify-center items-center my-auto'>
                     <Button
                         variant='text'
                         className='p-0 dark:text-primary-white/30 text-primary-white'

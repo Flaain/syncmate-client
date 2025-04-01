@@ -46,7 +46,7 @@ export default {
                 'caret-blink': 'caret-blink 1.25s ease-out infinite'
             },
             backgroundImage: {
-                'chat-pattern': "url('../src/shared/lib/assets/pattern.svg')",
+                'chat-pattern': "url('/src/shared/lib/assets/pattern.svg')",
             }
         }
     },

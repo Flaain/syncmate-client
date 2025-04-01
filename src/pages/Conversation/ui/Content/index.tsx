@@ -1,17 +1,17 @@
-import { OutletHeader } from '@/widgets/OutletHeader';
-import { OutletDetails } from '@/widgets/OutletDetails';
-import { useConversation } from '../../model/context';
-import { getConversationDescription } from '../../lib/getConversationDescription';
-import { OutletContainer } from '@/shared/ui/OutletContainer';
-import { ConversationDDM } from '../DropdownMenu';
-import { useShallow } from 'zustand/shallow';
 import { SendMessage } from '@/features/SendMessage/ui/ui';
-import { contentSelector } from '../../model/selectors';
-import { MessagesList } from '@/widgets/MessagesList';
-import { OutletDetailsTypes } from '@/shared/model/types';
-import { conversationApi } from '../../api';
 import { useChat } from '@/shared/lib/providers/chat/context';
+import { OutletDetailsTypes } from '@/shared/model/types';
+import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
+import { MessagesList } from '@/widgets/MessagesList';
+import { OutletDetails } from '@/widgets/OutletDetails';
+import { OutletHeader } from '@/widgets/OutletHeader';
+import { useShallow } from 'zustand/shallow';
+import { conversationApi } from '../../api';
+import { getConversationDescription } from '../../lib/getConversationDescription';
+import { useConversation } from '../../model/context';
+import { contentSelector } from '../../model/selectors';
+import { ConversationDDM } from '../DropdownMenu';
 
 export const Content = () => {
     const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
