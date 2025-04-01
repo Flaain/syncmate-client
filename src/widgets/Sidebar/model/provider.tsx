@@ -1,6 +1,6 @@
 import { PRESENCE } from '@/entities/profile/model/types';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
-import { useSocket } from '@/shared/model/store';
+import { useLayout, useSocket } from '@/shared/model/store';
 import { TypingParticipant } from '@/shared/ui/Typography';
 import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
 import React from 'react';
@@ -27,7 +27,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
     React.useEffect(() => {
         store.getState().actions.getFeed(store.getState().abortController.signal);
 
-        socket?.on(FEED_EVENTS.CREATE, (createFeedItem: LocalFeed) => {
+        socket?.on(FEED_EVENTS.CREATE, (createFeedItem: LocalFeed, shouldNotify?: boolean) => {
             store.setState((prevState) => {
                 const index = prevState.localResults.feed.findIndex((feedItem) => feedItem._id === createFeedItem._id);
 
@@ -45,6 +45,8 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
 
                 return { localResults: { ...prevState.localResults, feed: [createFeedItem, ...prevState.localResults.feed] } };
             })
+
+            shouldNotify && useLayout.getState().actions.playSound('new_message');
         });
 
         socket?.on(FEED_EVENTS.USER_PRESENCE, ({ recipientId, presence }: { recipientId: string; presence: PRESENCE }) => {

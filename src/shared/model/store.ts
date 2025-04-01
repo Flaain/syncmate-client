@@ -1,12 +1,20 @@
-import { create } from 'zustand';
-import { Socket } from 'socket.io-client';
 import { Message } from '@/entities/Message/model/types';
 import { MessageFormState } from '@/features/SendMessage/model/types';
+import { Socket } from 'socket.io-client';
+import { create } from 'zustand';
+import messageNotificationSound from '../lib/assets/sounds/message-notification.mp3';
+import { layoutActions } from './actions';
+
+export type INTERNAL_SOUNDS = 'new_message';
 
 export interface LayoutStore {
     drafts: Map<string, Draft>;
     isSheetOpen: boolean;
     connectedToNetwork: boolean;
+    actions: {
+        playSound: (sound: INTERNAL_SOUNDS, cb?: (sound: HTMLAudioElement) => void) => void;
+    };
+    sounds: Record<INTERNAL_SOUNDS, HTMLAudioElement>;
 }
 
 export interface Draft {
@@ -28,10 +36,14 @@ export interface SocketStore {
     isConnected: boolean;
 }
 
-export const useLayout = create<LayoutStore>(() => ({
+export const useLayout = create<LayoutStore>((_, get) => ({
     drafts: new Map(),
     isSheetOpen: false,
-    connectedToNetwork: true
+    connectedToNetwork: true,
+    actions: layoutActions({ get }),
+    sounds: {
+        new_message: new Audio(messageNotificationSound),
+    }
 }));
 
 export const useEvents = create<EventsStore>((set) => ({

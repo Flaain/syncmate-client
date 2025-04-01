@@ -1,1 +1,2 @@
 export const getImageUrl = (name: string) => new URL(`/src/shared/lib/assets/${name}`, import.meta.url).href;
+export const getAudioUrl = (name: string) => new URL(`/src/shared/lib/assets/sounds/${name}`, import.meta.url).href;

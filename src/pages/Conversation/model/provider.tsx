@@ -1,15 +1,15 @@
-import React from 'react';
-import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ConversationContext } from './context';
 import { Message } from '@/entities/Message/model/types';
-import { useLayout, useSocket } from '@/shared/model/store';
-import { useSession } from '@/entities/session';
-import { createStore } from 'zustand';
-import { conversationActions } from './actions';
-import { useChat } from '@/shared/lib/providers/chat/context';
 import { PRESENCE } from '@/entities/profile/model/types';
+import { useSession } from '@/entities/session';
+import { useChat } from '@/shared/lib/providers/chat/context';
+import { useLayout, useSocket } from '@/shared/model/store';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+import { conversationActions } from './actions';
+import { ConversationContext } from './context';
+import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
 
 export const ConversationProvider = ({ conversation, children }: { conversation: Omit<Conversation, 'messages'>; children: React.ReactNode }) => {
     const { id: recipientId } = useParams() as { id: string };
@@ -91,7 +91,9 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         })
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
-            setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }))
+            setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }));
+
+            message.sender._id !== userId && document.visibilityState === 'hidden' && useLayout.getState().actions.playSound('new_message');
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
