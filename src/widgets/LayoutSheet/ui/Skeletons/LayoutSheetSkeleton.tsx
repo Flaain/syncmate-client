@@ -1,11 +1,11 @@
-import Verified from '@/shared/lib/assets/icons/verified.svg?react';
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Typography } from '@/shared/ui/Typography';
-import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
-import { cn } from '@/shared/lib/utils/cn';
-import { Image } from '@/shared/ui/Image';
 import { useProfile } from '@/entities/profile';
 import { APP_VERSION } from '@/shared/constants';
+import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+import { cn } from '@/shared/lib/utils/cn';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Image } from '@/shared/ui/Image';
+import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
+import { Typography } from '@/shared/ui/Typography';
 
 export const LayoutSheetSkeleton = () => {
     const { profile } = useProfile();
@@ -38,7 +38,7 @@ export const LayoutSheetSkeleton = () => {
                 ))}
             </ul>
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
-                FChat Web, {new Date().getFullYear()}
+                Syncmate Web, {new Date().getFullYear()}
                 <Typography variant='secondary'>
                     Version {APP_VERSION}
                 </Typography>

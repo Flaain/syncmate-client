@@ -1,6 +1,6 @@
-import { useAuth } from '../../model/store';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
+import { useAuth } from '../../model/store';
 
 export const Welcome = () => {
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
@@ -15,7 +15,7 @@ export const Welcome = () => {
                     weight='bold'
                     className='max-lg:text-6xl max-md:text-6xl'
                 >
-                    FChat
+                    Syncmate
                 </Typography>
                 <Typography variant='secondary' as='p' size='lg' className='max-lg:text-lg max-md:text-lg'>
                     What's up?

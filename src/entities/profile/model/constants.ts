@@ -6,7 +6,7 @@ export const validFileTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 export const imageValidators: Array<{ isValid: (file: File) => boolean; message: string }> = [
     {
         isValid: (file) => validFileTypes.includes(file.type),
-        message: "Sorry, FCHAT can't process that type of image"
+        message: "Sorry, Syncmate can't process that type of image"
     },
     {
         isValid: (file) => !file.size || file.size <= MAX_IMAGE_SIZE,
