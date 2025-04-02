@@ -9,7 +9,6 @@ export type INTERNAL_SOUNDS = 'new_message';
 
 export interface LayoutStore {
     drafts: Map<string, Draft>;
-    isSheetOpen: boolean;
     connectedToNetwork: boolean;
     actions: {
         playSound: (sound: INTERNAL_SOUNDS, cb?: (sound: HTMLAudioElement) => void) => void;
@@ -38,7 +37,6 @@ export interface SocketStore {
 
 export const useLayout = create<LayoutStore>((_, get) => ({
     drafts: new Map(),
-    isSheetOpen: false,
     connectedToNetwork: true,
     actions: layoutActions({ get }),
     sounds: {

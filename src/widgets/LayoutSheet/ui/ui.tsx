@@ -1,27 +1,23 @@
 import { useProfile } from '@/entities/profile';
-import { useTheme } from '@/entities/theme';
 import { APP_VERSION } from '@/shared/constants';
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
 import { cn } from '@/shared/lib/utils/cn';
-import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
-import { Switch } from '@/shared/ui/Switch';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { Settings, SettingsProvider } from '@/widgets/Settings';
-import { Moon, Settings as SettingsIcon } from 'lucide-react';
+import { Settings as SettingsIcon } from 'lucide-react';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 
-export const LayoutSheet = () => {
+export const LayoutSheet = ({ onActionClick }: { onActionClick: () => void }) => {
     const onOpenModal = useModal((state) => state.actions.onOpenModal);
     const profile = useProfile((state) => state.profile);
-    const theme = useTheme((state) => state.theme);
 
     const onSheetAction = (modal: ModalConfig) => {
-        useLayout.setState({ isSheetOpen: false });
+        onActionClick();
         onOpenModal(modal);
     };
 
@@ -63,20 +59,9 @@ export const LayoutSheet = () => {
                         <Typography weight='medium'>Settings</Typography>
                     </Button>
                 </li>
-                <li className='flex items-center'>
-                    <Switch
-                        checked={theme === 'dark'}
-                        checkboxClassName='ml-auto dark:bg-primary-white transition-colors ease-in-out duration-200'
-                        className='h-10 px-4 py-2 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:hover:bg-primary-dark-50 flex items-center cursor-pointer rounded-none justify-start gap-4 w-full'
-                        onChange={() => useTheme.setState({ theme: theme === 'dark' ? 'light' : 'dark' })}
-                    >
-                        <Moon className={listIconStyle} />
-                        <Typography weight='medium'>Night Mode</Typography>
-                    </Switch>
-                </li>
             </ul>
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
-                FChat Web, {new Date().getFullYear()}
+                Syncmate, {new Date().getFullYear()}
                 <Typography variant='secondary'>Version {APP_VERSION}</Typography>
             </Typography>
         </div>

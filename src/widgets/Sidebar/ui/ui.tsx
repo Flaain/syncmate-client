@@ -1,14 +1,14 @@
-import { Feed } from '@/widgets/Feed/ui/ui';
+import { cn } from '@/shared/lib/utils/cn';
+import { useLayout, useSocket } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Feed } from '@/widgets/Feed/ui/ui';
 import { AlignJustifyIcon, Loader2, X } from 'lucide-react';
-import { useLayout, useSocket } from '@/shared/model/store';
-import { useSidebar } from '../model/context';
 import { useShallow } from 'zustand/shallow';
-import { cn } from '@/shared/lib/utils/cn';
+import { useSidebar } from '../model/context';
 import { sidebarSelector } from '../model/selectors';
 
-export const Sidebar = () => {
+export const Sidebar = ({ onMenuClick }: { onMenuClick: () => void; }) => {
     const { ref, value, handleLogout, handleSearch, resetSearch } = useSidebar(useShallow(sidebarSelector));
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
@@ -21,7 +21,7 @@ export const Sidebar = () => {
                 <Button
                     variant='text'
                     size='icon'
-                    onClick={() => useLayout.setState({ isSheetOpen: true })}
+                    onClick={onMenuClick}
                     className='opacity-30'
                 >
                     <AlignJustifyIcon />
