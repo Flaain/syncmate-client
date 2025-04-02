@@ -1,2 +1,2 @@
-export { LayoutSheetSkeleton } from './ui/Skeletons/LayoutSheetSkeleton';
+export { LayoutSheetSkeleton } from './ui/Skeletons';
 export { LayoutSheet } from './ui/ui';

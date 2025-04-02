@@ -1,5 +1,5 @@
+import { LayoutSheetSkeleton } from '@/widgets/LayoutSheet';
 import { LayoutSheetView } from '@/widgets/LayoutSheet/model/view';
-import { LayoutSheetSkeleton } from '@/widgets/LayoutSheet/ui/Skeletons/LayoutSheetSkeleton';
 import { Sidebar, SidebarProvider } from '@/widgets/Sidebar';
 import React from 'react';
 import ReactDOM from 'react-dom';

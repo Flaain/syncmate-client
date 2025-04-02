@@ -2,10 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './app/model/router';
-import { ThemeProvider } from './entities/theme/model/provider';
 import { useProfile } from './entities/profile';
+import { ThemeProvider } from './entities/theme/model/provider';
 
 import './app/styles/index.css';
+
+document.addEventListener('DOMContentLoaded', () => document.querySelector('meta[name=viewport]')?.setAttribute('content', 'width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1'));
 
 useProfile.getState().actions.getProfile();
 
