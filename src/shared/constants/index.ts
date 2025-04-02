@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { version } from "../../../package.json";
 
 export const APP_VERSION = version;
+export const DEFAULT_TITLE = 'Syncmate - Sync Your Chats, Sync Your Life.'
 
 export const noRefreshPaths = ['/auth/refresh', '/auth/signin'];
 

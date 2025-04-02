@@ -1,6 +1,7 @@
 import { Message } from '@/entities/Message/model/types';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { useSession } from '@/entities/session';
+import { DEFAULT_TITLE } from '@/shared/constants';
 import { useChat } from '@/shared/lib/providers/chat/context';
 import { useLayout, useSocket } from '@/shared/model/store';
 import React from 'react';
@@ -26,6 +27,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     const navigate = useNavigate();
 
     React.useEffect(() => {
+        document.title = `Converstaion with ${conversation.recipient.name}`;
+
         store.setState({ conversation });
 
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
@@ -139,7 +142,10 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
         socket?.on(CONVERSATION_EVENTS.START_TYPING, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
         socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
+        
         return () => {
+            document.title = DEFAULT_TITLE;
+
             setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
 
             socket?.emit(CONVERSATION_EVENTS.LEAVE, { recipientId });
