@@ -1,11 +1,10 @@
-import { useSession } from '@/entities/session';
-import { API } from './API';
 import { useProfile } from '@/entities/profile';
+import { useSession } from '@/entities/session';
 import { noRefreshPaths } from '../constants';
+import { API } from './API';
 
 export const api = new API({
     baseUrl: import.meta.env.VITE_BASE_URL,
-    headers: { 'content-type': 'application/json' },
     credentials: 'include',
 });
 

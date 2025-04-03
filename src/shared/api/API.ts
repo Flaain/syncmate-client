@@ -206,7 +206,7 @@ export class API extends ApiInterceptors {
                 ...(!!options?.headers && options.headers)
             }
         });
-        
+
         const response = await fetch(url, config);
 
         if (this.responseInterceptorsSize) return this.invokeResponseInterceptors<T>(response, config);
