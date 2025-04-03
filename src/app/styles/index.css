@@ -22,10 +22,6 @@ html {
     overscroll-behavior: none;
 }
 
-body {
-    overflow-y: scroll;
-}
-
 /* styles above for html and body need to prevent elastic scrolling on iOS Safari*/
 
 /* 
