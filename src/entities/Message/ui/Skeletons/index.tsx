@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils/cn';
 import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 
-export const MessageSkeleton = ({ key }: { key: number }) => {
+export const MessageSkeleton = ({ key }: { key?: number }) => {
     const index = Math.round(Math.random());
     const isEven = !(index % 2);
 
