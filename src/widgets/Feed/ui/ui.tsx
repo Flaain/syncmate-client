@@ -1,13 +1,13 @@
-import FeedSkeleton from './Skeletons/FeedSkeleton';
-import { Typography } from '@/shared/ui/Typography';
-import { useSidebar } from '@/widgets/Sidebar/model/context';
-import { useShallow } from 'zustand/shallow';
-import { FeedTypes } from '../model/types';
+import SearchDuck from '@/shared/lib/assets/webp/search_duck.webp';
 import { Image } from '@/shared/ui/Image';
-import { getImageUrl } from '@/shared/lib/utils/getImageUrl';
+import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { globalFeedItems, globalFilters, localFeedItems, localFilters } from '@/widgets/Sidebar/model/constants';
+import { useSidebar } from '@/widgets/Sidebar/model/context';
+import { useShallow } from 'zustand/shallow';
 import { feedSelector } from '../model/selectors';
+import { FeedTypes } from '../model/types';
+import FeedSkeleton from './Skeletons/FeedSkeleton';
 
 export const Feed = () => {
     const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow(feedSelector));
@@ -20,7 +20,7 @@ export const Feed = () => {
             <FeedSkeleton skeletonsCount={3} />
         ) : (
             <>
-                <Image src={getImageUrl('webp/search_duck.webp')} className='self-center size-20' />
+                <Image src={SearchDuck} className='self-center size-20' />
                 <Typography as='p' variant='secondary' className='line-clamp-3 break-words px-3 box-border text-center'>
                     There were no results for "{searchValue}".
                 </Typography>
