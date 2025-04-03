@@ -23,7 +23,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     return (
         <ul
             ref={listRef}
-            className='relative flex flex-col size-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
+            className='overscroll-contain relative flex flex-col size-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
         >
             {isLoading && (
                 <>
