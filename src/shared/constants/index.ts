@@ -18,6 +18,7 @@ export const localStorageKeys = {
 };
 
 export const MIN_USER_SEARCH_LENGTH = 2;
+export const MESSAGES_SKELETON_COUNT = 12;
 
 export const onlyLatinRegExp = /^[a-zA-Z0-9_]*$/;
 export const allowCyrillicRegExp = /^[\p{L}0-9\s]*$/u;

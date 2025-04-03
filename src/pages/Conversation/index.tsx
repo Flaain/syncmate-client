@@ -1,18 +1,20 @@
-import React from 'react';
 import { routerList } from '@/shared/constants';
-import { RouteObject } from 'react-router-dom';
-import { View } from './model/view';
-import { Button } from '@/shared/ui/button';
-import { OutletError } from '@/shared/ui/OutletError';
 import { ChatProvider } from '@/shared/lib/providers/chat/provider';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
+import { OutletError } from '@/shared/ui/OutletError';
+import { Button } from '@/shared/ui/button';
+import React from 'react';
+import { RouteObject } from 'react-router-dom';
+import { View } from './model/view';
+
+const fallback = ChatSkeleton();
 
 export const ConversationPage: RouteObject = {
     path: routerList.CONVERSATION,
     element: (
-        <React.Suspense fallback={<ChatSkeleton />}>
+        <React.Suspense fallback={fallback}>
             <ChatProvider>
-                <View />
+                <View fallback={fallback} />
             </ChatProvider>
         </React.Suspense>
     ),

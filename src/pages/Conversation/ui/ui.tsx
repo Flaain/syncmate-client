@@ -1,18 +1,19 @@
+import { SourceRefPath } from '@/entities/Message/model/types';
+import { ApiException } from '@/shared/api/error';
+import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
+import { useQuery } from '@/shared/lib/hooks/useQuery';
+import { useChat } from '@/shared/lib/providers/chat/context';
+import { useSocket } from '@/shared/model/store';
+import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
+import { OutletError } from '@/shared/ui/OutletError';
 import { Button } from '@/shared/ui/button';
 import { Loader2 } from 'lucide-react';
-import { OutletError } from '@/shared/ui/OutletError';
+import { useNavigate, useParams } from 'react-router';
+import { conversationApi } from '../api';
 import { ConversationProvider } from '../model/provider';
 import { Content } from './Content';
-import { useNavigate, useParams } from 'react-router';
-import { useChat } from '@/shared/lib/providers/chat/context';
-import { useQuery } from '@/shared/lib/hooks/useQuery';
-import { conversationApi } from '../api';
-import { SourceRefPath } from '@/entities/Message/model/types';
-import { useSocket } from '@/shared/model/store';
-import { ApiException } from '@/shared/api/error';
-import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 
-export const Conversation = () => {
+export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
     const { id } = useParams() as { id: string };
     
     const setChat = useChat((state) => state.actions.setChat);
@@ -36,11 +37,12 @@ export const Conversation = () => {
         onError: (error) => error instanceof ApiException && error.response.status === 404 && navigate('/')
     });
 
-    if (!data && isLoading) return <ChatSkeleton />;
+    if (!data && isLoading) return fallback ?? <ChatSkeleton />;
 
     if (isError) {
         return (
             <OutletError
+                img={<ErrorLaptop width='100%' height='100%' />}
                 title='Something went wrong'
                 description='Cannot load conversation'
                 callToAction={
