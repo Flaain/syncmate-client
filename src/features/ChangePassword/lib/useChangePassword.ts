@@ -1,13 +1,12 @@
+import { ApiException } from '@/shared/api/error';
+import { useModal } from '@/shared/lib/providers/modal';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { FieldPath, useForm } from 'react-hook-form';
-import { ActionPasswordType, ChangePasswordSchemaType } from '../model/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner';
-import { changePasswordSchema } from '../model/schema';
 import { changePasswordAPI } from '../api';
 import { steps } from '../model/constants';
-import { useModal } from '@/shared/lib/providers/modal';
-import { ApiException } from '@/shared/api/error';
+import { changePasswordSchema } from '../model/schema';
+import { ActionPasswordType, ChangePasswordSchemaType } from '../model/types';
 
 export const useChangePassword = () => {
     const [step, setStep] = React.useState(0);
@@ -58,7 +57,7 @@ export const useChangePassword = () => {
                     }),
                 1: () => onAsyncActionModal(() => changePasswordAPI.changePassword({ type: ActionPasswordType.SET, currentPassword, newPassword }), {
                         onReject: checkErrors,
-                        onResolve: () => toast.success('Password changed successfully', { position: 'top-center' })
+                        onResolve: () => {} // toast.success('Password changed successfully', { position: 'top-center' })
                     }),
             };
 

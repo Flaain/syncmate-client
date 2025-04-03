@@ -1,13 +1,11 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signinSchema } from "../model/schema";
-import { toast } from "sonner";
 import { useProfile } from "@/entities/profile";
 import { useSession } from "@/entities/session/model/store";
-import { SigninSchemaType } from "../model/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { signinApi } from "../api";
-import { ApiException } from "@/shared/api/error";
+import { signinSchema } from "../model/schema";
+import { SigninSchemaType } from "../model/types";
 
 export const useSignin = () => {
     const [loading, setLoading] = React.useState(false);
@@ -40,7 +38,7 @@ export const useSignin = () => {
             onSignin(profile._id);
         } catch (error) {
             console.error(error);
-            error instanceof ApiException ? error.toastError() : toast.error('Cannot signin. Please try again later', { position: 'top-center' });
+           // error instanceof ApiException ? error.toastError() : toast.error('Cannot signin. Please try again later', { position: 'top-center' });
         } finally {
             setLoading(false);
         }

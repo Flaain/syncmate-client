@@ -1,11 +1,10 @@
-import { useModal } from '@/shared/lib/providers/modal';
-import { Confirm } from '@/shared/ui/Confirm';
-import { toast } from 'sonner';
-import { selectModalActions } from '@/shared/lib/providers/modal/store';
-import { useConversation } from '../model/context';
-import { useShallow } from 'zustand/shallow';
 import { profileApi } from '@/entities/profile';
+import { useModal } from '@/shared/lib/providers/modal';
+import { selectModalActions } from '@/shared/lib/providers/modal/store';
+import { Confirm } from '@/shared/ui/Confirm';
+import { useShallow } from 'zustand/shallow';
 import { conversationApi } from '../api';
+import { useConversation } from '../model/context';
 
 export const useConversationDDM = () => {
     const { onAsyncActionModal, onCloseModal, onOpenModal } = useModal(useShallow(selectModalActions));
@@ -21,7 +20,7 @@ export const useConversationDDM = () => {
                     onConfirm={() => onAsyncActionModal(() => profileApi[type]({ recipientId: recipient._id }), {
                         closeOnError: true,
                         onReject: () => {
-                            toast.error(`Failed to ${type} user`);
+                           // toast.error(`Failed to ${type} user`);
                         }
                     })}
                     onCancel={onCloseModal()}
@@ -44,7 +43,7 @@ export const useConversationDDM = () => {
                     onConfirm={() => onAsyncActionModal(() => conversationApi.delete(recipient._id), {
                         closeOnError: true,
                         onReject: () => {
-                            toast.error('Failed to delete conversation');
+                           // toast.error('Failed to delete conversation');
                         }
                     })}
                     onCancel={onCloseModal()}

@@ -1,16 +1,15 @@
-import React from 'react';
-import EmojiPickerFallback from '@emoji-mart/react';
-import { TopBar } from './TopBar';
-import { Button } from '@/shared/ui/button';
-import { ArrowDown, Paperclip, SendHorizonal, Smile } from 'lucide-react';
-import { toast } from 'sonner';
-import { useSendMessage } from '../lib/useSendMessage';
-import { EmojiPicker } from '@/shared/model/view';
-import { UseMessageParams } from '../model/types';
-import { useLayout } from '@/shared/model/store';
 import { useChat } from '@/shared/lib/providers/chat/context';
+import { useLayout } from '@/shared/model/store';
+import { EmojiPicker } from '@/shared/model/view';
+import { Button } from '@/shared/ui/button';
+import EmojiPickerFallback from '@emoji-mart/react';
+import { ArrowDown, Paperclip, SendHorizonal, Smile } from 'lucide-react';
+import React from 'react';
 import { useShallow } from 'zustand/shallow';
+import { useSendMessage } from '../lib/useSendMessage';
+import { UseMessageParams } from '../model/types';
 import { Placeholder } from './Placeholder';
+import { TopBar } from './TopBar';
 
 export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
@@ -57,7 +56,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     size='icon'
                     type='button'
                     className='px-5'
-                    onClick={() => toast.info('Coming soon!', { position: 'top-center' })}
+                    onClick={() => {} /* toast.info('Coming soon!', { position: 'top-center' }) */}
                 >
                     <Paperclip className='w-6 h-6' />
                 </Button>

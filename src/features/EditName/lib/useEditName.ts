@@ -1,11 +1,10 @@
+import { profileApi, useProfile } from '@/entities/profile';
+import { useModal } from '@/shared/lib/providers/modal';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { EditNameType } from '../model/types';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { editNameSchema } from '../model/schema';
-import { toast } from 'sonner';
-import { useModal } from '@/shared/lib/providers/modal';
-import { profileApi, useProfile } from '@/entities/profile';
+import { EditNameType } from '../model/types';
 
 export const useEditName = () => {
     const profile = useProfile((state) => state.profile);
@@ -30,7 +29,7 @@ export const useEditName = () => {
 
         onAsyncActionModal(() => profileApi.name({ name }), {
             onResolve: () => useProfile.setState((prevState) => ({ profile: { ...prevState.profile, name } })),
-            onReject: () => toast.error('Failed to change name'),
+            onReject: () => {}, // toast.error('Failed to change name'),
             closeOnError: true
         });
     };

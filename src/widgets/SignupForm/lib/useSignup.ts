@@ -1,19 +1,18 @@
-import React from "react";
-import { UserCheckType } from "@/shared/model/types";
-import { OtpType } from "@/features/OTP/model/types";
-import { useOtp } from "@/features/OTP/model/store";
 import { useProfile } from "@/entities/profile";
 import { useSession } from "@/entities/session";
-import { steps } from "../model/constants";
-import { useAuth } from "@/pages/Auth";
-import { FieldPath, useForm } from "react-hook-form";
-import { SignupSchemaType } from "../model/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema } from "../model/schema";
-import { signupApi } from "../api";
 import { otpApi } from "@/features/OTP";
+import { useOtp } from "@/features/OTP/model/store";
+import { OtpType } from "@/features/OTP/model/types";
+import { useAuth } from "@/pages/Auth";
 import { ApiException } from "@/shared/api/error";
-import { toast } from "sonner";
+import { UserCheckType } from "@/shared/model/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { FieldPath, useForm } from "react-hook-form";
+import { signupApi } from "../api";
+import { steps } from "../model/constants";
+import { signupSchema } from "../model/schema";
+import { SignupSchemaType } from "../model/types";
 
 export const useSignup = () => {
     const [step, setStep] = React.useState(0);
@@ -91,9 +90,9 @@ export const useSignup = () => {
                    steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(path as FieldPath<SignupSchemaType>, { message }); 
                 });
         
-                !error.response.data.errors && error.toastError();
+                // !error.response.data.errors && error.toastError();
             } else {
-                toast.error('Something went wrong. Please try again later', { position: 'top-center' });
+                // toast.error('Something went wrong. Please try again later', { position: 'top-center' });
             }
         } finally {
             setLoading(false);

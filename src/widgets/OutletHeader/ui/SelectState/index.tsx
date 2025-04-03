@@ -1,16 +1,15 @@
-import React from "react";
 import { messageApi } from "@/entities/Message";
+import { endpoints } from "@/entities/Message/model/constants";
 import { useChat } from "@/shared/lib/providers/chat/context";
 import { useModal } from "@/shared/lib/providers/modal";
 import { selectModalActions } from "@/shared/lib/providers/modal/store";
 import { useEvents } from "@/shared/model/store";
-import { Button } from "@/shared/ui/button";
 import { Confirm } from "@/shared/ui/Confirm";
 import { Typography } from "@/shared/ui/Typography";
+import { Button } from "@/shared/ui/button";
 import { Trash, X } from "lucide-react";
-import { toast } from "sonner";
+import React from "react";
 import { useShallow } from "zustand/shallow";
-import { endpoints } from "@/entities/Message/model/constants";
 
 export const SelectState = () => {
     const { onOpenModal, onAsyncActionModal, onCloseModal } = useModal(useShallow(selectModalActions));
@@ -47,10 +46,10 @@ export const SelectState = () => {
                     {
                         closeOnError: true,
                         onResolve: () => {
-                            toast.success(`${size} ${size > 1 ? 'messages' : 'message'} was deleted`, { position: 'top-center' });
+                            // toast.success(`${size} ${size > 1 ? 'messages' : 'message'} was deleted`, { position: 'top-center' });
                             setChat({ mode: 'default', selectedMessages: new Map() })
                         },
-                        onReject: () => toast.error('Cannot delete messages')
+                        onReject: () => {} // toast.error('Cannot delete messages')
                     })}
                 />
             ),
