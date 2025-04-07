@@ -4,5 +4,5 @@ export interface OutletHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElem
     name: string;
     description?: string;
     isOfficial?: boolean;
-    dropdownMenu?: React.ReactNode;
+    dropdownContent?: React.ReactNode;
 }

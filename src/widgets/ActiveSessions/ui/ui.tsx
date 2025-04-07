@@ -1,13 +1,12 @@
+import { Session } from '@/entities/session/ui/ui';
+import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
-import { ActiveSessionsSkeleton } from './Skeletons/ActiveSessionsSkeleton';
-import { useActiveSessions } from '../lib/useActiveSessions';
 import { Button } from '@/shared/ui/button';
 import { Hand, Loader2 } from 'lucide-react';
-import { Session } from '@/entities/session/ui/ui';
-import { useModal } from '@/shared/lib/providers/modal';
-import { Confirm } from '@/shared/ui/Confirm';
 import { useShallow } from 'zustand/shallow';
-import { selectModalActions } from '@/shared/lib/providers/modal/store';
+import { useActiveSessions } from '../lib/useActiveSessions';
+import { ActiveSessionsSkeleton } from './Skeletons/ActiveSessionsSkeleton';
 
 export const ActiveSessions = () => {
     const { data, isLoading, isTerminating, handleTerimanteSessions, handleDropSession } = useActiveSessions();

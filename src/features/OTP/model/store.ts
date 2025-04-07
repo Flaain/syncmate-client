@@ -1,3 +1,4 @@
+import { toast } from '@/shared/lib/toast';
 import { create } from 'zustand';
 import { otpApi } from '../api';
 import { OtpStore } from './types';
@@ -15,7 +16,7 @@ export const useOtp = create<OtpStore>((set, get) => ({
             set({ otp: { ...otp, retryDelay } });
         } catch (error) {
             console.error(error);
-            // toast.error('Cannot resend OTP code');
+            toast.error('Cannot resend OTP code');
         } finally {
             set({ isResending: false });
         }

@@ -2,6 +2,7 @@ import { otpApi } from '@/features/OTP';
 import { useOtp } from '@/features/OTP/model/store';
 import { OtpType } from '@/features/OTP/model/types';
 import { ApiException } from '@/shared/api/error';
+import { toast } from '@/shared/lib/toast';
 import { useSigninForm } from '@/widgets/SigninForm/model/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
@@ -26,10 +27,6 @@ export const useForgot = () => {
         mode: 'all',
         shouldFocusError: true
     });
-    
-    React.useEffect(() => {
-        setTimeout(form.setFocus, 0, steps[step].fields[0]);
-    }, [])
     
     const isNextButtonDisabled = (
         !form.getValues(steps[step].fields).every(Boolean) ||
@@ -66,10 +63,7 @@ export const useForgot = () => {
                 2: async () => {
                     await forgotAPI.reset({ email, password, otp });
 
-                    /* toast.success('Password changed successfully', { 
-                        position: 'top-center', 
-                        description: 'You can now sign in with your new password' 
-                    }); */
+                    toast.success('Password changed successfully');
                     
                     changeAuthStage('signin');
                 }

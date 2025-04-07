@@ -2,20 +2,23 @@ import { Typography } from "@/shared/ui/Typography";
 import React from "react";
 import { cn } from "../utils/cn";
 import { toast as toastInstance } from "./index";
+import { IToast, ToastConfig, ToastProps } from "./types";
 
 export const Toaster = () => {
-    const [toast, setToast] = React.useState<any>(null);
+    const [toast, setToast] = React.useState<IToast | null>(null);
 
     React.useEffect(() => {
-        const unsubscribe = toastInstance.subscribe((toast) => setToast(toast));
+        const unsubscribe = toastInstance.subscribe((toast) => setToast((prev) => (prev?.id === toast.id ? null : toast)));
 
         return () => {
             unsubscribe();
-        }
+        };
     }, []);
 
     const handleRemoveToast = () => {
         setToast(null);
+
+        toast?.onClose?.(toast);
 
         toastInstance.removeToast();
     }
@@ -27,62 +30,55 @@ export const Toaster = () => {
     )
 }
 
-export const Toast = ({ toast, removeToast }: any) => {
-    const [isInteracting, setIsInteracting] = React.useState(false);
-    
-    const toastRef = React.useRef<HTMLDivElement>(null);
-    const timerRef = React.useRef<{ start: number; end: number; remaining: number; id: NodeJS.Timeout | null }>({
+export const Toast = ({ toast, removeToast }: ToastProps) => {
+    const [shouldRemove, setShouldRemove] = React.useState(false);
+
+    const config = React.useRef<ToastConfig>({
+        ref: null,
         start: 0,
-        end: 0,
         remaining: toast.duration,
         id: null,
     });
 
+    const handleInteraction = React.useCallback(({ type }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        type === 'mouseenter' ? pauseTimer() : startTimer();
+    }, []);
+
     const startTimer = React.useCallback(() => {
-        timerRef.current.start = Date.now();
-        timerRef.current.id = setTimeout(removeToast, toast.recalculateRemainingTime ? timerRef.current.remaining : toast.duration);
+        config.current.start = Date.now();
+        config.current.id = setTimeout(setShouldRemove, toast.recalculateRemainingTime ? config.current.remaining : toast.duration, true);
     }, [toast]);
 
     const pauseTimer = React.useCallback(() => {
-        if (!timerRef.current.id) return;
+        clearTimeout(config.current.id!);
         
-        clearTimeout(timerRef.current.id);
-
-        const end = Date.now();
-        
-        timerRef.current = {
-          ...timerRef.current,
-          end,
+        config.current = {
+          ...config.current,
           id: null,
-          remaining: timerRef.current.remaining - (end - timerRef.current.start),
+          remaining: config.current.remaining - (Date.now() - config.current.start)
         };
       }, []);
 
     React.useEffect(() => {
-        timerRef.current.remaining = toast.duration;
+        config.current.remaining = toast.duration;
         
         startTimer();
 
         return () => {
-            timerRef.current?.id && clearTimeout(timerRef.current.id);
+            config.current?.id && clearTimeout(config.current.id);
         };
     }, [toast]);
 
-    React.useEffect(() => {
-        if (!toast.shouldPauseOnHover) return;
-        
-        isInteracting ? pauseTimer() : (!timerRef.current.id && startTimer());
-    }, [toast, isInteracting]);
-
     return (
         <div
-            ref={toastRef}
+            ref={(node) => (config.current.ref = node)}
             className={cn(
-                'pointer-events-all transition-opacity duration-200 ease-in-out py-2 px-4 rounded-[10px] bg-[#000000a8] backdrop-blur-xl',
-                toast ? 'opacity-100' : 'opacity-0'
+                shouldRemove ? 'fill-mode-forwards animate-out fade-out-0' : 'animate-in fade-in-0',
+                'pointer-events-all select-none py-2 px-4 rounded-[10px] bg-[#000000a8] backdrop-blur-xl',
             )}
-            onMouseEnter={() => setIsInteracting(true)}
-            onMouseLeave={() => setIsInteracting(false)}
+            onClick={() => setShouldRemove(true)}
+            onAnimationEnd={() => shouldRemove && removeToast()}
+            {...(toast.shouldPauseOnHover && { onMouseEnter: handleInteraction, onMouseLeave: handleInteraction })}
         >
             <Typography as='p' size='base' weight="medium">{toast.message}</Typography>
         </div>

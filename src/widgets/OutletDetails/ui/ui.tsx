@@ -1,4 +1,4 @@
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useEvents } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
@@ -22,7 +22,7 @@ export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info 
     const [activeTab, setActiveTab] = React.useState(0);
 
     const addEventListener = useEvents((state) => state.addEventListener);
-    const setChat = useChat((state) => state.actions.setChat);
+    const setChat = useChat(setChatSelector);
 
     React.useEffect(() => {
         const removeEventListener = addEventListener('keydown', (event) => {

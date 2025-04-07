@@ -1,4 +1,5 @@
 import { useModal } from '@/shared/lib/providers/modal';
+import { toast } from '@/shared/lib/toast';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { Loader2, X } from 'lucide-react';
@@ -20,9 +21,9 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
         await onAsyncActionModal(() => sessionApi.dropSession(session._id), {
             onResolve: () => {
                 onDrop?.(session);
-                // toast.success('Session dropped', { position: 'top-center' });
+                toast.success('Session dropped');
             },
-            onReject: () => {}, // toast.error('Failed to drop session'),
+            onReject: () => toast.error('Failed to drop session'),
             closeOnSuccess: false
         })
         

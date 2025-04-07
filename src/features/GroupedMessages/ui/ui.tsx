@@ -1,7 +1,7 @@
 import { Message } from '@/entities/Message';
 import { Message as IMessage } from '@/entities/Message/model/types';
 import { useSession } from '@/entities/session';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { groupedMessagesSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
@@ -10,12 +10,7 @@ import { useShallow } from 'zustand/shallow';
 import { MessageGroupProps } from '../model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
-    const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow((state) => ({
-        textareaRef: state.refs.textareaRef,
-        params: state.params, 
-        mode: state.mode, 
-        handleSelectMessage: state.actions.handleSelectMessage 
-    })));
+    const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow(groupedMessagesSelector));
 
     const userId = useSession((state) => state.userId);
     const message = messages[0];

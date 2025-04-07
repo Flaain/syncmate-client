@@ -1,12 +1,11 @@
-import React from "react";
-import { useChat } from "@/shared/lib/providers/chat/context";
-import { getScrollBottom } from "@/shared/lib/utils/getScrollBottom";
-import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
 import { Message } from "@/entities/Message/model/types";
-import { useShallow } from "zustand/shallow";
-import { MessagesListProps } from "./types";
 import { useQuery } from "@/shared/lib/hooks/useQuery";
-import { messagesListSelector } from "./selectors";
+import { messagesListSelector, useChat } from "@/shared/lib/providers/chat";
+import { getScrollBottom } from "@/shared/lib/utils/getScrollBottom";
+import React from "react";
+import { useShallow } from "zustand/shallow";
+import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
+import { MessagesListProps } from "./types";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
     const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));

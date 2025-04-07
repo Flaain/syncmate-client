@@ -1,4 +1,5 @@
 import { useSession } from "@/entities/session";
+import { toast } from "@/shared/lib/toast";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { SetStateInternal } from "@/shared/model/types";
 import { profileApi } from "../api";
@@ -37,7 +38,7 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
             const file = event.target.files[0];
             const validator = imageValidators.find(({ isValid }) => !isValid(file));
 
-            if (validator) return // toast.error(validator.message, { position: 'top-center' });
+            if (validator) return toast.error(validator.message);
 
             const form = new FormData();
 
@@ -48,7 +49,7 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
             set((prevState) => ({ profile: { ...prevState.profile, avatar: data } }));
         } catch (error) {
             console.error(error);
-            // toast.error('Cannot upload image', { position: 'top-center' });
+            toast.error('Cannot upload image');
 
             event.target.value = ''; // reset value to prevent caching
         } finally {

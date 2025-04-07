@@ -1,8 +1,9 @@
 import { Observer } from "@/shared/model/observer";
+import { IToast, ToastOptions } from "./types";
 
-export class Toast extends Observer<any> {
+export class Toast extends Observer<IToast> {
     private readonly TOAST_DURATION = 3600;
-    private _toast: any = null;
+    private _toast: IToast | null = null;
 
     constructor() {
         super()
@@ -12,26 +13,27 @@ export class Toast extends Observer<any> {
         return this._toast;
     }
 
-    private set toast(toast: any) {
+    private set toast(toast: IToast | null) {
         this._toast = toast;
     }
 
-    private create = (toast: any) => {
+    private create = (toast: IToast) => {
         this.toast = toast;
 
         this.notify(toast);
     }
 
-    message = (message: string | React.ReactNode, options?: any) => {
+    message = (message: IToast['message'], options?: ToastOptions) => {
         this.create({
             ...options,
             message,
+            type: "message",
             id: options?.id ?? window.crypto.randomUUID(),
             duration: options?.duration ?? this.TOAST_DURATION,
         });
     };
 
-    error = (message: string | React.ReactNode, options?: any) => {
+    error = (message: IToast['message'], options?: ToastOptions) => {
         this.create({
             ...options,
             message,
@@ -41,7 +43,7 @@ export class Toast extends Observer<any> {
         });
     };
 
-    success = (message: string | React.ReactNode, options?: any) => {
+    success = (message: IToast['message'], options?: ToastOptions) => {
         this.create({
             ...options,
             message,

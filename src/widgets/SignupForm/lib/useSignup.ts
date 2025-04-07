@@ -34,70 +34,69 @@ export const useSignup = () => {
         shouldFocusError: true
     })
     
-    const isNextButtonDisabled =
-    !form.getValues(steps[step].fields).every(Boolean) ||
-    !!Object.entries(form.formState.errors).some(([key]) => steps[step].fields.includes(key as FieldPath<SignupSchemaType>)) ||
-    loading;
-    
-    React.useEffect(() => {
-        setTimeout(form.setFocus, 0, steps[step].fields[0]);
-    }, [step])
-    
+    const isNextButtonDisabled = !form.getValues(steps[step].fields).every(Boolean) || !!Object.keys(form.formState.errors).some((key) => key === 'root' ? Object.keys(form.formState.errors.root!).some((root_key) => root_key === 'server' || steps[step].fields.includes(root_key as FieldPath<SignupSchemaType>)) : steps[step].fields.includes(key as FieldPath<SignupSchemaType>)) || loading;
+
+    const checkEmail = React.useCallback(async ({ email }: SignupSchemaType) => {
+        await signupApi.check({ type: UserCheckType.EMAIL, email: email.toLowerCase().trim() });
+
+        setStep((prevState) => prevState + 1);
+    }, []);
+
+    const checkLogin = React.useCallback(async ({ login, email }: SignupSchemaType) => {
+        const trimmedEmail = email.toLowerCase().trim();
+
+        await signupApi.check({ type: UserCheckType.LOGIN, login: login.toLowerCase().trim() });
+                    
+        const { data: { retryDelay } } = await otpApi.create({ email: trimmedEmail, type: OtpType.EMAIL_VERIFICATION });
+        
+        useOtp.setState({ otp: { targetEmail: trimmedEmail, type: OtpType.EMAIL_VERIFICATION, retryDelay } });
+        
+        setStep((prevState) => prevState + 1);
+    }, []);
+
+    const signUp = React.useCallback(async ({ confirmPassword, ...rest }: SignupSchemaType) => {
+        const { data } = await signupApi.signup(rest);
+
+        useProfile.setState({ profile: data });
+        useSession.getState().actions.onSignin(data._id);
+    }, []);
+
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
 
     const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
         try {
             event?.preventDefault?.();
             
-            const data = form.getValues();
-            
             const isValid = await form.trigger(steps[step].fields, { shouldFocus: true });
             
             if (!isValid) return;
 
+            const data = form.getValues();
+            
             setLoading(true);
 
-            const actions = {
-                0: async () => {
-                    await signupApi.check({ type: UserCheckType.EMAIL, email: data.email.toLowerCase().trim() });
-
-                    setStep((prevState) => prevState + 1);
-                },
-                1: async () => {
-                    await signupApi.check({ type: UserCheckType.LOGIN, login: data.login.toLowerCase().trim() });
-                    
-                    const { data: { retryDelay } } = await otpApi.create({ email: data.email, type: OtpType.EMAIL_VERIFICATION });
-                    
-                    useOtp.setState({ otp: { targetEmail: data.email, type: OtpType.EMAIL_VERIFICATION, retryDelay } });
-                    
-                    setStep((prevState) => prevState + 1);
-                },
-                2: async () => {
-                    const { confirmPassword, ...rest } = data;
-                    
-                    const { data: profile } = await signupApi.signup(rest);
-
-                    useProfile.setState({ profile });
-                    useSession.getState().actions.onSignin(profile._id);
-                }
-            };
-
-            await actions[step as keyof typeof actions]();
+            await formActions.current[step](data);
         } catch (error) {
             console.error(error);
-            if (error instanceof ApiException) {
-                error.response.data.errors?.forEach(({ path, message }) => {
-                   steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(path as FieldPath<SignupSchemaType>, { message }); 
+            if (error instanceof ApiException && error.response.data.errors) {
+                error.response.data.errors.forEach(({ path, message }, i) => {
+                   steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(`root.${path}`, { message });
+
+                   !i && setTimeout(form.setFocus, 0, path);
                 });
-        
-                // !error.response.data.errors && error.toastError();
             } else {
-                // toast.error('Something went wrong. Please try again later', { position: 'top-center' });
+                form.setError('root.server', { message: 'Cannot process signup. Please try again' }, { shouldFocus: true });
             }
         } finally {
             setLoading(false);
         }
     };
+
+    const formActions = React.useRef<Record<number, (data: SignupSchemaType) => Promise<void>>>({
+        0: checkEmail,
+        1: checkLogin,
+        2: signUp
+    });
 
     const onBack = () => {
         if (!step) return changeAuthStage('welcome');

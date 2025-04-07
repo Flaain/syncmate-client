@@ -21,8 +21,4 @@ export class ApiException extends Error implements IApiException {
         this.config = error.config;
         this.response = error.response;
     }
-
-    /* toastError(message?: string, options: ExternalToast = { position: 'top-center' }) {
-        toast.error(message || this.message || 'Something went wrong', options);
-    } */
 }

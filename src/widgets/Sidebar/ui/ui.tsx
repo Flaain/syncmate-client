@@ -1,4 +1,3 @@
-import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
@@ -14,6 +13,7 @@ export const Sidebar = ({ onMenuClick }: { onMenuClick: () => void; }) => {
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     const isSocketConnected = useSocket((state) => state.isConnected);
+    
     const isDisabled = !connectedToNetwork || !isSocketConnected;
 
     return (
@@ -22,7 +22,7 @@ export const Sidebar = ({ onMenuClick }: { onMenuClick: () => void; }) => {
                 <Button
                     variant='text'
                     size='icon'
-                    onClick={() => toast.message('Please allow access to your microphone', { id: 'qwerty123', recalculateRemainingTime: true, shouldPauseOnHover: true })}
+                    onClick={onMenuClick}
                     className='opacity-30'
                 >
                     <AlignJustifyIcon />

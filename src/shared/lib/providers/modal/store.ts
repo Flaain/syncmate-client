@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { AsyncActionOptions, ModalConfig, ModalStore } from './types';
 import { uuidv4 } from '../../utils/uuidv4';
+import { AsyncActionOptions, ModalConfig, ModalStore } from './types';
 
 export const useModal = create<ModalStore>((set, get) => ({
     modals: [],
@@ -41,5 +41,3 @@ export const useModal = create<ModalStore>((set, get) => ({
         }
     }
 }));
-
-export const selectModalActions = (state: ModalStore) => state.actions;

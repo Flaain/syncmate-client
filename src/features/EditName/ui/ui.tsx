@@ -1,17 +1,17 @@
+import { useProfile } from '@/entities/profile';
+import { selectProfileName } from '@/entities/profile/model/selectors';
+import { editNameModalSelector, useModal } from '@/shared/lib/providers/modal';
+import { FormInput } from '@/shared/ui/FormInput';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { useEditName } from '../lib/useEditName';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { useModal } from '@/shared/lib/providers/modal';
 import { useShallow } from 'zustand/shallow';
+import { useEditName } from '../lib/useEditName';
 
 export const EditName = () => {
-    const { isModalDisabled, onCloseModal } = useModal(useShallow((state) => ({
-        onCloseModal: state.actions.onCloseModal,
-        isModalDisabled: state.isModalDisabled
-    })));
-    const { form, onSubmit } = useEditName();
+    const { isModalDisabled, onCloseModal } = useModal(useShallow(editNameModalSelector));
+    const { onSubmit, setError, error, ref } = useEditName();
+
+    const name = useProfile(selectProfileName);
 
     return (
         <div className='flex flex-col gap-5'>
@@ -20,36 +20,31 @@ export const EditName = () => {
                     Edit your name
                 </Typography>
             </div>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-2'>
-                    <FormField
-                        name='name'
-                        control={form.control}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className='text-white'>Enter your name</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        type='text'
-                                        placeholder='Enter your name'
-                                        className='box-border focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:ring-primary-dark-50'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <div className='flex items-center gap-2 justify-end mt-2'>
-                        <Button type='button' variant='secondary' onClick={onCloseModal()} disabled={isModalDisabled}>
-                            Cancel
-                        </Button>
-                        <Button type='submit' size='lg' disabled={isModalDisabled}>
-                            Save
-                        </Button>
-                    </div>
-                </form>
-            </Form>
+            <form onSubmit={onSubmit} className='flex flex-col gap-2'>
+                <FormInput
+                    ref={ref}
+                    onChange={() => setError(null)}
+                    hasServerError={!!error}
+                    defaultValue={name}
+                    type='text'
+                    className='dark:bg-primary-dark-200'
+                    placeholder='Enter your name'
+                    name='name'
+                />
+                {error && (
+                    <p className='text-sm font-medium text-primary-destructive dark:text-primary-destructive'>
+                        {error}
+                    </p>
+                )}
+                <div className='flex items-center gap-2 justify-end mt-2'>
+                    <Button type='button' variant='secondary' onClick={onCloseModal()} disabled={isModalDisabled}>
+                        Cancel
+                    </Button>
+                    <Button type='submit' size='lg' disabled={isModalDisabled}>
+                        Save
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 };
