@@ -24,7 +24,7 @@ export const CMItem = ({ variant = 'default', onClick, text, icon }: { variant?:
     >
         <li>
             {icon}
-            <Typography size='sm' weight='medium' className={cn(variant === 'destructive' && 'dark:text-red-400')}>
+            <Typography size='sm' weight='medium' className={cn(variant === 'destructive' && 'dark:text-primary-destructive')}>
                 {text}
             </Typography>
         </li>
@@ -39,6 +39,9 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
     const { textareaRef, handleSelectMessage } = useChat(useShallow(messageContextMenuSelector));
     
     const ref = React.useRef<HTMLDivElement>(null);
+    
+    const copyCallback = React.useCallback(() => handleItemClick(handleCopyToClipboard), []);
+    const handleItemClick = React.useCallback((cb: () => void) => { cb(); setShouldRemove(true); }, []);
 
     useMenuDistance({ ref, onClose: () => setShouldRemove(true) });
 
@@ -60,17 +63,32 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
         idle: (
             <IdleContextMenu
                 isMessageFromMe={isMessageFromMe}
-                actions={{ 
-                    reply: () => handleContextAction({ state: 'reply', value: '', selectedMessage: message }),
-                    copy: handleCopyToClipboard, 
-                    delete: () => onOpenModal(confirmationConfig),
-                    edit: () =>  handleContextAction({ state: 'edit', value: message.text, selectedMessage: message }),
-                    select: () => handleSelectMessage(message)
+                actions={{
+                    reply: () => handleItemClick(() => handleContextAction({ state: 'reply', value: '', selectedMessage: message })),
+                    copy: copyCallback,
+                    delete: () => handleItemClick(() => onOpenModal(confirmationConfig)),
+                    edit: () => handleItemClick(() => handleContextAction({ state: 'edit', value: message.text, selectedMessage: message })),
+                    select: () => handleItemClick(() => handleSelectMessage(message))
                 }}
             />
         ),
-        pending: <PendingContextMenu actions={{ copy: handleCopyToClipboard, abort: message.actions?.abort! }} />,
-        error: <ErrorContextMenu actions={{ copy: handleCopyToClipboard, resend: message.actions?.resend!, remove: message.actions?.remove! }} />
+        pending: (
+            <PendingContextMenu
+                actions={{
+                    copy: copyCallback,
+                    abort: () => handleItemClick(message.actions?.abort!)
+                }}
+            />
+        ),
+        error: (
+            <ErrorContextMenu
+                actions={{
+                    copy: copyCallback,
+                    resend: () => handleItemClick(message.actions?.resend!),
+                    remove: () => handleItemClick(message.actions?.remove!)
+                }}
+            />
+        )
     };
 
     return (

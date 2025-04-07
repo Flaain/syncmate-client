@@ -18,7 +18,7 @@ export const IdleContextMenu = ({
                 <CMItem
                     variant='destructive'
                     text='Delete'
-                    icon={<Trash2 className='size-4 text-red-400' />}
+                    icon={<Trash2 className='size-4 text-primary-destructive' />}
                     onClick={actions.delete}
                 />
             </>

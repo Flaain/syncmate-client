@@ -2,7 +2,7 @@ import { MAX_POINTER_DISTANCE_DDM } from "@/shared/constants";
 import { useEvents } from "@/shared/model/store";
 import React from "react";
 
-export const useMenuDistance = <T extends HTMLElement>({ ref, onClose, deps }: { ref: React.RefObject<T>; onClose: () => void; deps?: React.DependencyList }) => {
+export const useMenuDistance = <T extends HTMLElement>({ ref, onClose, deps, earlyReturn }: { ref: React.RefObject<T>; earlyReturn?: boolean; onClose: () => void; deps?: React.DependencyList }) => {
     const addEventListener = useEvents((state) => state.addEventListener);
 
     const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
@@ -14,6 +14,8 @@ export const useMenuDistance = <T extends HTMLElement>({ ref, onClose, deps }: {
     }, []);
 
     React.useEffect(() => {
+        if (earlyReturn) return;
+
         const removeEventListener = addEventListener('keydown', (event) => event.key === 'Escape' && onClose());
 
         document.addEventListener('mousemove', handleMouseMove);

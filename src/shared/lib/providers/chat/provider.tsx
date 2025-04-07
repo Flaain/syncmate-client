@@ -1,10 +1,10 @@
-import React from 'react';
-import { createStore } from 'zustand';
-import { ChatProviderProps, ChatStore } from './types';
-import { ChatContext } from './context';
-import { chatActions } from './actions';
-import { useNavigate } from 'react-router-dom';
 import { useEvents } from '@/shared/model/store';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createStore } from 'zustand';
+import { chatActions } from './actions';
+import { ChatContext } from './context';
+import { ChatProviderProps, ChatStore } from './types';
 
 const initialState: Omit<ChatStore, 'actions'> = {
     params: null!,
