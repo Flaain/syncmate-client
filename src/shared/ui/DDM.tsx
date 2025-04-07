@@ -13,7 +13,7 @@ export const DDM = ({ dropdownContent, trigger, ...rest }: DDMProps) => {
 
     const ref = React.useRef<HTMLDivElement>(null);
 
-    useMenuDistance({ ref, onClose: () => setIsOpen(false), deps: [isOpen] });
+    useMenuDistance({ ref, onClose: () => setIsOpen(false),  earlyReturn: !isOpen, deps: [isOpen] });
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

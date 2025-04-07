@@ -7,7 +7,7 @@ export const PendingContextMenu = ({ actions }: { actions: { copy: () => void; a
         <CMItem
             variant='destructive'
             text='Cancel sending'
-            icon={<XCircle className='size-4 text-red-400' />}
+            icon={<XCircle className='size-4 text-primary-destructive' />}
             onClick={actions.abort}
         />
     </>
