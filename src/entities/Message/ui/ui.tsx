@@ -24,7 +24,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
     }), [hasBeenRead, status]);
 
     return (
-        <ContextMenu onOpenChange={setIsContextMenuOpen}>
+        <ContextMenu onOpenChange={(open) => open && setIsContextMenuOpen(true)}>
             <ContextMenuTrigger asChild disabled={isContextActionsBlocked}>
                 <li
                     {...rest}
@@ -99,9 +99,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                                 size='sm'
                                 className={cn(
                                     'ml-auto flex items-center gap-2 self-end',
-                                    isMessageFromMe
-                                        ? 'dark:text-primary-dark-50/20 text-primary-white'
-                                        : 'dark:text-primary-white/20'
+                                    isMessageFromMe ? 'dark:text-primary-dark-50/20 text-primary-white' : 'dark:text-primary-white/20'
                                 )}
                                 title={`${createTime.toLocaleString()}${hasBeenEdited ? `\nEdited: ${new Date(updatedAt).toLocaleString()}` : ''}`}
                             >

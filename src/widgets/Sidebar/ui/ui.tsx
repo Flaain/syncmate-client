@@ -13,6 +13,7 @@ export const Sidebar = ({ onMenuClick }: { onMenuClick: () => void; }) => {
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     const isSocketConnected = useSocket((state) => state.isConnected);
+    
     const isDisabled = !connectedToNetwork || !isSocketConnected;
 
     return (

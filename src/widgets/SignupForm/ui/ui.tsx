@@ -1,13 +1,13 @@
-import { Typography } from '@/shared/ui/Typography';
-import { SignupProfile } from '@/widgets/SignupForm/ui/SignupProfile';
 import { OTP } from '@/features/OTP/ui/ui';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { Button } from '@/shared/ui/button';
-import { LoaderCircle } from 'lucide-react';
-import { SignupCredentials } from './SignupCredentials';
-import { steps } from '../model/constants';
-import { useSignup } from '../lib/useSignup';
 import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
+import { Typography } from '@/shared/ui/Typography';
+import { Button } from '@/shared/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { SignupProfile } from '@/widgets/SignupForm/ui/SignupProfile';
+import { LoaderCircle } from 'lucide-react';
+import { useSignup } from '../lib/useSignup';
+import { steps } from '../model/constants';
+import { SignupCredentials } from './SignupCredentials';
 
 const components = {
     0: <SignupCredentials />,
@@ -20,15 +20,12 @@ export const SignupForm = () => {
     return (
         <AuthFormContainer
             title={isLastStep ? 'Verify your email' : 'Sign up'}
-            description={
-                isLastStep
-                    ? `We’ve sent an email to ${form.getValues('email').toLowerCase()} with a OTP code to verify your email`
-                    : "We're so excited to have you join us!"
-            }
+            description={isLastStep ? `We’ve sent an email to ${form.getValues('email').toLowerCase()} with a OTP code to verify your email` : "We're so excited to have you join us!"}
         >
             <Form {...form}>
-                <div className='flex max-md:justify-center flex-1 md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
+                <div className='flex max-md:justify-center flex-1 box-border md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
                     <form
+                        onChange={() => form.clearErrors('root')}
                         onSubmit={onSubmit}
                         className='flex flex-col gap-4 h-full justify-center md:min-w-[400px] max-w-[560px] w-full'
                     >

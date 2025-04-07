@@ -2,7 +2,7 @@ import { Message } from '@/entities/Message/model/types';
 import { PRESENCE } from '@/entities/profile/model/types';
 import { useSession } from '@/entities/session';
 import { DEFAULT_TITLE } from '@/shared/constants';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout, useSocket } from '@/shared/model/store';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -23,7 +23,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     const socket = useSocket(useShallow((state) => state.socket));
     const userId = useSession((state) => state.userId);
     
-    const setChat = useChat(useShallow((state) => state.actions.setChat));
+    const setChat = useChat(useShallow(setChatSelector));
     const navigate = useNavigate();
 
     React.useEffect(() => {

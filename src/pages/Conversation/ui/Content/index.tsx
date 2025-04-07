@@ -1,5 +1,5 @@
 import { SendMessage } from '@/features/SendMessage/ui/ui';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { showDetailsSelector, useChat } from '@/shared/lib/providers/chat';
 import { OutletDetailsTypes } from '@/shared/model/types';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
@@ -17,7 +17,7 @@ export const Content = () => {
     const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
 
     const description = getConversationDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
-    const showDetails = useChat((state) => state.showDetails);
+    const showDetails = useChat(showDetailsSelector);
 
     return (
         <OutletContainer>
@@ -27,7 +27,7 @@ export const Content = () => {
                     name={recipient.name}
                     isOfficial={recipient.isOfficial}
                     description={description}
-                    dropdownMenu={<ConversationDDM />}
+                    dropdownContent={<ConversationDDM />}
                 />
                 <MessagesList getPreviousMessages={(id, cursor) => conversationApi.getPreviousMessages(id, cursor)} />
                 <SendMessage

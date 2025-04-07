@@ -1,7 +1,7 @@
-import { Input } from "@/shared/ui/input";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/form";
-import { useFormContext } from "react-hook-form";
-import { SignupSchemaType } from "../../model/types";
+import { FormInput } from '@/shared/ui/FormInput';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { useFormContext } from 'react-hook-form';
+import { SignupSchemaType } from '../../model/types';
 
 export const SignupProfile = () => {
     const form = useFormContext<SignupSchemaType>();
@@ -15,11 +15,7 @@ export const SignupProfile = () => {
                     <FormItem className='relative'>
                         <FormLabel className='text-white'>Name</FormLabel>
                         <FormControl>
-                            <Input
-                                {...field}
-                                placeholder='Enter your name'
-                                className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
-                            />
+                            <FormInput {...field} autoFocus placeholder='Enter your name' />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -32,13 +28,13 @@ export const SignupProfile = () => {
                     <FormItem className='relative'>
                         <FormLabel className='text-white'>Login</FormLabel>
                         <FormControl>
-                            <Input
+                            <FormInput
                                 {...field}
                                 placeholder='Enter your login'
-                                className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                hasServerError={!!form.formState.errors.root?.login}
                             />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage>{form.formState.errors.root?.login?.message}</FormMessage>
                     </FormItem>
                 )}
             />
@@ -49,11 +45,11 @@ export const SignupProfile = () => {
                     <FormItem>
                         <FormLabel className='text-white'>Your birth date</FormLabel>
                         <FormControl>
-                            <Input
+                            <FormInput
                                 {...field}
                                 type='date'
                                 placeholder='Enter your birth date'
-                                className='block dark:[color-scheme:dark] focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                className='block dark:[color-scheme:dark]'
                             />
                         </FormControl>
                         <FormMessage />

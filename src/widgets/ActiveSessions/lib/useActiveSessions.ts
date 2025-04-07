@@ -1,8 +1,8 @@
-import React from 'react';
-import { toast } from 'sonner';
-import { useModal } from '@/shared/lib/providers/modal';
 import { sessionApi } from '@/entities/session';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
+import { useModal } from '@/shared/lib/providers/modal';
+import { toast } from '@/shared/lib/toast';
+import React from 'react';
 
 export const useActiveSessions = () => {
     const { data, isLoading, setData: setSessions } = useQuery(() => sessionApi.getSessions());
@@ -16,11 +16,11 @@ export const useActiveSessions = () => {
         await onAsyncActionModal(sessionApi.terminateAllSessions, {
             onResolve: ({ data: { deletedCount } }) => {
                 setSessions((prevState) => ({ ...prevState!, sessions: [] }));
-                toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`, { position: 'top-center' });
+                toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`);
             },
             onReject: (error) => {
                 console.error(error);
-                toast.error('Failed to terminate sessions', { position: 'top-center' });
+                toast.error('Failed to terminate sessions');
             }
         });
 

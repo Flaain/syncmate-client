@@ -1,23 +1,17 @@
-import React from 'react';
-import { toast } from 'sonner';
-import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
-import { useModal } from '@/shared/lib/providers/modal';
-import { Confirm } from '@/shared/ui/Confirm';
-import { selectModalActions } from '@/shared/lib/providers/modal/store';
-import { useLayout } from '@/shared/model/store';
-import { useChat } from '@/shared/lib/providers/chat/context';
-import { useShallow } from 'zustand/shallow';
 import { messageApi } from '@/entities/Message';
 import { endpoints } from '@/entities/Message/model/constants';
+import { getUseSendMessageSelector, useChat } from '@/shared/lib/providers/chat';
+import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { toast } from '@/shared/lib/toast';
+import { useLayout } from '@/shared/model/store';
+import { Confirm } from '@/shared/ui/Confirm';
+import React from 'react';
+import { useShallow } from 'zustand/shallow';
+import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
 
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
-    const { params, lastMessageRef, textareaRef, handleOptimisticUpdate } = useChat(useShallow((state) => ({ 
-        textareaRef: state.refs.textareaRef,
-        lastMessageRef: state.refs.lastMessageRef,
-        params: state.params,
-        handleOptimisticUpdate: state.actions.handleOptimisticUpdate
-    })));
+    const { params, lastMessageRef, textareaRef, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
@@ -91,11 +85,11 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         }), {
             closeOnError: true,
             onResolve: () => {
-                toast.success('Message deleted', { position: 'top-center' });
+                toast.success('Message deleted');
                 setDefaultState();
             },
             onReject: () => {
-                toast.error('Cannot delete message', { position: 'top-center' });
+                toast.error('Cannot delete message');
                 textareaRef.current?.focus();
             }
         })

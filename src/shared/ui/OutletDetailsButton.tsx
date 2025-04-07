@@ -1,8 +1,8 @@
-import { Link, LucideIcon, Mail, Phone, Info, AtSign } from 'lucide-react';
-import { Button } from './button';
-import { toast } from 'sonner';
+import { AtSign, Info, Link, LucideIcon, Mail, Phone } from 'lucide-react';
+import { toast } from '../lib/toast';
 import { OutletDetailsButtonProps, OutletDetailsTypes } from '../model/types';
 import { Typography } from './Typography';
+import { Button } from './button';
 
 const toastTitle: Record<OutletDetailsTypes, string> = {
     email: 'Email copied to clipboard',
@@ -25,7 +25,7 @@ export const OutletDetailsButton = ({ data, type }: OutletDetailsButtonProps) =>
 
     const onCopyToClipboard = () => {
         navigator.clipboard.writeText(data);
-        toast.success(toastTitle[type], { position: 'top-center' });
+        toast.success(toastTitle[type]);
     };
 
     return (

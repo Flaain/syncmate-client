@@ -1,35 +1,24 @@
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { cn } from '@/shared/lib/utils/cn';
-import { Typography } from '@/shared/ui/Typography';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { OutletHeaderProps } from '../../model/types';
 import { useLayout, useSocket } from '@/shared/model/store';
-import { Button } from '@/shared/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { DDM } from '@/shared/ui/DDM';
+import { Typography } from '@/shared/ui/Typography';
+import { Loader2 } from 'lucide-react';
+import { OutletHeaderProps } from '../../model/types';
 
-export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...rest }: OutletHeaderProps) => {
+export const DefaultState = ({ name, description, dropdownContent, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
-    
-    const navigate = useNavigate()
-
-    const handleBack = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event.stopPropagation();
-        navigate('/');
-    }
 
     return (
         <div {...rest} className='flex flex-col items-start w-full'>
             <div className='flex items-center w-full'>
-                <Button variant='text' size='icon' className='md:hidden' onClick={handleBack}>
-                    <ArrowLeft className='w-6 h-6' />
-                </Button>
                 <Typography
                     as='h2'
                     size='lg'
                     weight='medium'
                     variant='primary'
-                    className={cn('mr-auto max-md:ml-5', isOfficial && 'flex items-center gap-2')}
+                    className={cn('mr-auto', isOfficial && 'flex items-center gap-2')}
                 >
                     {name}
                     {isOfficial && (
@@ -38,7 +27,13 @@ export const DefaultState = ({ name, description, dropdownMenu, isOfficial, ...r
                         </Typography>
                     )}
                 </Typography>
-                {dropdownMenu}
+                {dropdownContent && (
+                    <DDM
+                        align='end'
+                        dropdownContent={dropdownContent}
+                        className='border-none rounded-md w-[200px] h-auto backdrop-blur-[50px] dark:bg-menu-background-color z-[999]'
+                    />
+                )}
             </div>
             {isConnected && connectedToNetwork ? (
                 <Typography as='p' variant='secondary'>

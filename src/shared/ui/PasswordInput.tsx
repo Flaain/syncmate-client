@@ -1,8 +1,8 @@
-import React from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { Input, InputProps } from './input';
+import React from 'react';
 import { cn } from '../lib/utils/cn';
 import { Button } from './button';
+import { Input, InputProps } from './input';
 
 const PasswordInput = React.forwardRef<HTMLInputElement, InputProps & { showStrength?: boolean }>(
     ({ className, ...props }, ref) => {
@@ -13,10 +13,10 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps & { showStre
         return (
             <div className='relative'>
                 <Input
+                    {...props}
                     type={showPassword ? 'text' : 'password'}
                     className={cn('hide-password-toggle pr-10', className)}
                     ref={ref}
-                    {...props}
                 />
                 <Button
                     type='button'
@@ -47,3 +47,4 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps & { showStre
 PasswordInput.displayName = 'PasswordInput';
 
 export { PasswordInput };
+

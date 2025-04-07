@@ -1,24 +1,18 @@
-import React from 'react';
-import EmojiPickerFallback from '@emoji-mart/react';
-import { TopBar } from './TopBar';
-import { Button } from '@/shared/ui/button';
-import { ArrowDown, Paperclip, SendHorizonal, Smile } from 'lucide-react';
-import { toast } from 'sonner';
-import { useSendMessage } from '../lib/useSendMessage';
-import { EmojiPicker } from '@/shared/model/view';
-import { UseMessageParams } from '../model/types';
+import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout } from '@/shared/model/store';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { EmojiPicker } from '@/shared/model/view';
+import { Button } from '@/shared/ui/button';
+import EmojiPickerFallback from '@emoji-mart/react';
+import { ArrowDown, SendHorizonal, Smile } from 'lucide-react';
+import React from 'react';
 import { useShallow } from 'zustand/shallow';
+import { useSendMessage } from '../lib/useSendMessage';
+import { UseMessageParams } from '../model/types';
 import { Placeholder } from './Placeholder';
+import { TopBar } from './TopBar';
 
 export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
-    const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow((state) => ({
-        params: state.params,
-        lastMessageRef: state.refs.lastMessageRef,
-        textareaRef: state.refs.textareaRef,
-        showAnchor: state.showAnchor
-    })));
+    const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow(sendMessageSelector))
 
     const {
         handleSubmitMessage,
@@ -52,15 +46,6 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                 className='w-full max-h-[120px] overflow-hidden flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border'
                 onSubmit={handleSubmitMessage}
             >
-                <Button
-                    variant='text'
-                    size='icon'
-                    type='button'
-                    className='px-5'
-                    onClick={() => toast.info('Coming soon!', { position: 'top-center' })}
-                >
-                    <Paperclip className='w-6 h-6' />
-                </Button>
                 <textarea
                     rows={1}
                     ref={textareaRef}
@@ -69,7 +54,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     onChange={handleChange}
                     onKeyDown={onKeyDown}
                     placeholder='Write a message...'
-                    className='overscroll-contain disabled:opacity-50 leading-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border w-full transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
+                    className='overscroll-contain disabled:opacity-50 leading-5 pl-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border w-full transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
                 ></textarea>
                 {showAnchor && (
                     <Button

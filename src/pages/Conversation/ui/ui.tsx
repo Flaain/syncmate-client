@@ -2,7 +2,7 @@ import { SourceRefPath } from '@/entities/Message/model/types';
 import { ApiException } from '@/shared/api/error';
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useSocket } from '@/shared/model/store';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 import { OutletError } from '@/shared/ui/OutletError';
@@ -16,7 +16,7 @@ import { Content } from './Content';
 export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
     const { id } = useParams() as { id: string };
     
-    const setChat = useChat((state) => state.actions.setChat);
+    const setChat = useChat(setChatSelector);
     const navigate = useNavigate();
     
     const { isLoading, isError, isRefetching, refetch, data } = useQuery(({ signal }) => conversationApi.get(id!, signal), {

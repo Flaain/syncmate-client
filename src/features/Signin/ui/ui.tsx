@@ -1,22 +1,24 @@
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { useAuth } from '@/pages/Auth';
+import { FormInput } from '@/shared/ui/FormInput';
 import { Button } from '@/shared/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { useSigninForm } from '@/widgets/SigninForm/model/store';
 import { LoaderCircle } from 'lucide-react';
 import { useSignin } from '../lib/useSignin';
-import { Input } from '@/shared/ui/input';
-import { PasswordInput } from '@/shared/ui/PasswordInput';
-import { useAuth } from '@/pages/Auth';
-import { useSigninForm } from '@/widgets/SigninForm/model/store';
 
 export const Signin = () => {
-    const { form, isSubmitButtonDisabled, onSubmit, loading } = useSignin();
+    const { form, isSubmitButtonDisabled, onChangeForm, onSubmit, loading } = useSignin();
     
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
     const changeSigninStage = useSigninForm((state) => state.changeSigninStage);
+
+    const serverError = form.formState.errors.root?.server;
 
     return (
         <Form {...form}>
             <div className='flex max-md:justify-center flex-1 md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
                 <form
+                    onChange={onChangeForm}
                     onSubmit={form.handleSubmit(onSubmit)}
                     className='flex flex-col gap-4 h-full justify-center md:min-w-[400px] max-w-[560px] w-full'
                 >
@@ -27,10 +29,11 @@ export const Signin = () => {
                             <FormItem>
                                 <FormLabel className='text-white'>Login</FormLabel>
                                 <FormControl>
-                                    <Input
+                                    <FormInput
                                         {...field}
+                                        autoFocus
                                         placeholder='Enter your email address or login'
-                                        className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                        hasServerError={!!serverError}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -44,15 +47,15 @@ export const Signin = () => {
                             <FormItem>
                                 <FormLabel className='text-white'>Password</FormLabel>
                                 <FormControl>
-                                    <PasswordInput
+                                    <FormInput
                                         {...field}
+                                        type='password'
                                         placeholder='Enter your password'
-                                        className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
-                                        value={field.value.replace(/\s/g, '')}
+                                        hasServerError={!!serverError}
                                     />
                                 </FormControl>
                                 <div className='flex items-center justify-between'>
-                                    <FormMessage />
+                                    <FormMessage>{form.formState.errors.root?.server.message}</FormMessage>
                                     <Button
                                         type='button'
                                         variant='link'

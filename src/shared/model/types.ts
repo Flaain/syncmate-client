@@ -1,10 +1,14 @@
 import { Message } from '@/entities/Message/model/types';
+import { z } from 'zod';
+import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
 
 export enum ChatType {
     CONVERSATION = 'conversation',
     GROUP = 'group',
 }
+
+export type SchemaNameType = z.infer<typeof nameSchema>;
 
 export type RequestStatuses = 'idle' | 'loading' | 'error';
 

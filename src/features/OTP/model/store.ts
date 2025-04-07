@@ -1,7 +1,7 @@
+import { toast } from '@/shared/lib/toast';
 import { create } from 'zustand';
-import { OtpStore } from './types';
-import { toast } from 'sonner';
 import { otpApi } from '../api';
+import { OtpStore } from './types';
 
 export const useOtp = create<OtpStore>((set, get) => ({
     otp: null!,

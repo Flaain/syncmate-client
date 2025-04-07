@@ -18,6 +18,10 @@
     quotes: none;
 }
 
+.pointer-events-all {
+    pointer-events: all;
+}
+
 html {
     overscroll-behavior: none;
 }

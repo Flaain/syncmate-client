@@ -1,13 +1,12 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signinSchema } from "../model/schema";
-import { toast } from "sonner";
 import { useProfile } from "@/entities/profile";
 import { useSession } from "@/entities/session/model/store";
-import { SigninSchemaType } from "../model/types";
-import { signinApi } from "../api";
 import { ApiException } from "@/shared/api/error";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { signinApi } from "../api";
+import { signinSchema } from "../model/schema";
+import { SigninSchemaType } from "../model/types";
 
 export const useSignin = () => {
     const [loading, setLoading] = React.useState(false);
@@ -25,9 +24,9 @@ export const useSignin = () => {
         shouldFocusError: true,
     });
 
-    React.useEffect(() => {
-        form.setFocus('login');
-    }, [])
+    const onChangeForm = React.useCallback(() => {
+        form.formState.errors.root?.server && form.clearErrors('root.server');
+    }, []);
 
     const onSubmit = React.useCallback(async (data: SigninSchemaType) => {
         try {
@@ -40,7 +39,9 @@ export const useSignin = () => {
             onSignin(profile._id);
         } catch (error) {
             console.error(error);
-            error instanceof ApiException ? error.toastError() : toast.error('Cannot signin. Please try again later', { position: 'top-center' });
+           
+            form.setError('root.server', { message: error instanceof ApiException ? error.response.data.message : 'Cannot process signin. Please try again' });
+            setTimeout(form.setFocus, 0, 'login');
         } finally {
             setLoading(false);
         }
@@ -50,6 +51,7 @@ export const useSignin = () => {
         form,
         loading,
         onSubmit,
-        isSubmitButtonDisabled: form.formState.isSubmitting || !form.formState.isValid || loading,
+        onChangeForm,
+        isSubmitButtonDisabled: form.formState.isSubmitting || !form.formState.isValid || loading || !!form.formState.errors.root?.server,
     };
 };

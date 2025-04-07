@@ -1,10 +1,9 @@
+import { getUseMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import React from 'react';
-import { Message } from '../model/types';
-import { endpoints } from '../model/constants';
-import { messageApi } from '..';
-import { useChat } from '@/shared/lib/providers/chat/context';
 import { useShallow } from 'zustand/shallow';
-import { messageSelector } from '@/shared/lib/providers/chat/selectors';
+import { messageApi } from '..';
+import { endpoints } from '../model/constants';
+import { Message } from '../model/types';
 
 export const useMessage = ({
     message,
@@ -19,7 +18,7 @@ export const useMessage = ({
 }) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
-    const { params, selectedMessages, lastMessageRef } = useChat(useShallow(messageSelector));
+    const { params, selectedMessages, lastMessageRef } = useChat(useShallow(getUseMessageSelector));
 
     const observer = React.useRef<IntersectionObserver | null>(null);
 

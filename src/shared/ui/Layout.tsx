@@ -4,14 +4,14 @@ import { Sidebar, SidebarProvider } from '@/widgets/Sidebar';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Outlet } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { Toaster } from '../lib/toast';
 import { Sheet } from './Sheet';
 
 export const Layout = () => {
     const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
     return (
-        <main className='flex h-full dark:bg-primary-dark-200 w-full relative'>
+        <main className='flex size-full dark:bg-primary-dark-200 relative'>
             <Toaster />
             {isSheetOpen &&
                 ReactDOM.createPortal(

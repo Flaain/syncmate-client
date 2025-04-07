@@ -1,20 +1,20 @@
-import React from 'react';
+import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
+import { messageContextMenuSelector } from '@/shared/lib/providers/chat';
+import { useChat } from '@/shared/lib/providers/chat/context';
+import { ModalConfig, selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { cn } from '@/shared/lib/utils/cn';
+import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
+import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { CheckCheck } from 'lucide-react';
+import React from 'react';
+import { useShallow } from 'zustand/shallow';
 import { useCtxMenuMessage } from '../../lib/useCtxMenuMessage';
 import { ContextMenuProps } from '../../model/types';
-import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
-import { Confirm } from '@/shared/ui/Confirm';
-import { selectModalActions } from '@/shared/lib/providers/modal/store';
-import { useEvents } from '@/shared/model/store';
-import { useShallow } from 'zustand/shallow';
-import { useChat } from '@/shared/lib/providers/chat/context';
-import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
-import { cn } from '@/shared/lib/utils/cn';
+import { ErrorContextMenu } from '../ErrorContextMenu';
 import { IdleContextMenu } from '../IdleContextMenu';
 import { PendingContextMenu } from '../PendingContextMenu';
-import { ErrorContextMenu } from '../ErrorContextMenu';
 
 export const CMItem = ({ variant = 'default', onClick, text, icon }: { variant?: 'default' | 'destructive'; text: string; icon: React.ReactNode; onClick: () => void | Promise<void> }) => (
     <ContextMenuItem
@@ -32,14 +32,15 @@ export const CMItem = ({ variant = 'default', onClick, text, icon }: { variant?:
 );
 
 export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps) => {
+    const [shouldRemove, setShouldRemove] = React.useState(false);
+    
     const { handleCopyToClipboard, handleMessageDelete, handleContextAction } = useCtxMenuMessage(message);
     const { onOpenModal, onCloseModal } = useModal(useShallow(selectModalActions));
-    const { textareaRef, handleSelectMessage } = useChat(useShallow((state) => ({
-        textareaRef: state.refs.textareaRef,
-        handleSelectMessage: state.actions.handleSelectMessage
-    })));
+    const { textareaRef, handleSelectMessage } = useChat(useShallow(messageContextMenuSelector));
+    
+    const ref = React.useRef<HTMLDivElement>(null);
 
-    const addEventListener = useEvents((state) => state.addEventListener);
+    useMenuDistance({ ref, onClose: () => setShouldRemove(true) });
 
     const confirmationConfig: ModalConfig = {
         content: (
@@ -72,33 +73,30 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
         error: <ErrorContextMenu actions={{ copy: handleCopyToClipboard, resend: message.actions?.resend!, remove: message.actions?.remove! }} />
     };
 
-    React.useEffect(() => {
-        const removeEventListener = addEventListener('keydown', (event) => {
-            event.key === 'Escape' && onClose();
-        });
-
-        return () => {
-            removeEventListener();
-        };
-    }, []);
-
     return (
         <ContextMenuContent
             loop
             asChild
+            ref={ref}
+            onInteractOutside={() => setShouldRemove(true)}
+            onAnimationEnd={() => shouldRemove && onClose()}
             onEscapeKeyDown={(event) => event.preventDefault()}
             onCloseAutoFocus={() => textareaRef.current?.focus()}
-            className='z-[999] w-[194px] py-2 px-1 dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white border border-solid dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col'
+            className={cn('z-[999] w-[194px] py-2 px-1 border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col', 
+                shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
+            )}
         >
             <ul>
                 <>
                     {isMessageFromMe && message.hasBeenRead && message.readedAt && (
                         <>
-                            <li className='flex items-center gap-2 px-2'>
-                                <CheckCheck className='size-5' />
-                                <Typography size='sm'>{getRelativeMessageTimeString(message.readedAt)}</Typography>
+                            <li className='flex flex-col'>
+                                <div className='flex items-center gap-2 px-2'>
+                                    <CheckCheck className='size-5' />
+                                    <Typography size='sm'>{getRelativeMessageTimeString(message.readedAt)}</Typography>
+                                </div>
+                                <ContextMenuSeparator className='dark:bg-primary-dark-50 my-2' />
                             </li>
-                            <ContextMenuSeparator className='dark:bg-primary-dark-50 my-2' />
                         </>
                     )}
                     {menus[message.status || 'idle']}
