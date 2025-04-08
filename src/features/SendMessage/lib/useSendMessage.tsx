@@ -118,7 +118,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             return onOpenModal({
                 content: (
                     <Confirm
-                        onCancel={onCloseModal()}
+                        onCancel={onCloseModal}
                         onConfirm={handleDeleteMessage}
                         onConfirmText='Delete'
                         text='Are you sure you want to delete this message?'

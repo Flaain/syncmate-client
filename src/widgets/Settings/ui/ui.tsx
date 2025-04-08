@@ -1,17 +1,17 @@
-import React from 'react';
-import Privacy from '@/widgets/Privacy/ui/ui';
-import { SettingsMain } from './SettingsMain';
-import { MyAccount } from '@/features/MyAccount/ui/ui';
 import { ChangePassword } from '@/features/ChangePassword/ui/ui';
-import { Typography } from '@/shared/ui/Typography';
-import { ArrowLeft, X } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { SettingMenu } from '../model/types';
-import { titles } from '../model/constants';
+import { MyAccount } from '@/features/MyAccount/ui/ui';
 import { useModal } from '@/shared/lib/providers/modal';
+import { Typography } from '@/shared/ui/Typography';
+import { Button } from '@/shared/ui/button';
 import { ActiveSessions } from '@/widgets/ActiveSessions';
+import Privacy from '@/widgets/Privacy/ui/ui';
+import { ArrowLeft, X } from 'lucide-react';
+import React from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useSettings } from '..';
+import { titles } from '../model/constants';
+import { SettingMenu } from '../model/types';
+import { SettingsMain } from './SettingsMain';
 
 const components: Record<Exclude<SettingMenu, 'deleteAccount'>, React.ReactNode> = {
     main: <SettingsMain />,
@@ -49,7 +49,7 @@ export const Settings = () => {
                     variant='text'
                     size='icon'
                     className='h-auto p-0 ml-auto'
-                    onClick={onCloseModal()}
+                    onClick={onCloseModal}
                     disabled={isModalDisabled}
                 >
                     <X className='w-6 h-6' />

@@ -25,7 +25,7 @@ export const useEditName = () => {
         const form = new FormData(event.currentTarget);
         const name = form.get('name')?.toString().trim();
 
-        if (name === profileName) return onCloseModal()();
+        if (name === profileName) return onCloseModal();
         if (!name || !name.length) return handleError('Name is required');
         if (name.length > MAX_NAME_LENGTH) return handleError(nameToLongError);
 

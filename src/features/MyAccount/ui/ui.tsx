@@ -1,15 +1,15 @@
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Typography } from '@/shared/ui/Typography';
+import { useProfile } from '@/entities/profile';
 import { EditName } from '@/features/EditName/ui/ui';
-import { useMyAccount } from '../lib/useMyAccount';
-import { AtSign, Camera, Loader2, Mail, UserCircle2 } from 'lucide-react';
+import { useModal } from '@/shared/lib/providers/modal';
+import { useSocket } from '@/shared/model/store';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Image } from '@/shared/ui/Image';
+import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { Image } from '@/shared/ui/Image';
-import { useModal } from '@/shared/lib/providers/modal';
-import { useProfile } from '@/entities/profile';
-import { useSocket } from '@/shared/model/store';
+import { AtSign, Camera, Loader2, Mail, UserCircle2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
+import { useMyAccount } from '../lib/useMyAccount';
 
 export const MyAccount = () => {
     const { statusValue, symbolsLeft, onChangeStatus } = useMyAccount();
@@ -75,7 +75,7 @@ export const MyAccount = () => {
                                 content: <EditName />,
                                 title: 'Edit your name',
                                 bodyClassName: 'max-w-[400px] w-full h-auto p-5',
-                                withHeader: false
+                                withHeader: false,
                             })
                         }
                         variant='ghost'

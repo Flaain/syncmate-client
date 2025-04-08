@@ -32,7 +32,7 @@ export const SelectState = () => {
             content: (
                 <Confirm
                     text={`Do you want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
-                    onCancel={onCloseModal()}
+                    onCancel={onCloseModal}
                     onConfirmButtonVariant='destructive'
                     onConfirmText='Delete'
                     onConfirm={() => onAsyncActionModal(() => messageApi.delete({

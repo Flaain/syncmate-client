@@ -1,8 +1,8 @@
-import React from 'react';
 import { XIcon } from 'lucide-react';
+import React from 'react';
+import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 import { cn } from '../lib/utils/cn';
 import { Typography } from './Typography';
-import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 
 const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<ModalProps, 'children' | 'bodyClassName' | 'size' | 'withHeader'>) => {
     if (!title && !withCloseButton) {
@@ -43,7 +43,7 @@ const ModalContainer = ({ children, closeHandler, disabled }: Omit<ModalProps, '
     };
 
     return (
-        <div className='fixed inset-0 z-[9999]'>
+        <div className='fixed inset-0 z-[9999] animate-in fade-in duration-200 ease-in-out'>
             <div className={cn('w-full h-full flex items-center justify-center p-5 bg-modal', disabled && 'pointer-events-none')} onClick={handleOverlayClick}>
                 {children}
             </div>
@@ -57,7 +57,7 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(({ children, 
             ref={ref}
             tabIndex={-1}
             className={cn(
-                'outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white rounded-lg box-border border border-solid border-primary-gray',
+                'slide-in-from-bottom-5 fade-in-0 animate-in duration-200 ease-in-out outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white rounded-lg box-border border border-solid border-primary-gray',
                 className,
                 disabled && 'pointer-events-none'
             )}

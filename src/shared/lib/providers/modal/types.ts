@@ -23,8 +23,8 @@ export interface ModalStore {
     isModalDisabled: boolean;
     modals: Array<ModalConfig>;
     actions: {
+        onCloseModal: () => void;
         onOpenModal: (config: ModalConfig) => void;
-        onCloseModal: (modal?: ModalConfig) => () => void;
         onAsyncActionModal: <T>(cb: () => Promise<T>, options?: AsyncActionOptions<T>) => Promise<void>;
     }
 }

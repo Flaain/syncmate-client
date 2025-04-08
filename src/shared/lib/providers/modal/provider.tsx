@@ -1,8 +1,8 @@
+import { useEvents } from '@/shared/model/store';
+import { Modal } from '@/shared/ui/Modal';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal } from '@/shared/ui/Modal';
 import { useModal } from './store';
-import { useEvents } from '@/shared/model/store';
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     const { modals, isModalDisabled, actions: { onCloseModal } } = useModal();
@@ -35,7 +35,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const handleEscapeDown = (event: KeyboardEvent) => {
-        !isModalDisabled && event.key === 'Escape' && onCloseModal(modals[modals.length - 1])();
+        !isModalDisabled && event.key === 'Escape' && onCloseModal();
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -72,11 +72,11 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
             {modals.map((modal, index, array) =>
                 ReactDOM.createPortal(
                     <Modal
-                        key={index}
                         {...modal}
+                        key={index}
                         disabled={isModalDisabled}
                         ref={index === array.length - 1 ? bodyRef : null}
-                        closeHandler={onCloseModal(modal)}
+                        closeHandler={onCloseModal}
                     >
                         {modal.content}
                     </Modal>,

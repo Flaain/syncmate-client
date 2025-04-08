@@ -15,7 +15,7 @@ export const ActiveSessions = () => {
     if (isLoading || !data) return <ActiveSessionsSkeleton />;
 
     const onConfirm = () => {
-        onCloseModal()();
+        onCloseModal();
         handleTerimanteSessions();
     };
 
@@ -36,7 +36,7 @@ export const ActiveSessions = () => {
                                     content: (
                                         <Confirm
                                             text='Are you sure you want to terminate all other sessions?'
-                                            onCancel={onCloseModal()}
+                                            onCancel={onCloseModal}
                                             onConfirm={onConfirm}
                                         />
                                     )

@@ -11,8 +11,18 @@ export const useModal = create<ModalStore>((set, get) => ({
 
             set((prevState) => ({ modals: [...prevState.modals, { id: uuidv4(), ...config }] }));
         },
-        onCloseModal: (modal?: ModalConfig) => () => { // 05.03.2025 i do not fucking rememeber why i do this way
-            modal?.closeHandler?.(modal);
+        onCloseModal: () => {
+            const { modals } = get();
+
+            const modal = modals[modals.length - 1];
+
+            if (!modal) {
+                console.warn('Cannot close modal. Modals array is empty');
+                return;
+            }
+
+            modal.closeHandler?.(modal);
+
             set((prevState) => ({ modals: prevState.modals.slice(0, -1) }));
         },
         onAsyncActionModal: async <T>(
@@ -31,10 +41,10 @@ export const useModal = create<ModalStore>((set, get) => ({
                 const data = await cb();
 
                 onResolve?.(data);
-                closeOnSuccess && get().actions.onCloseModal()();
+                closeOnSuccess && get().actions.onCloseModal();
             } catch (error) {
                 onReject?.(error);
-                closeOnError && get().actions.onCloseModal()();
+                closeOnError && get().actions.onCloseModal();
             } finally {
                 set({ isModalDisabled: false });
             }

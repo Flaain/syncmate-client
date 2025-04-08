@@ -42,7 +42,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                             height='20'
                             viewBox='0 0 11 20'
                             fill='currentColor'
-                            className={cn('absolute z-10 bottom-0 w-[11px] h-5 block', {
+                            className={cn('absolute z-10 bottom-0 w-[11px] h-5', {
                                 ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']: isMessageFromMe,
                                 ['dark:text-primary-dark-50 text-primary-gray -left-[11px]']: !isMessageFromMe
                             })}
@@ -56,8 +56,8 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                     )}
                     <div
                         className={cn(
-                            'py-2 px-3 xl:m-0 relative max-w-[480px] box-border',
-                            inReply && 'flex flex-col gap-2',
+                            'px-2 py-1 xl:m-0 relative max-w-[480px] box-border',
+                            inReply && 'flex flex-col gap-2 py-1.5',
                             getBubblesStyles({
                                 isFirst,
                                 isLast,

@@ -21,7 +21,7 @@ export const useConversationDDM = () => {
                         closeOnError: true,
                         onReject: () => toast.error(`Failed to ${type} user`)
                     })}
-                    onCancel={onCloseModal()}
+                    onCancel={onCloseModal}
                     text={`Are you sure you want to ${type} ${recipient.name}?`}
                     onConfirmText={type}
                     onConfirmButtonVariant={type === 'block' ? 'destructive' : 'default'}
@@ -42,7 +42,7 @@ export const useConversationDDM = () => {
                         closeOnError: true,
                         onReject: () => toast.error('Failed to delete conversation')
                     })}
-                    onCancel={onCloseModal()}
+                    onCancel={onCloseModal}
                     text={`Are you sure you want to delete conversation with ${recipient.name}?`}
                     onConfirmText='Delete'
                     onConfirmButtonVariant='destructive'

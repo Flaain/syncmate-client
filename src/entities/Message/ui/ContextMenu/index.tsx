@@ -48,7 +48,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
     const confirmationConfig: ModalConfig = {
         content: (
             <Confirm
-                onCancel={onCloseModal()}
+                onCancel={onCloseModal}
                 onConfirm={handleMessageDelete}
                 onConfirmText='Delete'
                 text='Are you sure you want to delete this message?'
