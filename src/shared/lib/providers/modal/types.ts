@@ -3,11 +3,14 @@ import React from "react";
 export interface ModalProps extends Omit<ModalConfig, 'content'> {
     disabled?: boolean;
     closeHandler: () => void;
+    onRemove: () => void;
+    _shouldRemove?: boolean;
     children: React.ReactNode;
 }
 
 export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
+    _shouldRemove?: boolean;
     disabled?: boolean;
 }
 
@@ -24,6 +27,7 @@ export interface ModalStore {
     modals: Array<ModalConfig>;
     actions: {
         onCloseModal: () => void;
+        onRemoveModal: () => void;
         onOpenModal: (config: ModalConfig) => void;
         onAsyncActionModal: <T>(cb: () => Promise<T>, options?: AsyncActionOptions<T>) => Promise<void>;
     }
@@ -36,5 +40,6 @@ export interface ModalConfig {
     withHeader?: boolean;
     bodyClassName?: string;
     content: React.ReactNode;
+    _shouldRemove?: boolean;
     closeHandler?: (modal?: ModalConfig) => void;
 }

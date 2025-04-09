@@ -1,37 +1,42 @@
-export interface ParsedSession {
-    header: string;
-    name: string;
-    type: string;
-    version: string;
-    version_major: string;
+interface IBrowser {
+    name?: string;
+    version?: string;
+    major?: string;
+    type?: 'crawler' | 'cli' | 'email' | 'fetcher' | 'inapp' | 'mediaplayer' | 'library';
+}
+
+interface ICPU {
+    architecture?: 'ia32' | 'ia64' | 'amd64' | 'arm' | 'arm64' | 'armhf' | 'avr' | 'avr32' | 'irix' | 'irix64' | 'mips' | 'mips64' | '68k' | 'pa-risc' | 'ppc' | 'sparc' | 'sparc64';
+}
+
+interface IDevice {
+    type?: 'mobile' | 'tablet' | 'console' | 'smarttv' | 'wearable' | 'xr' | 'embedded';
+    vendor?: string;
+    model?: string;
+}
+
+interface IEngine {
+    name?: 'Amaya' | 'ArkWeb' | 'Blink' | 'EdgeHTML' | 'Flow' | 'Gecko' | 'Goanna' | 'iCab' | 'KHTML' | 'LibWeb' | 'Links' | 'Lynx' | 'NetFront' | 'NetSurf' | 'Presto' | 'Servo' | 'Tasman' | 'Trident' | 'w3m' | 'WebKit';
+    version?: string;
+}
+
+interface IOS {
+    name?: string;
+    version?: string;
+}
+
+interface IResult {
+    ua: string;
+    browser: IBrowser;
+    cpu: ICPU; 
     device: IDevice;
-    engine: IEngine;
+    engine: IEngine; 
     os: IOS;
-}
-
-export interface IDevice {
-    brand: string;
-    name: string;
-    type: string;
-}
-
-export interface IEngine {
-    name: string;
-    tpye: string;
-    version: string;
-    version_major: string;
-}
-
-export interface IOS {
-    name: string;
-    type: string;
-    version: string | null;
 }
 
 export interface Session {
     _id: string;
-    userAgent: ParsedSession | null;
-    userIP: null;
+    userAgent: IResult;
     createdAt: string;
     expiresAt: string;
 }

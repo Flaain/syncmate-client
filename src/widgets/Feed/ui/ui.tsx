@@ -4,6 +4,7 @@ import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { globalFeedItems, globalFilters, localFeedItems, localFilters } from '@/widgets/Sidebar/model/constants';
 import { useSidebar } from '@/widgets/Sidebar/model/context';
+import React from 'react';
 import { useShallow } from 'zustand/shallow';
 import { feedSelector } from '../model/selectors';
 import { FeedTypes } from '../model/types';
@@ -12,9 +13,9 @@ import FeedSkeleton from './Skeletons/FeedSkeleton';
 export const Feed = () => {
     const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow(feedSelector));
 
-    const filteredLocalResults = localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue));
-    const filteredGlobalResults = globalResults?.items?.filter((item) => !globalFilters[item.type](item, localResults));
-    
+    const filteredLocalResults = React.useMemo(() => localResults.filter((item) => item.type === FeedTypes.ADS || localFilters[item.type](item, searchValue)), [localResults, searchValue]);
+    const filteredGlobalResults = React.useMemo(() => globalResults?.items?.filter((item) => !globalFilters[item.type](item, localResults)), [globalResults, searchValue]);
+
     if (!isSearching && !filteredLocalResults.length && !filteredGlobalResults?.length) {
         return !searchValue.trim().length ? (
             <FeedSkeleton skeletonsCount={3} />

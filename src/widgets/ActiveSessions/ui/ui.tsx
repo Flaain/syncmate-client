@@ -3,7 +3,7 @@ import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
-import { Hand, Loader2 } from 'lucide-react';
+import { Ban, Loader2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
 import { useActiveSessions } from '../lib/useActiveSessions';
 import { ActiveSessionsSkeleton } from './Skeletons/ActiveSessionsSkeleton';
@@ -13,11 +13,6 @@ export const ActiveSessions = () => {
     const { onCloseModal, onOpenModal } = useModal(useShallow(selectModalActions));
 
     if (isLoading || !data) return <ActiveSessionsSkeleton />;
-
-    const onConfirm = () => {
-        onCloseModal();
-        handleTerimanteSessions();
-    };
 
     return (
         <div className='flex flex-col gap-3 px-5 pt-5'>
@@ -32,12 +27,14 @@ export const ActiveSessions = () => {
                             onClick={() =>
                                 onOpenModal({
                                     withHeader: false,
-                                    bodyClassName: 'max-w-[350px] p-5 h-auto',
+                                    bodyClassName: 'p-4 h-auto',
                                     content: (
                                         <Confirm
                                             text='Are you sure you want to terminate all other sessions?'
                                             onCancel={onCloseModal}
-                                            onConfirm={onConfirm}
+                                            onConfirmText='Terminate'
+                                            onConfirmButtonVariant='destructive'
+                                            onConfirm={handleTerimanteSessions}
                                         />
                                     )
                                 })
@@ -46,13 +43,13 @@ export const ActiveSessions = () => {
                             variant='ghost'
                             className='gap-5 dark:text-primary-destructive text-primary-destructive dark:hover:bg-primary-destructive/10 dark:focus:bg-primary-destructive/10'
                         >
-                            {isTerminating ? <Loader2 className='w-5 h-5 animate-spin' /> : <Hand className='w-5 h-5' />}
+                            {isTerminating ? <Loader2 className='w-5 h-5 animate-spin' /> : <Ban className='w-5 h-5' />}
                             Terminate all other sessions
                         </Button>
                         <Typography as='h2' variant='primary' weight='medium'>
                             Other devices
                         </Typography>
-                        <ul className='flex flex-col gap-2 max-h-[210px] overflow-auto'>
+                        <ul className='flex flex-col gap-2 max-h-[220px] overflow-auto'>
                             {data.sessions.map((session) => (
                                 <li key={session._id}>
                                     <Session

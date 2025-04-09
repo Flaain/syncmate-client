@@ -16,15 +16,13 @@ export const useModal = create<ModalStore>((set, get) => ({
 
             const modal = modals[modals.length - 1];
 
-            if (!modal) {
-                console.warn('Cannot close modal. Modals array is empty');
-                return;
-            }
-
             modal.closeHandler?.(modal);
 
-            set((prevState) => ({ modals: prevState.modals.slice(0, -1) }));
+            modal._shouldRemove = true;
+
+            set({ modals });
         },
+        onRemoveModal: () => set((prevState) => ({ modals: prevState.modals.slice(0, -1) })),
         onAsyncActionModal: async <T>(
             cb: () => Promise<T>,
             {

@@ -19,7 +19,7 @@ export const useCtxMenuMessage = (message: Message) => {
     }, []);
 
     const handleMessageDelete = React.useCallback(async () => {
-        onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
+       await onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
             closeOnError: true,
             onReject: () => toast.error('Cannot delete message')
         });

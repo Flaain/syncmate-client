@@ -5,7 +5,7 @@ import { toast } from '@/shared/lib/toast';
 import React from 'react';
 
 export const useActiveSessions = () => {
-    const { data, isLoading, setData: setSessions } = useQuery(() => sessionApi.getSessions());
+    const { data, isLoading, setData: setSessions } = useQuery(({ signal }) => sessionApi.getSessions(signal));
     const [isTerminating, setIsTerminating] = React.useState(false);
 
     const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
@@ -27,12 +27,12 @@ export const useActiveSessions = () => {
         setIsTerminating(false);
     };
 
-    const handleDropSession = React.useCallback(async (sessionId: string) => {
+    const handleDropSession = React.useCallback((sessionId: string) => {
         setSessions((prevState) => ({
             ...prevState!,
             sessions: prevState!.sessions.filter((session) => session._id !== sessionId)
         }));
-    }, []);
+    }, [setSessions]);
 
     return { data, isLoading, isTerminating, handleDropSession, handleTerimanteSessions };
 };

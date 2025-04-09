@@ -1,41 +1,48 @@
-import { Loader2 } from 'lucide-react';
 import { Button, ButtonProps } from '@/shared/ui/button';
-import { useModal } from '@/shared/lib/providers/modal';
+import { Loader2 } from 'lucide-react';
+import React from 'react';
 import { Typography } from './Typography';
 
-export const Confirm = ({
-    text,
-    onConfirm,
-    onCancel,
-    onCancelText = 'Cancel',
-    onConfirmText = 'Confirm',
-    onConfirmButtonVariant = 'default'
-}: {
-    onConfirm: <T>() => void | T | Promise<void | T | any>;
+interface ConfirmProps {
+    onConfirm: () => void | Promise<void>;
     onCancel: () => void;
     text: string;
     onConfirmText?: string;
     onCancelText?: string;
     onConfirmButtonVariant?: ButtonProps['variant'];
-}) => {
-    const { isModalDisabled } = useModal();
+}
+
+export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', onConfirmText = 'Confirm', onConfirmButtonVariant = 'default' }: ConfirmProps) => {
+    const [loading, setLoading] = React.useState(false);
+
+    const onClickConfirm = React.useCallback(async () => {
+        try {
+            setLoading(true);
+
+            await onConfirm();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     return (
-        <div className='flex flex-col gap-5 items-start'>
+        <div className='flex flex-col gap-5 items-start max-w-[350px]'>
             <Typography as='p' variant='primary'>
                 {text}
             </Typography>
             <div className='flex justify-center gap-5 mt-2 self-end'>
-                <Button onClick={onCancel} variant='secondary' disabled={isModalDisabled}>
+                <Button onClick={onCancel} variant='secondary' disabled={loading}>
                     {onCancelText}
                 </Button>
                 <Button
-                    onClick={onConfirm}
-                    disabled={isModalDisabled}
+                    onClick={onClickConfirm}
+                    disabled={loading}
                     className='min-w-[100px]'
                     variant={onConfirmButtonVariant}
                 >
-                    {isModalDisabled ? <Loader2 className='w-5 h-5 animate-spin' /> : onConfirmText}
+                    {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : onConfirmText}
                 </Button>
             </div>
         </div>

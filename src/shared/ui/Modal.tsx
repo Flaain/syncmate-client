@@ -4,7 +4,7 @@ import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 import { cn } from '../lib/utils/cn';
 import { Typography } from './Typography';
 
-const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<ModalProps, 'children' | 'bodyClassName' | 'size' | 'withHeader'>) => {
+const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<ModalProps, 'children' | 'onRemove' | 'bodyClassName' | 'size' | 'withHeader'>) => {
     if (!title && !withCloseButton) {
         throw new Error('Please use at least one of title or withCloseButton props or provide falsy withHeader prop');
     }
@@ -37,13 +37,13 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
     );
 };
 
-const ModalContainer = ({ children, closeHandler, disabled }: Omit<ModalProps, 'title' | 'withHeader' | 'withCloseButton' | 'bodyClassName' | 'size'>) => {
+const ModalContainer = ({ children, onRemove, closeHandler, disabled, _shouldRemove }: Omit<ModalProps, 'title' | 'withHeader' | 'withCloseButton' | 'bodyClassName' | 'size'>) => {
     const handleOverlayClick = ({ target, currentTarget }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         !disabled && target === currentTarget && closeHandler();
     };
 
     return (
-        <div className='fixed inset-0 z-[9999] animate-in fade-in duration-200 ease-in-out'>
+        <div onAnimationEnd={() => _shouldRemove && onRemove()} className={cn('fixed inset-0 z-[9999] duration-200 ease-in-out', _shouldRemove ? 'animate-out fade-out' : 'animate-in fade-in')}>
             <div className={cn('w-full h-full flex items-center justify-center p-5 bg-modal', disabled && 'pointer-events-none')} onClick={handleOverlayClick}>
                 {children}
             </div>
@@ -51,15 +51,16 @@ const ModalContainer = ({ children, closeHandler, disabled }: Omit<ModalProps, '
     );
 };
 
-const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(({ children, className, disabled, ...rest }, ref) => {
+const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(({ children, _shouldRemove, className, disabled, ...rest }, ref) => {
     return (
         <div
             ref={ref}
             tabIndex={-1}
             className={cn(
-                'slide-in-from-bottom-5 fade-in-0 animate-in duration-200 ease-in-out outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white rounded-lg box-border border border-solid border-primary-gray',
+                'duration-200 ease-in-out outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white rounded-lg box-border border border-solid border-primary-gray',
                 className,
-                disabled && 'pointer-events-none'
+                disabled && 'pointer-events-none',
+                _shouldRemove ? 'slide-out-to-bottom-5 fade-out animate-out' : 'slide-in-from-bottom-5 fade-in animate-in'
             )}
             {...rest}
         >
@@ -68,10 +69,15 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(({ children, 
     );
 });
 
-export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(({ closeHandler, children, withHeader = true, disabled, withCloseButton = true, ...config }, ref) => {
+/**
+ * @name Modal
+ *
+ * @param {boolean} [_shouldRemove] Please do not provide this prop by ur self. It's intended for **internal** use only
+ */
+export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(({ onRemove, closeHandler, children, withHeader = true, disabled, withCloseButton = true, _shouldRemove, ...config }, ref) => {
     return (
-        <ModalContainer closeHandler={closeHandler} disabled={disabled}>
-            <ModalBody ref={ref} className={config.bodyClassName} disabled={disabled}>
+        <ModalContainer onRemove={onRemove} closeHandler={closeHandler} disabled={disabled} _shouldRemove={_shouldRemove}>
+            <ModalBody ref={ref} className={config.bodyClassName} disabled={disabled} _shouldRemove={_shouldRemove}>
                 {withHeader && (
                     <ModalHeader
                         title={config.title}

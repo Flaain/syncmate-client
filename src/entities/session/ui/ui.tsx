@@ -1,5 +1,6 @@
-import { useModal } from '@/shared/lib/providers/modal';
+import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
+import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { Loader2, X } from 'lucide-react';
@@ -10,23 +11,26 @@ import { SessionProps } from '../model/types';
 
 export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }: SessionProps) => {
     const [isDroping, setIsDroping] = React.useState(false);
+
     const { userAgent } = session;
-    const icon = userAgent ? (iconsMap[userAgent.type as keyof typeof iconsMap]?.[userAgent.name] || iconsMap[userAgent?.type as keyof typeof iconsMap]?.default) : null;
-    
-    const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
+    const { onAsyncActionModal, onOpenModal, onCloseModal } = useModal(selectModalActions);
+
+    const icon = iconsMap[userAgent?.browser.name as keyof typeof iconsMap] ?? null;
+    const createdAt = new Date(session.createdAt);
     
     const handleDrop = async () => {
         setIsDroping(true);
-        
+
         await onAsyncActionModal(() => sessionApi.dropSession(session._id), {
             onResolve: () => {
                 onDrop?.(session);
-                toast.success('Session dropped');
+                toast.success('Session was terminated');
             },
-            onReject: () => toast.error('Failed to drop session'),
-            closeOnSuccess: false
-        })
-        
+            onReject: () => toast.error('Failed to teriminate session'),
+            closeOnSuccess: true,
+            closeOnError: true
+        });
+
         setIsDroping(false);
     };
 
@@ -46,14 +50,13 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
             </div>
             <div className='flex flex-col'>
                 <Typography as='h3' variant='primary'>
-                    {userAgent?.name ?? 'Unknown'}&nbsp;{userAgent?.version}
+                    {userAgent?.browser.name ?? 'Unknown browser'}&nbsp;{userAgent?.browser?.major}
                 </Typography>
                 <Typography as='h3' variant='primary' size='sm'>
-                    {userAgent?.os.name ?? 'Unknown'}&nbsp;{userAgent?.os?.version}
+                    {userAgent?.os.name ?? 'Unknown OS'}
                 </Typography>
-                <Typography as='p' variant='secondary' className='line-clamp-1' size='sm'>
-                    Session created at&nbsp;-&nbsp;
-                    {new Date(session.createdAt).toLocaleDateString()}
+                <Typography as='p' title={`Created at ${createdAt.toLocaleString()}`} variant='secondary' className='mt-1 line-clamp-1' size='sm'>
+                    Created at&nbsp;-&nbsp;{createdAt.toLocaleDateString()}
                 </Typography>
             </div>
             {withDropButton && (
@@ -63,7 +66,21 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
                     className='p-0 w-6 h-6 ml-auto overflow-hidden'
                     title='drop session'
                     disabled={isDroping || dropButtonDisabled}
-                    onClick={handleDrop}
+                    onClick={() =>
+                        onOpenModal({
+                            content: (
+                                <Confirm
+                                    text='Are you sure you want to terminate this session?'
+                                    onCancel={onCloseModal}
+                                    onConfirmText='Terminate'
+                                    onConfirmButtonVariant='destructive'
+                                    onConfirm={handleDrop}
+                                />
+                            ),
+                            bodyClassName: 'h-auto p-4',
+                            withHeader: false
+                        })
+                    }
                 >
                     {isDroping ? <Loader2 className='w-5 h-5 animate-spin' /> : <X className='w-5 h-5' />}
                 </Button>

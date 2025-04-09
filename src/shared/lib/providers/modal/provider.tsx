@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { useModal } from './store';
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
-    const { modals, isModalDisabled, actions: { onCloseModal } } = useModal();
+    const { modals, isModalDisabled, actions: { onCloseModal, onRemoveModal } } = useModal();
     
     const bodyRef = React.useRef<HTMLDivElement | null>(null);
     const focusableElements = React.useRef<Array<HTMLElement>>([]);
@@ -77,6 +77,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
                         disabled={isModalDisabled}
                         ref={index === array.length - 1 ? bodyRef : null}
                         closeHandler={onCloseModal}
+                        onRemove={onRemoveModal}
                     >
                         {modal.content}
                     </Modal>,

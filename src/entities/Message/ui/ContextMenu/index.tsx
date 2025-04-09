@@ -56,7 +56,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
             />
         ),
         withHeader: false,
-        bodyClassName: 'h-auto p-5 w-[400px]'
+        bodyClassName: 'h-auto p-5'
     };
 
     const menus: Record<'idle' | 'pending' | 'error', React.ReactNode> = {
