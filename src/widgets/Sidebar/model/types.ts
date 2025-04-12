@@ -13,6 +13,7 @@ export interface LocalFeedItemWrapper<T extends FeedTypes, I extends Conversatio
     _id: string;
     lastActionAt: string;
     createdAt: string;
+    config_id: string;
     item: I;
     type: T;
 }

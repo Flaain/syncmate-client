@@ -120,7 +120,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.filter((item) => item._id !== id).sort(getSortedFeedByLastMessage)
+                    feed: prevState.localResults.feed.filter((feedItem) => feedItem.item._id !== id).sort(getSortedFeedByLastMessage)
                 }
             }));
         })

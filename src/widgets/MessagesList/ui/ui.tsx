@@ -13,7 +13,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
         return (
             <Typography
                 variant='primary'
-                className='m-auto px-5 py-2 rounded-full dark:bg-primary-dark-50 bg-primary-white'
+                className='m-auto px-5 z-10 py-2 rounded-full dark:bg-primary-dark-50 bg-primary-white'
             >
                 No messages yet
             </Typography>
