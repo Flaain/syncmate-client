@@ -16,7 +16,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
     const message = messages[0];
     const isMessageFromMe = message.sender._id === userId;
     const isSelecting = mode === 'selecting';
-    const animatedAvatarClasses = isSelecting ? 'scale-[80%] translate-y-1' : 'scale-100';
+    const animatedAvatarClasses = isSelecting && isMessageFromMe ? 'scale-[80%] translate-y-1' : 'scale-100';
     const avatarClasses = 'transition-transform bottom-[2px] duration-200 ease-in-out sticky max-xl:hidden z-[999]'; // used before bottom-0 but somehow on page load it out of parent(UL) and getting "flash" vertical scroll on page load so bottom-[2px] need to avoid it
 
     const handleDoubleClick = (message: IMessage) => {
