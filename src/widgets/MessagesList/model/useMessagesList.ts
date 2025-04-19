@@ -6,12 +6,27 @@ import React from "react";
 import { useShallow } from "zustand/shallow";
 import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
 import { MessagesListProps } from "./types";
+import { toast } from "@/shared/lib/toast";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
     const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
     
     const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
-        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { ...messages, data: [...data, ...messages.data], nextCursor } })),
+        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => {
+            // ALL CODE BELOW IS TEMPORARY BECAUSE OF IOS SAFARI BUG. I KNOW IT'S BAD
+
+            const newMessages = { ...messages, data: [...data, ...messages.data], nextCursor }, msgMap = new Map<string, Message>();
+
+            for (const msg of newMessages.data) msgMap.set(msg._id, msg);
+
+            const uniqueMessages = Array.from(msgMap.values());
+
+            if (newMessages.data.length !== uniqueMessages.length) {
+                toast.message('IOS_SAFARI_BUG: Duplicate messages detected.');
+            }
+
+            return { messages: { data: uniqueMessages, nextCursor } };
+        }),
         retryDelay: 2000,
         enabled: false,
         retry: 5,

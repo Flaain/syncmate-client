@@ -38,7 +38,7 @@ export const LayoutSheetSkeleton = () => {
                 ))}
             </ul>
             <Typography as='p' variant='secondary' className='flex flex-col mt-auto px-4'>
-                Syncmate Web, {new Date().getFullYear()}
+                Syncmate, {new Date().getFullYear()}
                 <Typography variant='secondary'>
                     Version {APP_VERSION}
                 </Typography>
