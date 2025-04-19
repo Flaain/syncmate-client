@@ -1,10 +1,12 @@
-import { SidebarStore } from "./types";
 import { sessionApi, useSession } from "@/entities/session";
-import { debounce } from "@/shared/lib/utils/debounce";
-import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
-import { SetStateInternal } from "@/shared/model/types";
-import { sidebarApi } from "../api";
 import { ApiException } from "@/shared/api/error";
+import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
+import { debounce } from "@/shared/lib/utils/debounce";
+import { SetStateInternal } from "@/shared/model/types";
+
+import { sidebarApi } from "../api";
+
+import { SidebarStore } from "./types";
 
 export const sidebarActions = (set: SetStateInternal<SidebarStore>, get: () => SidebarStore): SidebarStore['actions'] => ({
     handleLogout: async () => {

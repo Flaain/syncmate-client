@@ -1,5 +1,7 @@
-import { Message } from '@/entities/Message/model/types';
 import { z } from 'zod';
+
+import { Message } from '@/entities/Message/model/types';
+
 import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
 
@@ -9,7 +11,7 @@ export enum ChatType {
 }
 
 export type SchemaNameType = z.infer<typeof nameSchema>;
-
+export type SidebarMenus = 'settings';
 export type RequestStatuses = 'idle' | 'loading' | 'error';
 
 export enum OutletDetailsTypes {

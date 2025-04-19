@@ -1,6 +1,10 @@
 import { Message } from '@/entities/Message/model/types';
 import { WrappedInPagination } from '@/shared/model/types';
-import { AdsFeed, ConversationFeed, FeedTypes, UserFeed } from '@/widgets/Feed/model/types';
+import { ConversationFeed, FeedTypes, UserFeed } from '@/widgets/Feed/model/types';
+
+export type ExctactFeedItem<T, U extends FeedTypes> = Extract<T, { type: U }>;
+export type LocalFeed = LocalFeedItemWrapper<FeedTypes.CONVERSATION, ConversationFeed>;
+export type GlobalFeed = UserFeed;
 
 export interface FeedUpdateParams {
     lastActionAt?: string;
@@ -9,10 +13,16 @@ export interface FeedUpdateParams {
     shouldSort?: boolean;
 }
 
-export interface LocalFeedItemWrapper<T extends FeedTypes, I extends ConversationFeed | AdsFeed> {
+export interface SidebarMenuProps { 
+    onBackCallback: () => void, 
+    backToParent: (m: any) => void
+}
+
+export interface LocalFeedItemWrapper<T extends FeedTypes, I> {
     _id: string;
     lastActionAt: string;
     createdAt: string;
+    config_id: string;
     item: I;
     type: T;
 }
@@ -23,12 +33,6 @@ export interface FeedUnreadCounterEvent {
     action: 'set' | 'dec';
     ctx: 'conversation';
 }
-
-export type ExctactLocalFeedItem<T extends FeedTypes> = Extract<LocalFeed, { type: T }>;
-
-export type LocalFeed =
-    | LocalFeedItemWrapper<FeedTypes.CONVERSATION, ConversationFeed>
-    | LocalFeedItemWrapper<FeedTypes.ADS, AdsFeed>;
 
 export interface SidebarAnouncement {
     title: string;
@@ -48,7 +52,7 @@ export interface LocalResults {
 export interface SidebarStore {
     localResults: LocalResults;
     abortController: AbortController;
-    globalResults: WrappedInPagination<UserFeed> | null;
+    globalResults: WrappedInPagination<GlobalFeed> | null;
     localResultsError: string | null;
     searchRef: React.RefObject<HTMLInputElement>;
     isSearching: boolean;

@@ -2,16 +2,25 @@ import { Message } from "@/entities/Message/model/types";
 import { Avatar, PRESENCE } from "@/entities/profile/model/types";
 import { Conversation } from "@/pages/Conversation/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
+import { ExctactFeedItem, GlobalFeed, LocalFeed } from "@/widgets/Sidebar/model/types";
 
-export type Feed = Array<ConversationFeed | UserFeed>;
-export type FeedItem = ConversationFeed | UserFeed | AdsFeed;
+export interface LocalFeedItemMap {
+    [FeedTypes.CONVERSATION]: ExctactFeedItem<LocalFeed, FeedTypes.CONVERSATION>; 
+}
+
+export interface GlobalFeedItemMap {
+    [FeedTypes.USER]: ExctactFeedItem<GlobalFeed, FeedTypes.USER>;
+}
+
+export type LocalFeedType = { [K in keyof LocalFeedItemMap]: (item: LocalFeedItemMap[K]) => React.ReactNode };
+export type LocalFiltersType = { [K in keyof LocalFeedItemMap]: (item: LocalFeedItemMap[K], value: string) => boolean };
+
+export type GlobalFeedType = { [K in keyof GlobalFeedItemMap]: (item: GlobalFeedItemMap[K]) => React.ReactNode };
+export type GlobalFiltersType = { [K in keyof GlobalFeedItemMap]: (item: GlobalFeedItemMap[K], local: Array<LocalFeed>) => boolean };
 
 export enum FeedTypes {
     CONVERSATION = 'Conversation',
     USER = 'User',
-    ADS = "ADS",
-    CLOUD = "Cloud",
-    CHANNEL = "Channel"
 }
 
 export interface SearchUser {
@@ -40,11 +49,3 @@ export type ConversationFeed = Pick<Conversation, '_id' | 'recipient'> & {
 };
 
 export type UserFeed = SearchUser & { type: FeedTypes.USER };
-
-export interface AdsFeed {
-    _id: string;
-    link: string;
-    name: string;
-    avatar?: Omit<Avatar, '_id'>;
-    description: string;
-}

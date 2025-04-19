@@ -1,16 +1,18 @@
+import { NavLink } from 'react-router-dom';
+
+import { PRESENCE } from '@/entities/profile/model/types';
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+import { cn } from '@/shared/lib/utils/cn';
+import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Typography } from '@/shared/ui/Typography';
 import { Image } from '@/shared/ui/Image';
 import { ProfileIndicator } from '@/shared/ui/ProfileIndicator';
-import { cn } from '@/shared/lib/utils/cn';
-import { NavLink } from 'react-router-dom';
-import { useLayout } from '@/shared/model/store';
-import { FeedTypes } from '../../model/types';
-import { PRESENCE } from '@/entities/profile/model/types';
-import { ExctactLocalFeedItem } from '@/widgets/Sidebar/model/types';
+import { Typography } from '@/shared/ui/Typography';
+import { ExctactFeedItem, LocalFeed } from '@/widgets/Sidebar/model/types';
 
-export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLocalFeedItem<FeedTypes.CONVERSATION> }) => {
+import { FeedTypes } from '../../model/types';
+
+export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeedItem<LocalFeed, FeedTypes.CONVERSATION> }) => {
     const recipient = item.recipient;
     const draft = useLayout((state) => state.drafts).get(recipient._id);
 
@@ -22,9 +24,7 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLoca
                 className={({ isActive }) =>
                     cn(
                         'flex items-center gap-5 p-2 rounded-lg transition-colors duration-200 ease-in-out',
-                        isActive
-                            ? 'dark:bg-primary-dark-50 bg-primary-gray/10'
-                            : 'dark:hover:bg-primary-dark-50/30 hover:bg-primary-gray/5'
+                        isActive ? 'dark:bg-primary-dark-50 bg-primary-gray/10' : 'dark:hover:bg-primary-dark-50/30 hover:bg-primary-gray/5'
                     )
                 }
             >
@@ -58,7 +58,7 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactLoca
                             </Typography>
                         )}
                     </Typography>
-                    {!!item.participantsTyping?.length ? (
+                    {item.participantsTyping?.length ? (
                         <Typography as='p' variant='secondary' className='line-clamp-1'>
                             typing...
                         </Typography>

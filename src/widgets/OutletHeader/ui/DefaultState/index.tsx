@@ -28,11 +28,9 @@ export const DefaultState = ({ name, description, dropdownContent, isOfficial, .
                     )}
                 </Typography>
                 {dropdownContent && (
-                    <DDM
-                        align='end'
-                        dropdownContent={dropdownContent}
-                        className='border-none rounded-md w-[200px] h-auto backdrop-blur-[50px] dark:bg-menu-background-color z-[999]'
-                    />
+                    <DDM align='end'>
+                        {dropdownContent}
+                    </DDM>
                 )}
             </div>
             {isConnected && connectedToNetwork ? (

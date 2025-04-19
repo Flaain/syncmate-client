@@ -11,7 +11,7 @@ export const useConversationDDM = () => {
     
     const recipient = useConversation((state) => state.conversation.recipient);
 
-    const handleBlockRecipient = async (type: 'block' | 'unblock', event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleBlockRecipient = async (type: 'block' | 'unblock', event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         event.stopPropagation();
 
         onOpenModal({
@@ -32,7 +32,7 @@ export const useConversationDDM = () => {
         });        
     }
 
-    const handleDeleteConversation = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleDeleteConversation = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         event.stopPropagation();
 
         onOpenModal({

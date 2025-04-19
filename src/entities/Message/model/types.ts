@@ -1,14 +1,28 @@
-import { Recipient } from "@/pages/Conversation/model/types";
+import { Recipient } from '@/pages/Conversation/model/types';
 
 export enum SourceRefPath {
     CONVERSATION = 'Conversation'
+}
+
+export interface PossibleCtxActions {
+    reply: () => void;
+    edit: () => void;
+    delete: () => void;
+    copy: () => void;
+    select: () => void;
+    abort: () => void;
+    resend: () => void;
+    remove: () => void;
 }
 
 export type Message = {
     _id: string;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION };
+    replyTo?: Pick<Message, '_id' | 'text'> & {
+        sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
+        sourceRefPath: SourceRefPath.CONVERSATION;
+    };
     inReply?: boolean;
     readedAt?: string;
     hasBeenRead?: boolean;
@@ -21,8 +35,9 @@ export type Message = {
         remove?: () => void;
         resend?: () => void;
     };
-    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION;
-}
+    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
+    sourceRefPath: SourceRefPath.CONVERSATION;
+};
 
 export interface UseMessageProps {
     message: Message;

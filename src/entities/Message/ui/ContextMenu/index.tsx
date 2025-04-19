@@ -6,7 +6,7 @@ import { cn } from '@/shared/lib/utils/cn';
 import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
 import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
-import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/shared/ui/context-menu';
+import { ContextMenuContent, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { CheckCheck } from 'lucide-react';
 import React from 'react';
 import { useShallow } from 'zustand/shallow';
@@ -15,21 +15,6 @@ import { ContextMenuProps } from '../../model/types';
 import { ErrorContextMenu } from '../ErrorContextMenu';
 import { IdleContextMenu } from '../IdleContextMenu';
 import { PendingContextMenu } from '../PendingContextMenu';
-
-export const CMItem = ({ variant = 'default', onClick, text, icon }: { variant?: 'default' | 'destructive'; text: string; icon: React.ReactNode; onClick: () => void | Promise<void> }) => (
-    <ContextMenuItem
-        asChild
-        className={cn('active:scale-95 flex items-center gap-5 transition-colors ease-in-out duration-200 dark:text-primary-white text-primary-dark-200 rounded-md hover:bg-primary-gray focus:bg-primary-gray', variant === 'destructive' ? 'dark:hover:bg-primary-destructive/10 dark:focus:bg-primary-destructive/10' : 'dark:hover:bg-light-secondary-color dark:focus:bg-light-secondary-color')}
-        onClick={onClick}
-    >
-        <li>
-            {icon}
-            <Typography size='sm' weight='medium' className={cn(variant === 'destructive' && 'dark:text-primary-destructive')}>
-                {text}
-            </Typography>
-        </li>
-    </ContextMenuItem>
-);
 
 export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
@@ -100,7 +85,7 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
             onAnimationEnd={() => shouldRemove && onClose()}
             onEscapeKeyDown={(event) => event.preventDefault()}
             onCloseAutoFocus={() => textareaRef.current?.focus()}
-            className={cn('z-[999] w-[194px] py-2 px-1 border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white dark:border-primary-dark-200 border-primary-white rounded-[10px] flex flex-col', 
+            className={cn('z-[999] w-[194px] py-2 px-1 dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white rounded-[10px] flex flex-col', 
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
             )}
         >

@@ -1,11 +1,13 @@
-import Verified from '@/shared/lib/assets/icons/verified.svg?react';
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Typography } from '@/shared/ui/Typography';
-import { cn } from '@/shared/lib/utils/cn';
 import { NavLink } from 'react-router-dom';
+
+import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
-import { UserFeed } from '../../model/types';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
+import { Typography } from '@/shared/ui/Typography';
+
+import { UserFeed } from '../../model/types';
 
 export const UserItem = ({ user }: { user: UserFeed }) => {
     const draft = useLayout((state) => state.drafts).get(user._id);
@@ -18,9 +20,7 @@ export const UserItem = ({ user }: { user: UserFeed }) => {
                 className={({ isActive }) =>
                     cn(
                         'flex items-center gap-5 p-2 rounded-lg transition-colors duration-200 ease-in-out',
-                        isActive
-                            ? 'dark:bg-primary-dark-50 bg-primary-gray/10'
-                            : 'dark:hover:bg-primary-dark-50/30 hover:bg-primary-gray/5'
+                        isActive ? 'dark:bg-primary-dark-50 bg-primary-gray/10' : 'dark:hover:bg-primary-dark-50/30 hover:bg-primary-gray/5'
                     )
                 }
             >
