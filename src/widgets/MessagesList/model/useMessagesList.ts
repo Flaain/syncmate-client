@@ -18,9 +18,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
 
             for (const msg of newMessages.data) msgMap.set(msg._id, msg);
 
-            const uniqueMessages = Array.from(msgMap.values());
-
-            return { messages: { data: uniqueMessages, nextCursor } };
+            return { messages: { data: [...msgMap.values()], nextCursor } };
         }),
         retryDelay: 2000,
         enabled: false,
