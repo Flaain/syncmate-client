@@ -51,7 +51,7 @@ export interface SidebarStore {
     abortController: AbortController;
     globalResults: WrappedInPagination<UserFeed> | null;
     localResultsError: string | null;
-    searchRef: React.RefObject<HTMLInputElement>;
+    searchRef: React.RefObject<HTMLInputElement | null>;
     isSearching: boolean;
     searchValue: string;
     actions: {

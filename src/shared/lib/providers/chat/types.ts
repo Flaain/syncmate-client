@@ -12,8 +12,8 @@ export interface ChatStore {
     selectedMessages: Map<string, Message>;
     messages: DataWithCursor<Message>;
     refs: {
-        listRef: React.RefObject<HTMLUListElement>;
-        textareaRef: React.RefObject<HTMLTextAreaElement>;
+        listRef: React.RefObject<HTMLUListElement | null>;
+        textareaRef: React.RefObject<HTMLTextAreaElement | null>;
         lastMessageRef: { current: HTMLLIElement | null };
     };
     actions: {

@@ -1,10 +1,13 @@
+import React from 'react';
+
+import { createStore } from 'zustand';
+
 import { PRESENCE } from '@/entities/profile/model/types';
 import { getSortedFeedByLastMessage } from '@/shared/lib/utils/getSortedFeedByLastMessage';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { TypingParticipant } from '@/shared/ui/Typography';
 import { FEED_EVENTS, FeedTypes } from '@/widgets/Feed/model/types';
-import React from 'react';
-import { createStore } from 'zustand';
+
 import { sidebarActions } from './actions';
 import { SidebarContext } from './context';
 import { FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, SidebarStore } from './types';
@@ -38,12 +41,20 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                         ...feed[index],
                         lastActionAt: createFeedItem.lastActionAt,
                         item: { ...feed[index].item, ...createFeedItem.item }
-                    } as any;
+                    } as any; // TODO type
                     
                     return { localResults: { ...prevState.localResults, feed: feed.sort(getSortedFeedByLastMessage) } };
                 }
 
-                return { localResults: { ...prevState.localResults, feed: [createFeedItem, ...prevState.localResults.feed] } };
+                return {
+                    ...(prevState.globalResults && {
+                        globalResults: {
+                            ...prevState.globalResults,
+                            items: prevState.globalResults.items.filter((item) => item._id !== createFeedItem._id)
+                        }
+                    }),
+                    localResults: { ...prevState.localResults, feed: [createFeedItem, ...prevState.localResults.feed] }
+                };
             })
 
             shouldNotify && useLayout.getState().actions.playSound('new_message');
@@ -120,7 +131,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
             store.setState((prevState) => ({
                 localResults: {
                     ...prevState.localResults,
-                    feed: prevState.localResults.feed.filter((feedItem) => feedItem.item._id !== id).sort(getSortedFeedByLastMessage)
+                    feed: prevState.localResults.feed.filter((item) => item._id !== id).sort(getSortedFeedByLastMessage)
                 }
             }));
         })
@@ -130,7 +141,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((feedItem: any) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
+                        if (feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
                                 item: {
@@ -151,7 +162,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((feedItem: any) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
+                        if (feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
                                 item: {

@@ -1,12 +1,12 @@
 {
     "name": "client",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
             "name": "client",
-            "version": "1.2.4",
+            "version": "1.2.5",
             "license": "CC BY-NC-ND 4.0",
             "dependencies": {
                 "@hookform/resolvers": "^5.0.1",
@@ -24,13 +24,13 @@
                 "react-router-dom": "^6.26.2",
                 "socket.io-client": "^4.7.5",
                 "tailwind-merge": "^2.5.3",
-                "zod": "^3.22.4",
+                "zod": "^3.24.3",
                 "zustand": "^5.0.0-rc.2"
             },
             "devDependencies": {
                 "@types/node": "^20.11.30",
-                "@types/react": "^18.2.66",
-                "@types/react-dom": "^18.2.22",
+                "@types/react": "^19.1.2",
+                "@types/react-dom": "^19.1.2",
                 "@typescript-eslint/eslint-plugin": "^7.2.0",
                 "@typescript-eslint/parser": "^7.2.0",
                 "@vitejs/plugin-react-swc": "^3.5.0",
@@ -1760,32 +1760,24 @@
                 "undici-types": "~6.19.2"
             }
         },
-        "node_modules/@types/prop-types": {
-            "version": "15.7.13",
-            "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.13.tgz",
-            "integrity": "sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==",
-            "dev": true,
-            "license": "MIT"
-        },
         "node_modules/@types/react": {
-            "version": "18.3.11",
-            "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.11.tgz",
-            "integrity": "sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==",
+            "version": "19.1.2",
+            "resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.2.tgz",
+            "integrity": "sha512-oxLPMytKchWGbnQM9O7D67uPa9paTNxO7jVoNMXgkkErULBPhPARCfkKL9ytcIJJRGjbsVwW4ugJzyFFvm/Tiw==",
             "dev": true,
             "license": "MIT",
             "dependencies": {
-                "@types/prop-types": "*",
                 "csstype": "^3.0.2"
             }
         },
         "node_modules/@types/react-dom": {
-            "version": "18.3.0",
-            "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.0.tgz",
-            "integrity": "sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==",
+            "version": "19.1.2",
+            "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.2.tgz",
+            "integrity": "sha512-XGJkWF41Qq305SKWEILa1O8vzhb3aOo3ogBlSmiqNko/WmRb6QIaweuZCXjKygVDXpzXb5wyxKTSOsmkuqj+Qw==",
             "dev": true,
             "license": "MIT",
-            "dependencies": {
-                "@types/react": "*"
+            "peerDependencies": {
+                "@types/react": "^19.0.0"
             }
         },
         "node_modules/@typescript-eslint/eslint-plugin": {
@@ -5262,9 +5254,9 @@
             }
         },
         "node_modules/zod": {
-            "version": "3.23.8",
-            "resolved": "https://registry.npmjs.org/zod/-/zod-3.23.8.tgz",
-            "integrity": "sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==",
+            "version": "3.24.3",
+            "resolved": "https://registry.npmjs.org/zod/-/zod-3.24.3.tgz",
+            "integrity": "sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==",
             "license": "MIT",
             "funding": {
                 "url": "https://github.com/sponsors/colinhacks"
