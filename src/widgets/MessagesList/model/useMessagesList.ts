@@ -6,7 +6,6 @@ import React from "react";
 import { useShallow } from "zustand/shallow";
 import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
 import { MessagesListProps } from "./types";
-import { toast } from "@/shared/lib/toast";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
     const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
@@ -20,10 +19,6 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
             for (const msg of newMessages.data) msgMap.set(msg._id, msg);
 
             const uniqueMessages = Array.from(msgMap.values());
-
-            if (newMessages.data.length !== uniqueMessages.length) {
-                toast.message('IOS_SAFARI_BUG: Duplicate messages detected.');
-            }
 
             return { messages: { data: uniqueMessages, nextCursor } };
         }),
