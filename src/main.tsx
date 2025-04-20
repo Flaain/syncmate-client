@@ -7,8 +7,6 @@ import { ThemeProvider } from './entities/theme/model/provider';
 
 import './app/styles/index.css';
 
-// document.addEventListener('DOMContentLoaded', () => document.querySelector('meta[name=viewport]')?.setAttribute('content', 'width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1'));
-
 useProfile.getState().actions.getProfile();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
