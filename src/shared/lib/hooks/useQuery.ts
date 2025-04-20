@@ -10,6 +10,7 @@ interface UseQueryOptions<T> {
     enabled: boolean;
     refetchInterval: number;
     retryDelay: number;
+    initialData: (() => T) | T;
     cleanup: () => void;
     onSuccess: (data: T) => void;
     onSelect: (data: T) => void;
@@ -35,21 +36,20 @@ interface UseQueryConfig {
     timeout: ReturnType<typeof setTimeout> | null;
 }
 
-interface BaseQueryReturn<T> {
+interface UseQueryReturn<T> {
     isLoading: boolean;
     isRefetching: boolean;
+    isSuccess: boolean; 
+    isError: boolean; 
+    data: T; 
+    error?: ApiException | undefined;
     call: () => Promise<void>;
     abort: () => void;
-    setData: (setter: Partial<T> | ((prevState: T) => Partial<T>)) => void;
+    setData: React.Dispatch<React.SetStateAction<T>>;
     refetch: () => void;
 }
   
-type UseQueryReturn<T> = 
-    | (BaseQueryReturn<T> & { isSuccess: true; isError: false; data: T; error?: undefined })
-    | (BaseQueryReturn<T> & { isSuccess: false; isError: true; data?: undefined; error: ApiException });
-  
-interface UseQueryReducerState<T> {
-    data?: T;
+interface UseQueryReducerState {
     isLoading: boolean;
     isSuccess: boolean;
     isError: boolean;
@@ -57,13 +57,12 @@ interface UseQueryReducerState<T> {
     error?: ApiException;
 }
 
-type UseQueryReducerAction<T = unknown> =
+type UseQueryReducerAction =
     | { type: UseQueryTypes.LOADING; payload: { isLoading: boolean } }
-    | { type: UseQueryTypes.SUCCESS; payload: { data: T } }
+    | { type: UseQueryTypes.SUCCESS }
     | { type: UseQueryTypes.ERROR; payload: { error: ApiException } }
-    | { type: UseQueryTypes.REFETCH; payload: { isRefething: true } }
+    | { type: UseQueryTypes.REFETCH; payload: { isRefetching: true } }
     | { type: UseQueryTypes.RESET; payload: { isLoading: false, isRefetching: false } }
-    | { type: UseQueryTypes.SET; payload: { data: T } };
 
 type UseRunQueryAction = 'init' | 'refetch';
 
@@ -72,24 +71,21 @@ const errorAction = (error: ApiException): Extract<UseQueryReducerAction, { type
     payload: { error }
 });
 
-const queryReducer = <T>(state: UseQueryReducerState<T>, action: UseQueryReducerAction<T>) => {
+const queryReducer = (state: UseQueryReducerState, action: UseQueryReducerAction) => {
     switch (action.type) {
         case UseQueryTypes.LOADING:
             return { ...state, isLoading: action.payload.isLoading };
         case UseQueryTypes.SUCCESS:
             return {
                 ...state,
-                data: action.payload.data,
                 isSuccess: true,
                 isLoading: false,
                 isRefetching: false,
                 isError: false,
                 error: undefined
             };
-        case UseQueryTypes.SET:
-            return { ...state, data: action.payload.data };
         case UseQueryTypes.REFETCH:
-            return { ...state, isRefetching: action.payload.isRefething };
+            return { ...state, isRefetching: action.payload.isRefetching };
         case UseQueryTypes.ERROR:
             return {
                 ...state,
@@ -106,20 +102,21 @@ const queryReducer = <T>(state: UseQueryReducerState<T>, action: UseQueryReducer
     }
 };
 
+const actions: Record<UseRunQueryAction, UseQueryReducerAction> = {
+    init: { type: UseQueryTypes.LOADING, payload: { isLoading: true } },
+    refetch: { type: UseQueryTypes.REFETCH, payload: { isRefetching: true } }
+};
+
 export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
-    const [state, dispatch] = React.useReducer(queryReducer<T>, {
+    const [state, dispatch] = React.useReducer(queryReducer, {
         isError: false,
         isLoading: options?.enabled ?? true,
         isSuccess: false,
         isRefetching: false,
-        data: undefined,
         error: undefined
     });
 
-    const actions: Record<UseRunQueryAction, UseQueryReducerAction<T>> = {
-        init: { type: UseQueryTypes.LOADING, payload: { isLoading: true } },
-        refetch: { type: UseQueryTypes.REFETCH, payload: { isRefething: true } }
-    };
+    const [data, setData] = React.useState<T>(options?.initialData!);
 
     const config = React.useRef<UseQueryConfig>({
         abortController: new AbortController(),
@@ -134,14 +131,8 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
     const abort = React.useCallback(() => {
         config.current.abortController.abort();
         config.current.abortController = new AbortController();
-    }, [])
-
-    const setData = React.useCallback((setter: Partial<T> | ((prevState: T) => Partial<T>)) => {
-        if (!state.data) throw new Error('Cannot set data without initial data');
-
-        dispatch({ type: UseQueryTypes.SET, payload: { data: { ...state.data, ...(typeof setter === 'function' ? setter(state.data) : setter) } } });
-    }, [state])
-
+    }, []);
+    
     const runQuery = React.useCallback(async (action: UseRunQueryAction) => {
         try {
             abort();
@@ -150,7 +141,9 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
 
             const { data } = await callback({ signal: config.current.abortController.signal });
 
-            dispatch({ type: UseQueryTypes.SUCCESS, payload: { data: options?.onSelect?.(data) ?? data } });
+            dispatch({ type: UseQueryTypes.SUCCESS });
+
+            setData(options?.onSelect?.(data) ?? data);
 
             options?.onSuccess?.(data);
 
@@ -174,10 +167,12 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
                     config.current.currentAction = null;
                 }
                 
+                config.current.interval && clearInterval(config.current.interval);
+                
                 options?.onError?.(error);
             }
         }
-    }, [callback, options]);
+    }, [callback]);
 
     React.useEffect(() => {
         config.current.mounted = true;
@@ -194,5 +189,5 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         };
     }, options?.keys ?? []);
 
-    return { ...state, setData, abort, call: () => runQuery('init'), refetch: () => runQuery('refetch') } as UseQueryReturn<T>;
+    return { ...state, data, setData, abort, call: () => runQuery('init'), refetch: () => runQuery('refetch') };
 };

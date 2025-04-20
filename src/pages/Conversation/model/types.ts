@@ -1,7 +1,6 @@
 import { Message } from '@/entities/Message/model/types';
-import { Profile } from '@/entities/profile/model/types';
 import { MessageFormState } from '@/features/SendMessage/model/types';
-import { DataWithCursor } from '@/shared/model/types';
+import { DataWithCursor, Recipient } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',
@@ -42,5 +41,3 @@ export interface GetDescriptionParams {
     shouldDisplayTypingStatus?: boolean;
     isRecipientTyping: boolean;
 }
-
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;

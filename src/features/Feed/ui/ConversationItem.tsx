@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 
-import { PRESENCE } from '@/entities/profile/model/types';
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
@@ -8,11 +7,10 @@ import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 import { ProfileIndicator } from '@/shared/ui/ProfileIndicator';
 import { Typography } from '@/shared/ui/Typography';
-import { ExctactFeedItem, LocalFeed } from '@/widgets/Sidebar/model/types';
+import { ExctactFeedItem, FEED_TYPE, LocalFeed } from '../model/types';
+import { PRESENCE } from '@/shared/model/types';
 
-import { FeedTypes } from '../../model/types';
-
-export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeedItem<LocalFeed, FeedTypes.CONVERSATION> }) => {
+export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeedItem<LocalFeed, FEED_TYPE.CONVERSATION> }) => {
     const recipient = item.recipient;
     const draft = useLayout((state) => state.drafts).get(recipient._id);
 

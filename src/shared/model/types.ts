@@ -5,14 +5,20 @@ import { Message } from '@/entities/Message/model/types';
 import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
 
+export type SchemaNameType = z.infer<typeof nameSchema>;
+export type SidebarMenus = 'settings';
+export type RequestStatuses = 'idle' | 'loading' | 'error';
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;
+
 export enum ChatType {
     CONVERSATION = 'conversation',
     GROUP = 'group',
 }
 
-export type SchemaNameType = z.infer<typeof nameSchema>;
-export type SidebarMenus = 'settings';
-export type RequestStatuses = 'idle' | 'loading' | 'error';
+export enum PRESENCE {
+    ONLINE = 'online',
+    OFFLINE = 'offline'
+}
 
 export enum OutletDetailsTypes {
     EMAIL = 'email',
@@ -20,6 +26,32 @@ export enum OutletDetailsTypes {
     LINK = 'link',
     BIO = 'bio',
     LOGIN = 'login'
+}
+
+export interface SidebarMenuProps { 
+    onClose: () => void, 
+    backToParent: () => void
+}
+
+export interface Avatar {
+    _id: string;
+    url: string;
+}
+
+export interface Profile {
+    _id: string;
+    name: string;
+    login: string;
+    email: string;
+    presence: PRESENCE;
+    status?: string;
+    avatar?: Avatar;
+    lastSeenAt: string;
+    isOfficial: boolean;
+    isPrivate: boolean;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface DataWithCursor<T> {

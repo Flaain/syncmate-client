@@ -1,7 +1,6 @@
 import { Loader2, X } from 'lucide-react';
-import { useShallow } from 'zustand/shallow';
 
-import { Feed } from '@/widgets/Feed/ui/ui';
+import { Feed } from '@/features/Feed';
 import { SidebarDDM } from '@/features/SidebarDDM/ui/ui';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
@@ -9,18 +8,17 @@ import { SidebarMenus } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 
-import { sidebarMainSelector } from '../model/selectors';
-import { useSidebar } from '../model/context';
-import { useSidebarMenu } from '../lib/useSidebarMenu';
-
-import { SettingsMenu } from './SettingsMenu';
+import { SidebarMenuContainer } from '@/shared/ui/SidebarMenu';
+import { useSidebar } from '../model/useSidebar';
+import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
+import { SettingsMenu } from '@/features/SettingsMenu';
 
 export const Sidebar = () => {
     const { activeMenu, changeMenu, panelRef } = useSidebarMenu<SidebarMenus, HTMLDivElement>();
-    const { ref, value, handleLogout, handleSearch, resetSearch } = useSidebar(useShallow(sidebarMainSelector));
+    const { value, searchRef, globalResults, isSearching, handleSearch, resetSearch, handleLogout } = useSidebar();
 
     const menus: Record<SidebarMenus, React.ReactNode> = {
-        settings: <SettingsMenu onBackCallback={() => panelRef.current?.classList.remove('-translate-x-10')} backToParent={changeMenu} />
+        settings: <SettingsMenu onClose={() => panelRef.current?.classList.remove('-translate-x-20')} backToParent={() => changeMenu(null)} />
     };
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
@@ -29,12 +27,9 @@ export const Sidebar = () => {
     const isDisconnected = !connectedToNetwork || !isSocketConnected;
     
     return (
-        <aside className='grid grid-cols-1 sticky top-0 overflow-hidden gap-2 max-md:fixed dark:bg-primary-dark-150 bg-primary-white md:max-w-[420px] w-full md:border-r-2 md:border-r-primary-dark-50 md:border-solid'>
+        <aside className='grid grid-cols-1 h-dvh sticky top-0 overflow-hidden gap-2 max-md:fixed dark:bg-primary-dark-150 bg-primary-white md:max-w-[420px] w-full md:border-r-2 md:border-r-primary-dark-50 md:border-solid'>
             {!!activeMenu && menus[activeMenu]}
-            <div
-                ref={panelRef}
-                className={cn('transition-transform duration-300 ease-in-out flex flex-col col-start-1 row-start-1 bg-primary-dark-150', activeMenu && '-translate-x-10')}
-            >
+            <SidebarMenuContainer ref={panelRef} hasActiveMenu={!!activeMenu} className='flex flex-col z-0 animate-none !slide-in-from-right-0 transition-transform duration-300'>
                 <div className='flex items-center justify-between gap-5 sticky top-0 p-4 box-border h-[70px]'>
                     <SidebarDDM changeMenu={changeMenu} />
                     <div className='flex w-full relative'>
@@ -44,7 +39,7 @@ export const Sidebar = () => {
                             </div>
                         )}
                         <Input
-                            ref={ref}
+                            ref={searchRef}
                             onChange={handleSearch}
                             value={value}
                             placeholder={!connectedToNetwork ? 'Waiting for network' : !isSocketConnected ? 'Connecting...' : 'Search...'}
@@ -53,20 +48,20 @@ export const Sidebar = () => {
                                 isDisconnected && 'pl-10'
                             )}
                         />
-                    </div>
                     {!!value.trim().length && (
-                        <Button variant='text' size='icon' onClick={resetSearch} className='p-0 absolute right-6'>
+                        <Button variant='text' size='icon' onClick={resetSearch} className='p-0 absolute right-2 top-1/2 -translate-y-1/2'>
                             <X className='w-5 h-5' />
                         </Button>
                     )}
+                    </div>
                 </div>
-                <Feed />
+                <Feed globalResults={globalResults} searchValue={value} isSearching={isSearching} />
                 <div className='mt-auto dark:bg-primary-dark-100 sticky bottom-0 p-4 max-h-[70px] box-border'>
                     <Button onClick={handleLogout} variant='secondary' className='w-full'>
                         Logout
                     </Button>
                 </div>
-            </div>
+            </SidebarMenuContainer>
         </aside>
     );
 };

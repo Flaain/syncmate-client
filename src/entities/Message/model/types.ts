@@ -1,4 +1,4 @@
-import { Recipient } from '@/pages/Conversation/model/types';
+import { Recipient } from "@/shared/model/types";
 
 export enum SourceRefPath {
     CONVERSATION = 'Conversation'
@@ -19,10 +19,7 @@ export type Message = {
     _id: string;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & {
-        sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
-        sourceRefPath: SourceRefPath.CONVERSATION;
-    };
+    replyTo?: Pick<Message, '_id' | 'text'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION };
     inReply?: boolean;
     readedAt?: string;
     hasBeenRead?: boolean;

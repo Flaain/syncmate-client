@@ -1,7 +1,7 @@
-import ChromeLogo from '@/shared/lib/assets/icons/chrome.svg?react';
-import EdgeLogo from '@/shared/lib/assets/icons/edge.svg?react';
-import FireFoxLogo from '@/shared/lib/assets/icons/firefox.svg?react';
-import SafariLogo from '@/shared/lib/assets/icons/safari.svg?react';
+import ChromeLogo from '@/shared/lib/assets/icons/browsers/chrome.svg?react';
+import EdgeLogo from '@/shared/lib/assets/icons/browsers/edge.svg?react';
+import FireFoxLogo from '@/shared/lib/assets/icons/browsers/firefox.svg?react';
+import SafariLogo from '@/shared/lib/assets/icons/browsers/safari.svg?react';
 
 const iconStyles = 'size-7 dark:fill-primary-white fill-primary-dark-50';
 

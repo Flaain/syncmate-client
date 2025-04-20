@@ -1,7 +1,7 @@
+import { SidebarMenuProps } from "@/shared/model/types";
 import React from "react";
-import { SidebarMenuProps } from "../model/types";
 
-export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onBackCallback, backToParent }: Partial<SidebarMenuProps> = {}) => {
+export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onClose, backToParent }: Partial<SidebarMenuProps> = {}) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
     const [activeMenu, setActiveMenu] = React.useState<T | null>(null);
 
@@ -12,12 +12,12 @@ export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onBack
     }, []);
 
     const handleBack = React.useCallback(() => {
-        onBackCallback?.();
+        onClose?.();
         setShouldRemove(true);
     }, []);
 
     const onAnimationEnd = React.useCallback(() => {
-        shouldRemove && backToParent?.(null);
+        shouldRemove && backToParent?.();
     }, [shouldRemove]);
 
     return {

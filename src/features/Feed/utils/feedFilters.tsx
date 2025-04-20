@@ -1,6 +1,4 @@
-import { GlobalFeed, LocalFeed } from "@/widgets/Sidebar/model/types";
-
-import { FeedTypes, GlobalFiltersType, LocalFiltersType } from "../model/types";
+import { FEED_TYPE, GlobalFeed, GlobalFiltersType, LocalFeed, LocalFiltersType } from "../model/types";
 
 const localFilters: LocalFiltersType = {
     Conversation: ({ item: { recipient: { name, login } } }, value) => {
@@ -9,12 +7,12 @@ const localFilters: LocalFiltersType = {
 };
 
 const globalFilters: GlobalFiltersType = {
-    User: ({ _id }, localResults) => localResults.some(({ type, item }) => type === FeedTypes.CONVERSATION && item.recipient._id === _id)
+    User: ({ _id }, localResults) => localResults.some(({ type, item }) => type === FEED_TYPE.CONVERSATION && item.recipient._id === _id)
 };
 
 export const getFilteredLocalResults = (item: LocalFeed, value: string) => {
     switch (item.type) {
-        case FeedTypes.CONVERSATION:
+        case FEED_TYPE.CONVERSATION:
             return localFilters.Conversation(item, value);
         default:
             return false;

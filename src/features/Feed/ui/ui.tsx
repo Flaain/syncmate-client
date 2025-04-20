@@ -1,20 +1,13 @@
-import { useMemo } from 'react';
-
-import { useShallow } from 'zustand/shallow';
-
-import SearchDuck from '@/shared/lib/assets/webp/search_duck.webp';
-import { Image } from '@/shared/ui/Image';
 import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
-import { useSidebar } from '@/widgets/Sidebar/model/context';
 
-import { feedSelector } from '../model/selectors';
-import { getFilteredGlobalResults, getFilteredLocalResults } from '../utils/feedFilters';
-import { GlobalFeedType, LocalFeedType } from '../model/types';
+import { FeedProps, GlobalFeedType, LocalFeedType } from '../model/types';
 
 import { ConversationItem } from './ConversationItem';
 import { FeedSkeleton } from './Skeleton';
 import { UserItem } from './UserItem';
+import { useFeed } from '../model/useFeed';
+import { SearchX } from 'lucide-react';
 
 const globalFeedItems: GlobalFeedType = {
     User: (item) => <UserItem user={item} key={item._id} />,
@@ -24,18 +17,15 @@ const localFeedItemsMap: LocalFeedType = {
     Conversation: (feedItem) => <ConversationItem key={feedItem._id} feedItem={feedItem} />,
 }
 
-export const Feed = () => {
-    const { isSearching, searchValue, localResults, globalResults } = useSidebar(useShallow(feedSelector));
+export const Feed = ({ globalResults, isSearching, searchValue }: FeedProps) => {
+    const { isLoading, filteredGlobalResults, filteredLocalResults } = useFeed({ globalResults, searchValue });
 
-    const filteredLocalResults = useMemo(() => localResults.filter((item) => getFilteredLocalResults(item, searchValue)), [localResults, searchValue]);
-    const filteredGlobalResults = useMemo(() => globalResults?.items?.filter((item) => getFilteredGlobalResults(item, filteredLocalResults)), [globalResults, filteredLocalResults]);
-
-    if (!isSearching && !filteredLocalResults.length && !filteredGlobalResults?.length) {
+    if (!isSearching && !filteredLocalResults?.length && !filteredGlobalResults?.length) {
         return !searchValue.trim().length ? (
-            <FeedSkeleton skeletonsCount={3} />
+            <FeedSkeleton skeletonsCount={3} animate={isLoading} />
         ) : (
             <>
-                <Image src={SearchDuck} className='self-center size-20' />
+                <SearchX className='mx-auto size-12 dark:text-primary-dark-50 mb-2' />
                 <Typography as='p' variant='secondary' className='line-clamp-3 break-words px-4 box-border text-center'>
                     There were no results for "{searchValue}".
                 </Typography>
@@ -45,7 +35,7 @@ export const Feed = () => {
 
    return (
        <>
-           {!!filteredLocalResults.length && (
+           {!!filteredLocalResults?.length && (
                <ul className='flex flex-col px-4 overflow-auto'>
                    {filteredLocalResults.map((item) => localFeedItemsMap[item.type](item))}
                </ul>
