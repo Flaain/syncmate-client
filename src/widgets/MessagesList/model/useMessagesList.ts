@@ -11,15 +11,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
     const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
     
     const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
-        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => {
-            // ALL CODE BELOW IS TEMPORARY BECAUSE OF IOS SAFARI BUG. I KNOW IT'S BAD
-
-            const newMessages = { ...messages, data: [...data, ...messages.data], nextCursor }, msgMap = new Map<string, Message>();
-
-            for (const msg of newMessages.data) msgMap.set(msg._id, msg);
-
-            return { messages: { data: [...msgMap.values()], nextCursor } };
-        }),
+        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { ...messages, data: [...data, ...messages.data], nextCursor } })),
         retryDelay: 2000,
         enabled: false,
         retry: 5,
