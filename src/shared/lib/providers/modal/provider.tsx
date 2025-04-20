@@ -7,7 +7,7 @@ import { useModal } from './store';
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     const { modals, isModalDisabled, actions: { onCloseModal, onRemoveModal } } = useModal();
     
-    const bodyRef = React.useRef<HTMLDivElement | null>(null);
+    const bodyRef = React.useRef<HTMLDivElement>(null);
     const focusableElements = React.useRef<Array<HTMLElement>>([]);
     const activeIndex = React.useRef(-1);
     

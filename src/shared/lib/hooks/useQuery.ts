@@ -107,7 +107,7 @@ const queryReducer = <T>(state: UseQueryReducerState<T>, action: UseQueryReducer
 };
 
 export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
-    const [state, dispatch] = React.useReducer<React.Reducer<UseQueryReducerState<T>, UseQueryReducerAction<T>>>(queryReducer, {
+    const [state, dispatch] = React.useReducer(queryReducer<T>, {
         isError: false,
         isLoading: options?.enabled ?? true,
         isSuccess: false,
@@ -177,7 +177,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
                 options?.onError?.(error);
             }
         }
-    }, [callback]);
+    }, [callback, options]);
 
     React.useEffect(() => {
         config.current.mounted = true;

@@ -141,7 +141,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((feedItem: any) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
+                        if (feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
                                 item: {
@@ -162,7 +162,7 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
                 localResults: {
                     ...prevState.localResults,
                     feed: prevState.localResults.feed.map((feedItem: any) => {
-                        if (feedItem.type !== FeedTypes.ADS && feedItem.item._id === data._id) {
+                        if (feedItem.item._id === data._id) {
                             return {
                                 ...feedItem,
                                 item: {

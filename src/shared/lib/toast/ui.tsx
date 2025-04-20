@@ -71,7 +71,7 @@ export const Toast = ({ toast, removeToast }: ToastProps) => {
 
     return (
         <div
-            ref={(node) => (config.current.ref = node)}
+            ref={(node) => { config.current.ref = node }}
             className={cn(
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0' : 'animate-in fade-in-0',
                 'pointer-events-all select-none py-2 px-4 rounded-[10px] bg-[#000000a8] backdrop-blur-xl',

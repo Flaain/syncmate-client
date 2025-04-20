@@ -11,7 +11,7 @@ import { useOtp } from '../model/store';
 export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, disabled, ...rest }, ref) => {
     const { isResending, otp, onResend } = useOtp();
 
-    const timerRef = React.useRef<NodeJS.Timeout>();
+    const timerRef = React.useRef<NodeJS.Timeout>(null!);
 
     React.useEffect(() => {
         if (!otp?.retryDelay) return;

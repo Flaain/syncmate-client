@@ -3,10 +3,7 @@ import { useSession } from '@/entities/session';
 import { noRefreshPaths } from '../constants';
 import { API } from './API';
 
-export const api = new API({
-    baseUrl: import.meta.env.VITE_BASE_URL,
-    credentials: 'include',
-});
+export const api = new API({ baseUrl: import.meta.env.VITE_BASE_URL, credentials: 'include' });
 
 api.interceptors.response.use(undefined, async (error) => {
     if (error.response.status === 401 && !error.config._retry && !noRefreshPaths.includes(error.config.url.pathname)) {

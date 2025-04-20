@@ -1,9 +1,7 @@
 import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout } from '@/shared/model/store';
-import { EmojiPicker } from '@/shared/model/view';
 import { Button } from '@/shared/ui/button';
-import EmojiPickerFallback from '@emoji-mart/react';
-import { ArrowDown, SendHorizonal, Smile } from 'lucide-react';
+import { ArrowDown, SendHorizonal } from 'lucide-react';
 import React from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useSendMessage } from '../lib/useSendMessage';
@@ -13,18 +11,7 @@ import { TopBar } from './TopBar';
 
 export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow(sendMessageSelector))
-
-    const {
-        handleSubmitMessage,
-        onKeyDown,
-        onBlur,
-        setDefaultState,
-        handleChange,
-        setIsEmojiPickerOpen,
-        onEmojiSelect,
-        isEmojiPickerOpen,
-        value
-    } = useSendMessage({ onChange, handleTypingStatus });
+    const { handleSubmitMessage, onKeyDown, onBlur, setDefaultState, handleChange, value } = useSendMessage({ onChange, handleTypingStatus });
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
     const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
@@ -67,30 +54,6 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     >
                         <ArrowDown className='w-6 h-6' />
                     </Button>
-                )}
-                <Button
-                    variant='text'
-                    type='button'
-                    size='icon'
-                    className='px-4'
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsEmojiPickerOpen((prev) => !prev);
-                    }}
-                >
-                    <Smile className='w-6 h-6' />
-                </Button>
-                {isEmojiPickerOpen && (
-                    <div className='absolute bottom-20 right-2 z-50'>
-                        <React.Suspense fallback={<EmojiPickerFallback />}>
-                            <EmojiPicker
-                                onClickOutside={({ target }: PointerEvent) =>
-                                    target !== textareaRef.current && setIsEmojiPickerOpen(false)
-                                }
-                                onEmojiSelect={onEmojiSelect}
-                            />
-                        </React.Suspense>
-                    </div>
                 )}
                 <Button
                     variant='text'
