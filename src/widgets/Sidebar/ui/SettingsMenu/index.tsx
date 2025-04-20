@@ -1,5 +1,4 @@
-import { SidebarMenuContainer } from '@/shared/ui/SidebarMenuContainer';
-import { SidebarMenuHeader } from '@/shared/ui/SidebarMenuHeader';
+import { SidebarMenu } from '@/shared/ui/SidebarMenu';
 import { useSidebarMenu } from '../../lib/useSidebarMenu';
 import { SidebarMenuProps } from '../../model/types';
 
@@ -9,15 +8,15 @@ export const SettingsMenu = (props: SidebarMenuProps) => {
     return (
         <>
             {/* active menu here */}
-            <SidebarMenuContainer
+            <SidebarMenu.Container
                 ref={panelRef}
                 hasActiveMenu={!!activeMenu}
                 onAnimationEnd={onAnimationEnd}
                 shouldRemove={shouldRemove}
             >
-                <SidebarMenuHeader onBack={handleBack} title='Settings' />
+                <SidebarMenu.Header onBack={handleBack} title='Settings' />
                 settings
-            </SidebarMenuContainer>
+            </SidebarMenu.Container>
         </>
     );
 };
