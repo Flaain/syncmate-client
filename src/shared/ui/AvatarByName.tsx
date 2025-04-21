@@ -1,5 +1,7 @@
 import { cva } from 'class-variance-authority';
+
 import { cn } from '../lib/utils/cn';
+
 import { ProfileIndicator } from './ProfileIndicator';
 
 export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement> {

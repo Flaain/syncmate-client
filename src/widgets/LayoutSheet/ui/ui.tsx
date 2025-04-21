@@ -1,14 +1,17 @@
+import { Settings as SettingsIcon } from 'lucide-react';
+
+import { Settings, SettingsProvider } from '@/widgets/Settings';
+
 import { useProfile } from '@/entities/profile';
+
 import { APP_VERSION } from '@/shared/constants';
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { ModalConfig, useModal } from '@/shared/lib/providers/modal';
 import { cn } from '@/shared/lib/utils/cn';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Button } from '@/shared/ui/button';
 import { Image } from '@/shared/ui/Image';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
-import { Settings, SettingsProvider } from '@/widgets/Settings';
-import { Settings as SettingsIcon } from 'lucide-react';
 
 const listIconStyle = 'dark:text-primary-white text-primary-dark-200 w-5 h-5';
 

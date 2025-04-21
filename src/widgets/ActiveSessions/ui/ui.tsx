@@ -1,11 +1,15 @@
-import { Session } from '@/entities/session/ui/ui';
-import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
-import { Confirm } from '@/shared/ui/Confirm';
-import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
 import { Ban, Loader2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
+
+import { Session } from '@/entities/session';
+
+import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { Button } from '@/shared/ui/button';
+import { Confirm } from '@/shared/ui/Confirm';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useActiveSessions } from '../lib/useActiveSessions';
+
 import { ActiveSessionsSkeleton } from './Skeletons/ActiveSessionsSkeleton';
 
 export const ActiveSessions = () => {

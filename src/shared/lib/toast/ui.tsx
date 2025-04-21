@@ -1,8 +1,12 @@
-import { Typography } from "@/shared/ui/Typography";
 import React from "react";
+
+import { Typography } from "@/shared/ui/Typography";
+
 import { cn } from "../utils/cn";
-import { toast as toastInstance } from "./index";
+
 import { IToast, ToastConfig, ToastProps } from "./types";
+
+import { toast as toastInstance } from "./index";
 
 export const Toaster = () => {
     const [toast, setToast] = React.useState<IToast | null>(null);

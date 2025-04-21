@@ -2,13 +2,14 @@ import { AlignJustifyIcon, Archive, BookmarkIcon, Settings, Video } from 'lucide
 import { useShallow } from 'zustand/shallow';
 
 import { useProfile } from '@/entities/profile';
+
 import { SidebarMenus } from '@/shared/model/types';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Button } from '@/shared/ui/button';
 import { DDM } from '@/shared/ui/DDM';
+import { DropdownMenuSeparator } from '@/shared/ui/dropdown-menu';
 import { Image } from '@/shared/ui/Image';
 import { MenuItem } from '@/shared/ui/MenuItem';
-import { Button } from '@/shared/ui/button';
-import { DropdownMenuSeparator } from '@/shared/ui/dropdown-menu';
 
 const iconStyles = 'size-4 mx-1';
 

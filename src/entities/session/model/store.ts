@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { SessionStore } from './types';
+
 import { useProfile } from '@/entities/profile';
+
+import { SessionStore } from './types';
 
 export const useSession = create<SessionStore>((set) => ({
     userId: null!,

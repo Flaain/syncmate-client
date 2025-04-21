@@ -1,5 +1,6 @@
 import React from 'react';
-import { useTheme } from '..';
+
+import { useTheme } from '../model/store';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const { theme } = useTheme();

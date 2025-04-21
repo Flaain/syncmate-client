@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { emailForSchema, passwordForSchema, passwordRules } from '@/shared/constants';
 
 export const firstStepSchema = z.object({

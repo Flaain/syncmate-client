@@ -1,6 +1,9 @@
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import React from 'react';
+
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
+
 import { cn } from '../lib/utils/cn';
+
 import { Button } from './button';
 import { Input, InputProps } from './input';
 

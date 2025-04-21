@@ -1,5 +1,6 @@
-import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useAuth } from '../../model/store';
 
 export const Welcome = () => {

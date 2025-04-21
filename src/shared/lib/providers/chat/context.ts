@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { StoreApi, useStore } from 'zustand';
+
 import { ChatStore } from './types';
 
 export const ChatContext = React.createContext<StoreApi<ChatStore>>(null!);

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { UseQueryCallback, useQuery } from './useQuery';
 
 interface UseInfiniteScrollOptions<T> extends IntersectionObserverInit {

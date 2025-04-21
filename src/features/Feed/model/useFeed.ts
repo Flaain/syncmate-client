@@ -1,13 +1,16 @@
+import React from "react";
+
+import { useQuery } from "@/shared/lib/hooks/useQuery";
 import { socketSelector } from "@/shared/model/selectors";
 import { useLayout, useSocket } from "@/shared/model/store";
-import React from "react";
-import { FEED_EVENT, FEED_TYPE, FeedProps, FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, LocalFeedCounterMapType, LocalResults } from "./types";
 import { PRESENCE } from "@/shared/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
-import { getSortedFeedByLastMessage } from "../utils/getSortedFeed";
+
 import { feedApi } from "../api";
-import { useQuery } from "@/shared/lib/hooks/useQuery";
 import { getFilteredGlobalResults, getFilteredLocalResults } from "../utils/feedFilters";
+import { getSortedFeedByLastMessage } from "../utils/getSortedFeed";
+
+import { FEED_EVENT, FEED_TYPE, FeedProps, FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, LocalFeedCounterMapType, LocalResults } from "./types";
 
 export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearching'>) => {
     const socket = useSocket(socketSelector);

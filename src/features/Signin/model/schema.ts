@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { passwordForSchema } from '@/shared/constants';
 
 export const signinSchema = z.strictObject({

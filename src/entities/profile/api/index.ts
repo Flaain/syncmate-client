@@ -1,8 +1,8 @@
 import { api } from '@/shared/api';
-import { Avatar, Profile } from '../model/types';
 import { ApiBaseSuccessData } from '@/shared/api/API';
-import { Pagination, WrappedInPagination } from '@/shared/model/types';
-import { SearchUser } from '@/widgets/Feed/model/types';
+import { Avatar, Pagination, Profile, WrappedInPagination } from '@/shared/model/types';
+
+import { SearchUser } from '../model/types';
 
 export const profileApi = {
     getProfile: () => api.get<Profile>('/auth/me'),

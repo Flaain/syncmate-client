@@ -1,9 +1,12 @@
+import React from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FieldPath, useForm } from 'react-hook-form';
+
 import { ApiException } from '@/shared/api/error';
 import { useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
-import { FieldPath, useForm } from 'react-hook-form';
+
 import { changePasswordAPI } from '../api';
 import { steps } from '../model/constants';
 import { changePasswordSchema } from '../model/schema';

@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-import { Theme } from './types';
+
 import { getTheme } from '../lib/getTheme';
+
+import { Theme } from './types';
 
 export const useTheme = create<{ theme: Theme }>(() => ({ theme: getTheme() }));

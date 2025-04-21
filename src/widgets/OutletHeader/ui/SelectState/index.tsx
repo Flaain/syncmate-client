@@ -1,15 +1,18 @@
-import { messageApi } from "@/entities/Message";
-import { endpoints } from "@/entities/Message/model/constants";
+import React from "react";
+
+import { Trash, X } from "lucide-react";
+import { useShallow } from "zustand/shallow";
+
+import { messageApi, endpoints } from "@/entities/Message";
+
 import { selectStateSelector, useChat } from "@/shared/lib/providers/chat";
 import { selectModalActions, useModal } from "@/shared/lib/providers/modal";
 import { toast } from "@/shared/lib/toast";
 import { useEvents } from "@/shared/model/store";
+import { Button } from "@/shared/ui/button";
 import { Confirm } from "@/shared/ui/Confirm";
 import { Typography } from "@/shared/ui/Typography";
-import { Button } from "@/shared/ui/button";
-import { Trash, X } from "lucide-react";
-import React from "react";
-import { useShallow } from "zustand/shallow";
+
 
 export const SelectState = () => {
     const { onOpenModal, onAsyncActionModal, onCloseModal } = useModal(useShallow(selectModalActions));

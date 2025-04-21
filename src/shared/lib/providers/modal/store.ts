@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+
 import { uuidv4 } from '../../utils/uuidv4';
+
 import { AsyncActionOptions, ModalConfig, ModalStore } from './types';
 
 export const useModal = create<ModalStore>((set, get) => ({

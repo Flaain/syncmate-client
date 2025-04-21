@@ -1,7 +1,10 @@
-import { XIcon } from 'lucide-react';
 import React from 'react';
+
+import { XIcon } from 'lucide-react';
+
 import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 import { cn } from '../lib/utils/cn';
+
 import { Typography } from './Typography';
 
 const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<ModalProps, 'children' | 'onRemove' | 'bodyClassName' | 'size' | 'withHeader'>) => {

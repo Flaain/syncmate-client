@@ -1,21 +1,14 @@
-import { getUseMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import React from 'react';
-import { useShallow } from 'zustand/shallow';
-import { messageApi } from '..';
-import { endpoints } from '../model/constants';
-import { Message } from '../model/types';
 
-export const useMessage = ({
-    message,
-    isMessageFromMe,
-    isLast,
-    isLastGroup
-}: {
-    isMessageFromMe: boolean;
-    isLastGroup?: boolean;
-    isLast?: boolean;
-    message: Message;
-}) => {
+import { useShallow } from 'zustand/shallow';
+
+import { getUseMessageSelector, useChat } from '@/shared/lib/providers/chat';
+
+import { messageApi } from '../api';
+import { endpoints } from '../model/constants';
+import { UseMessageProps } from '../model/types';
+
+export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: UseMessageProps) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
     const { params, selectedMessages, lastMessageRef } = useChat(useShallow(getUseMessageSelector));

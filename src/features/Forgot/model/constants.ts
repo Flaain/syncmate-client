@@ -1,4 +1,5 @@
 import { FieldPath } from "react-hook-form";
+
 import { ForgotSchemaType } from "./types";
 
 export const buttonTitles = {

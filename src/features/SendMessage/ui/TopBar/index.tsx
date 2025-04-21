@@ -1,9 +1,12 @@
 import React from 'react';
-import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
+
 import { Edit2Icon, Reply, X } from 'lucide-react';
-import { MessageFormState, MessageTopBarProps } from '../../model/types';
+
 import { useEvents } from '@/shared/model/store';
+import { Button } from '@/shared/ui/button';
+import { Typography } from '@/shared/ui/Typography';
+
+import { MessageFormState, MessageTopBarProps } from '../../model/types';
 
 const iconStyles = 'dark:text-primary-white text-primary-gray min-w-5 h-5';
 

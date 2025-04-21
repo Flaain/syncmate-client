@@ -1,16 +1,20 @@
-import { SourceRefPath } from '@/entities/Message/model/types';
+import { Loader2 } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router';
+
+import { SourceRefPath } from '@/entities/Message';
+
 import { ApiException } from '@/shared/api/error';
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useSocket } from '@/shared/model/store';
+import { Button } from '@/shared/ui/button';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 import { OutletError } from '@/shared/ui/OutletError';
-import { Button } from '@/shared/ui/button';
-import { Loader2 } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+
 import { conversationApi } from '../api';
 import { ConversationProvider } from '../model/provider';
+
 import { Content } from './Content';
 
 export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {

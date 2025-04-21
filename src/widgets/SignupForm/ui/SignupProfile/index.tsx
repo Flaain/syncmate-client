@@ -1,6 +1,8 @@
-import { FormInput } from '@/shared/ui/FormInput';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { useFormContext } from 'react-hook-form';
+
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { FormInput } from '@/shared/ui/FormInput';
+
 import { SignupSchemaType } from '../../model/types';
 
 export const SignupProfile = () => {

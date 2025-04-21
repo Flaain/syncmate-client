@@ -1,9 +1,13 @@
-import { Message } from "@/entities/Message/model/types";
+import React from "react";
+
+import { useShallow } from "zustand/shallow";
+
+import { IMessage } from "@/entities/Message";
+
 import { useQuery } from "@/shared/lib/hooks/useQuery";
 import { messagesListSelector, useChat } from "@/shared/lib/providers/chat";
 import { getScrollBottom } from "@/shared/lib/utils/getScrollBottom";
-import React from "react";
-import { useShallow } from "zustand/shallow";
+
 import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
 import { MessagesListProps } from "./types";
     
@@ -14,7 +18,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => {
             // ALL CODE BELOW IS TEMPORARY BECAUSE OF IOS SAFARI BUG. I KNOW IT'S BAD
 
-            const newMessages = { ...messages, data: [...data, ...messages.data], nextCursor }, msgMap = new Map<string, Message>();
+            const newMessages = { ...messages, data: [...data, ...messages.data], nextCursor }, msgMap = new Map<string, IMessage>();
 
             for (const msg of newMessages.data) msgMap.set(msg._id, msg);
 
@@ -25,7 +29,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         retry: 5,
     });
 
-    const groupedMessages = React.useMemo(() => messages.data.reduce<Array<Array<Message>>>((acc, message) => {
+    const groupedMessages = React.useMemo(() => messages.data.reduce<Array<Array<IMessage>>>((acc, message) => {
         const lastGroup = acc[acc.length - 1];
 
         lastGroup && lastGroup[0].sender._id === message.sender._id ? lastGroup.push(message) : acc.push([message]);

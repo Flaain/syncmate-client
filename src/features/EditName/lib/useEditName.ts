@@ -1,10 +1,12 @@
-import { profileApi, useProfile } from '@/entities/profile';
-import { selectProfileName } from '@/entities/profile/model/selectors';
+import React from 'react';
+
+import { useShallow } from 'zustand/shallow';
+
+import { profileApi, selectProfileName, useProfile } from '@/entities/profile';
+
 import { MAX_NAME_LENGTH, nameToLongError } from '@/shared/constants';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
-import React from 'react';
-import { useShallow } from 'zustand/shallow';
 
 export const useEditName = () => {
     const [error, setError] = React.useState<string | null>(null);

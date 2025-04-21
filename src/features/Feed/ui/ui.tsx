@@ -1,13 +1,14 @@
-import { Typography } from '@/shared/ui/Typography';
+import { SearchX } from 'lucide-react';
+
 import { Button } from '@/shared/ui/button';
+import { Typography } from '@/shared/ui/Typography';
 
 import { FeedProps, GlobalFeedType, LocalFeedType } from '../model/types';
+import { useFeed } from '../model/useFeed';
 
 import { ConversationItem } from './ConversationItem';
 import { FeedSkeleton } from './Skeleton';
 import { UserItem } from './UserItem';
-import { useFeed } from '../model/useFeed';
-import { SearchX } from 'lucide-react';
 
 const globalFeedItems: GlobalFeedType = {
     User: (item) => <UserItem user={item} key={item._id} />,

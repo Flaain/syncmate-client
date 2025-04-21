@@ -1,12 +1,15 @@
-import { messageApi } from '@/entities/Message';
-import { endpoints } from '@/entities/Message/model/constants';
+import React from 'react';
+
+import { useShallow } from 'zustand/shallow';
+
+import { messageApi, endpoints } from '@/entities/Message';
+
 import { getUseSendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { useLayout } from '@/shared/model/store';
 import { Confirm } from '@/shared/ui/Confirm';
-import React from 'react';
-import { useShallow } from 'zustand/shallow';
+
 import { EmojiData, MessageFormState, UseMessageParams } from '../model/types';
 
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {

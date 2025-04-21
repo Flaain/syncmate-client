@@ -1,10 +1,13 @@
+import React from 'react';
+
+import { RouteObject } from 'react-router-dom';
+
 import { routerList } from '@/shared/constants';
-import { ChatProvider } from '@/shared/lib/providers/chat/provider';
+import { ChatProvider } from '@/shared/lib/providers/chat';
+import { Button } from '@/shared/ui/button';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 import { OutletError } from '@/shared/ui/OutletError';
-import { Button } from '@/shared/ui/button';
-import React from 'react';
-import { RouteObject } from 'react-router-dom';
+
 import { View } from './model/view';
 
 const fallback = ChatSkeleton();

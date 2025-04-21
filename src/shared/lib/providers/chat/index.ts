@@ -1,3 +1,4 @@
-export * from './context';
-export * from './selectors';
-export * from './types';
+export * from './context'
+export * from './selectors'
+export * from './types'
+export * from './provider'

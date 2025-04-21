@@ -37,6 +37,9 @@ export type Message = {
 };
 
 export interface UseMessageProps {
+    isMessageFromMe: boolean;
+    isLastGroup?: boolean;
+    isLast?: boolean;
     message: Message;
 }
 

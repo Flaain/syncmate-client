@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Message } from '@/entities/Message/model/types';
+import { IMessage } from '@/entities/Message';
 
 import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
@@ -89,7 +89,7 @@ export interface ActionsProvider<T> {
 }
 
 export interface DeleteMessageEventParams {
-    lastMessage: Message;
+    lastMessage: IMessage;
     lastMessageSentAt: string;
     feedId: string;
 }

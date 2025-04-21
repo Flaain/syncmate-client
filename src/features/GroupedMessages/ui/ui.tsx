@@ -1,12 +1,14 @@
-import { Message } from '@/entities/Message';
-import { Message as IMessage } from '@/entities/Message/model/types';
+import { useShallow } from 'zustand/shallow';
+
+import { Message, IMessage } from '@/entities/Message';
 import { useSession } from '@/entities/session';
+
 import { groupedMessagesSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
-import { useShallow } from 'zustand/shallow';
+
 import { MessageGroupProps } from '../model/types';
 
 export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {

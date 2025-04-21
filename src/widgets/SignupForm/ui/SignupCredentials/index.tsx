@@ -1,7 +1,9 @@
+import { useFormContext } from 'react-hook-form';
+
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { FormInput } from '@/shared/ui/FormInput';
 import { PasswordInput } from '@/shared/ui/PasswordInput';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { useFormContext } from 'react-hook-form';
+
 import { SignupSchemaType } from '../../model/types';
 
 export const SignupCredentials = () => {

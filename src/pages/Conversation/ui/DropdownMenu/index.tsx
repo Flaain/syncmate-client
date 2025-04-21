@@ -1,7 +1,9 @@
-import Broom from '@/shared/lib/assets/icons/broom.svg?react';
-import { MenuItem } from '@/shared/ui/MenuItem';
 import { Lock, Trash2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
+
+import Broom from '@/shared/lib/assets/icons/broom.svg?react';
+import { MenuItem } from '@/shared/ui/MenuItem';
+
 import { useConversationDDM } from '../../lib/useConversationDDM';
 import { useConversation } from '../../model/context';
 

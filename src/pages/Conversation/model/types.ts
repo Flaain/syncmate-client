@@ -1,5 +1,7 @@
-import { Message } from '@/entities/Message/model/types';
-import { MessageFormState } from '@/features/SendMessage/model/types';
+import { MessageFormState } from '@/features/SendMessage';
+
+import { IMessage } from '@/entities/Message';
+
 import { DataWithCursor, Recipient } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
@@ -29,7 +31,7 @@ export interface ConversationStore {
 export interface Conversation {
     _id: string;
     recipient: Recipient;
-    messages: DataWithCursor<Message>;
+    messages: DataWithCursor<IMessage>;
     isInitiatorBlocked?: boolean;
     isRecipientBlocked?: boolean;
     createdAt: string;

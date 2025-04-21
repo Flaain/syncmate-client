@@ -1,1 +1,1 @@
-export { EditName } from './ui/ui';
+export * from './ui/ui';

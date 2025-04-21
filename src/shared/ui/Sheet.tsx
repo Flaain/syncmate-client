@@ -1,8 +1,11 @@
 import React from 'react';
+
 import { XIcon } from 'lucide-react';
+
 import { cn } from '../lib/utils/cn';
-import { Typography } from './Typography';
 import { useEvents } from '../model/store';
+
+import { Typography } from './Typography';
 
 export interface SheetProps {
     children: React.ReactNode;

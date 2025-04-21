@@ -1,6 +1,8 @@
 import React from 'react';
-import { ConversationStore } from './types';
+
 import { StoreApi, useStore } from 'zustand';
+
+import { ConversationStore } from './types';
 
 export const ConversationContext = React.createContext<StoreApi<ConversationStore>>(null!);
 

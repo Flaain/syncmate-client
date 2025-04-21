@@ -1,5 +1,6 @@
-import { Typography } from '@/shared/ui/Typography';
 import { LucideMessagesSquare } from 'lucide-react';
+
+import { Typography } from '@/shared/ui/Typography';
 
 export const Home = () => {
     return (

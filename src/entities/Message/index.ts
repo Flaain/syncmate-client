@@ -1,3 +1,6 @@
-export { messageApi } from './api';
-export { MessageSkeleton } from './ui/Skeletons';
-export { Message } from './ui/ui';
+export * from './api'
+export * from './ui/Skeletons'
+export * from './ui/ui'
+
+export { type Message as IMessage, SourceRefPath } from './model/types'
+export { endpoints } from './model/constants'

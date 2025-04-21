@@ -1,17 +1,20 @@
+import { AtSign, Mail } from 'lucide-react'
+import { useShallow } from 'zustand/shallow'
+
+import { useProfile } from '@/entities/profile'
+
 import CameraAddIcon from '@/shared/lib/assets/icons/cameraadd.svg?react'
 import LockIcon from '@/shared/lib/assets/icons/lock.svg?react'
 import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu'
-import { SidebarMenuProps } from '@/shared/model/types'
-import { SettingMenus } from '../model/types'
-import { useProfile } from '@/entities/profile'
-import { useShallow } from 'zustand/shallow'
-import { Image } from '@/shared/ui/Image'
-import { AvatarByName } from '@/shared/ui/AvatarByName'
-import { Typography } from '@/shared/ui/Typography'
-import { AtSign, Mail } from 'lucide-react'
-import { Button } from '@/shared/ui/button'
-import { SidebarMenuButton, SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu'
 import { toast } from '@/shared/lib/toast'
+import { SidebarMenuProps } from '@/shared/model/types'
+import { AvatarByName } from '@/shared/ui/AvatarByName'
+import { Button } from '@/shared/ui/button'
+import { Image } from '@/shared/ui/Image'
+import { SidebarMenuButton, SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu'
+import { Typography } from '@/shared/ui/Typography'
+
+import { SettingMenus } from '../model/types'
 
 const iconStyles = 'size-6 text-primary-white/60';
 

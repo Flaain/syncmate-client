@@ -1,61 +1,80 @@
-import { uuidv4 } from '@/shared/lib/utils/uuidv4';
-import { useEvents, useLayout, useSocket } from '@/shared/model/store';
-import { PRESENCE, USER_EVENTS } from '@/shared/model/types';
-import React from 'react';
-import { io } from 'socket.io-client';
+import React from 'react'
 
-export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
-    const listeners = useEvents((state) => state.listeners);
+import { Outlet } from 'react-router-dom'
+import { io } from 'socket.io-client'
+
+import { Sidebar } from '@/widgets/Sidebar'
+
+import { ModalProvider } from '@/shared/lib/providers/modal'
+import { Toaster } from '@/shared/lib/toast'
+import { uuidv4 } from '@/shared/lib/utils/uuidv4'
+import { useEvents, useLayout, useSocket } from '@/shared/model/store'
+import { PRESENCE, USER_EVENTS } from '@/shared/model/types'
+
+export const LayoutProvider = () => {
+    const listeners = useEvents((state) => state.listeners)
 
     React.useEffect(() => {
-        const session_id = uuidv4();
-        const socket = io(import.meta.env.VITE_BASE_URL, {  withCredentials: true, query: { session_id } });
-        const abortController = new AbortController();
+        const session_id = uuidv4()
+        const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true, query: { session_id } })
+        const abortController = new AbortController()
 
         socket.on('connect', () => {
-            useSocket.setState({ isConnected: true });
+            useSocket.setState({ isConnected: true })
 
-            socket.emit(USER_EVENTS.PRESENCE, { presence: PRESENCE.ONLINE });
-        });
+            socket.emit(USER_EVENTS.PRESENCE, { presence: PRESENCE.ONLINE })
+        })
 
         socket.on('disconnect', () => {
-            useSocket.setState({ isConnected: false });
-        });
+            useSocket.setState({ isConnected: false })
+        })
 
-        useSocket.setState({ socket, session_id });
+        useSocket.setState({ socket, session_id })
 
-        window.addEventListener('online', () => useLayout.setState({ connectedToNetwork: true }), { signal: abortController.signal });
-        window.addEventListener('offline', () => useLayout.setState({ connectedToNetwork: false }), { signal: abortController.signal });
+        window.addEventListener('online', () => useLayout.setState({ connectedToNetwork: true }), {
+            signal: abortController.signal
+        })
+        window.addEventListener('offline', () => useLayout.setState({ connectedToNetwork: false }), {
+            signal: abortController.signal
+        })
 
         return () => {
-            abortController.abort();            
-            socket.disconnect();
+            abortController.abort()
+            socket.disconnect()
 
-            useSocket.setState({ socket: null!, session_id: null, isConnected: false });
-        };
-    }, []);
+            useSocket.setState({ socket: null!, session_id: null, isConnected: false })
+        }
+    }, [])
 
     React.useEffect(() => {
-        if (!listeners.size) return;
+        if (!listeners.size) return
 
-        const entries = [...new Map([...listeners]).entries()];
+        const entries = [...new Map([...listeners]).entries()]
 
         const mappedListeners = entries.map(([type, listeners]) => {
-            const lastListener = [...listeners.values()]?.pop();
+            const lastListener = [...listeners.values()]?.pop()
 
-            if (!lastListener) return { type, listener: () => {} };
+            if (!lastListener) return { type, listener: () => {} }
 
-            document.addEventListener(type, lastListener);
+            document.addEventListener(type, lastListener)
 
-            return { type, listener: lastListener };
-        });
+            return { type, listener: lastListener }
+        })
 
         return () => {
             mappedListeners.forEach(({ type, listener }) => {
-                document.removeEventListener(type, listener);
-            });
-        };
-    }, [listeners]);
+                document.removeEventListener(type, listener)
+            })
+        }
+    }, [listeners])
 
-    return children;
-};
+    return (
+        <ModalProvider>
+            <main className='flex h-dvh dark:bg-primary-dark-200 relative'>
+                <Toaster />
+                <Sidebar />
+                <Outlet />
+            </main>
+        </ModalProvider>
+    )
+}

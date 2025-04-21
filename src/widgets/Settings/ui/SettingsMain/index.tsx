@@ -1,10 +1,13 @@
-import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
-import { cn } from '@/shared/lib/utils/cn';
 import { LockKeyholeIcon, UserCircle2 } from 'lucide-react';
-import { Image } from '@/shared/ui/Image';
+
 import { useProfile } from '@/entities/profile';
+
+import { cn } from '@/shared/lib/utils/cn';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Button } from '@/shared/ui/button';
+import { Image } from '@/shared/ui/Image';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useSettings } from '../../model/store';
 
 export const SettingsMain = () => {

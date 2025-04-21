@@ -1,8 +1,12 @@
-import { Message } from '@/entities/Message/model/types';
-import { MessageFormState } from '@/features/SendMessage/model/types';
 import { Socket } from 'socket.io-client';
 import { create } from 'zustand';
+
+import { MessageFormState } from '@/features/SendMessage';
+
+import { IMessage } from '@/entities/Message';
+
 import messageNotificationSound from '../lib/assets/sounds/message-notification.mp3';
+
 import { layoutActions } from './actions';
 
 export type INTERNAL_SOUNDS = 'new_message';
@@ -19,7 +23,7 @@ export interface LayoutStore {
 export interface Draft {
     value: string;
     state: MessageFormState;
-    selectedMessage?: Message;
+    selectedMessage?: IMessage;
 }
 
 export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>

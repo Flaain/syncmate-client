@@ -1,9 +1,10 @@
-import { Signin } from '@/features/Signin/ui/ui';
-import { Forgot } from '@/features/Forgot/ui/ui';
-import { SigninStage } from '@/features/Signin/model/types';
+import { Forgot } from '@/features/Forgot';
+import { Signin, SigninStage } from '@/features/Signin';
+
+import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
+
 import { stageDescription } from '../model/constants';
 import { useSigninForm } from '../model/store';
-import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
 
 const components: Record<SigninStage, React.ReactNode> = {
     signin: <Signin />,

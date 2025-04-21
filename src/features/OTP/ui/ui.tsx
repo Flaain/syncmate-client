@@ -1,12 +1,15 @@
 import React from 'react';
-import { Typography } from '@/shared/ui/Typography';
-import { getOtpRetryTime } from '../lib/getOtpRetryTime';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/shared/ui/input-otp';
+
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { Button } from '@/shared/ui/button';
 import { LoaderCircle } from 'lucide-react';
-import { OtpProps } from '../model/types';
+
+import { Button } from '@/shared/ui/button';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/shared/ui/input-otp';
+import { Typography } from '@/shared/ui/Typography';
+
+import { getOtpRetryTime } from '../lib/getOtpRetryTime';
 import { useOtp } from '../model/store';
+import { OtpProps } from '../model/types';
 
 export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, disabled, ...rest }, ref) => {
     const { isResending, otp, onResend } = useOtp();

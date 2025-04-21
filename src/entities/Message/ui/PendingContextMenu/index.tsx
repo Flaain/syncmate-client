@@ -1,5 +1,7 @@
-import { MenuItem } from '@/shared/ui/MenuItem';
 import { Copy, XCircle } from 'lucide-react';
+
+import { MenuItem } from '@/shared/ui/MenuItem';
+
 import { PossibleCtxActions } from '../../model/types';
 
 export const PendingContextMenu = ({ actions }: { actions: Pick<PossibleCtxActions, 'copy' | 'abort'> }) => (

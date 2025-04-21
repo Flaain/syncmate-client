@@ -1,8 +1,11 @@
 import { useSession } from "@/entities/session";
+
 import { toast } from "@/shared/lib/toast";
 import { debounce } from "@/shared/lib/utils/debounce";
 import { SetStateInternal } from "@/shared/model/types";
+
 import { profileApi } from "../api";
+
 import { imageValidators } from "./constants";
 import { ProfileStore } from "./types";
 

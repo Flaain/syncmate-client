@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { cva } from 'class-variance-authority';
+
 import { cn } from '../lib/utils/cn';
 
 export type TypographyVariant = 'primary' | 'secondary' | 'commerce' | 'error';

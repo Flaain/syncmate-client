@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { cn } from '../lib/utils/cn';
-import { PasswordInput } from './PasswordInput';
+
 import { Input } from './input';
+import { PasswordInput } from './PasswordInput';
 
 export interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     hasServerError?: boolean;

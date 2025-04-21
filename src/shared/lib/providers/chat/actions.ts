@@ -1,10 +1,13 @@
-import { Message } from '@/entities/Message/model/types';
+import { IMessage } from '@/entities/Message';
 import { useProfile } from '@/entities/profile';
+
 import { api } from '@/shared/api';
 import { ApiException } from '@/shared/api/error';
 import { useLayout } from '@/shared/model/store';
 import { SetStateInternal } from '@/shared/model/types';
+
 import { uuidv4 } from '../../utils/uuidv4';
+
 import { ChatStore } from './types';
 
 export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatStore): ChatStore['actions'] => ({
@@ -75,13 +78,13 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
                     }
                 }));
 
-                onSuccess(await api.call<Message>(error.config));
+                onSuccess(await api.call<IMessage>(error.config));
             } catch (error) {
                 onError(error);
             }
         };
 
-        const onSuccess = (data: Message) => {
+        const onSuccess = (data: IMessage) => {
             set(({ messages }) => ({
                 messages: {
                     ...messages,

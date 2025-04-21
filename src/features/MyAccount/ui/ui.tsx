@@ -1,14 +1,18 @@
-import { useProfile } from '@/entities/profile';
+import { AtSign, Camera, Loader2, Mail, UserCircle2 } from 'lucide-react';
+import { useShallow } from 'zustand/shallow';
+
 import { EditName } from '@/features/EditName/ui/ui';
+
+import { useProfile } from '@/entities/profile';
+
 import { useModal } from '@/shared/lib/providers/modal';
 import { useSocket } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Image } from '@/shared/ui/Image';
-import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
+import { Image } from '@/shared/ui/Image';
 import { Input } from '@/shared/ui/input';
-import { AtSign, Camera, Loader2, Mail, UserCircle2 } from 'lucide-react';
-import { useShallow } from 'zustand/shallow';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useMyAccount } from '../lib/useMyAccount';
 
 export const MyAccount = () => {

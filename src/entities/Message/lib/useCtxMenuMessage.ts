@@ -1,9 +1,12 @@
+import React from 'react';
+
+import { useShallow } from 'zustand/shallow';
+
 import { getUseCtxMenuMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { Draft, useLayout } from '@/shared/model/store';
-import React from 'react';
-import { useShallow } from 'zustand/shallow';
+
 import { messageApi } from '../api';
 import { endpoints } from '../model/constants';
 import { Message } from '../model/types';

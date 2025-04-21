@@ -1,4 +1,4 @@
-import { Profile } from "@/shared/model/types";
+import { Avatar, PRESENCE, Profile } from "@/shared/model/types";
 
 export interface ProfileStore {
     profile: Profile;
@@ -8,4 +8,13 @@ export interface ProfileStore {
         handleUploadAvatar: (event: React.ChangeEvent<HTMLInputElement>) => void;
         handleSetStatus: (status: string) => void;
     };
+}
+
+export interface SearchUser {
+    _id: string;
+    name: string;
+    isOfficial: boolean;
+    avatar?: Avatar;
+    presence: PRESENCE;
+    login: string;
 }

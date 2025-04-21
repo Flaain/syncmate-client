@@ -1,9 +1,13 @@
-import { useProfile } from "@/entities/profile";
-import { useSession } from "@/entities/session/model/store";
-import { ApiException } from "@/shared/api/error";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
+import { useProfile } from "@/entities/profile";
+import { useSession } from "@/entities/session";
+
+import { ApiException } from "@/shared/api/error";
+
 import { signinApi } from "../api";
 import { signinSchema } from "../model/schema";
 import { SigninSchemaType } from "../model/types";

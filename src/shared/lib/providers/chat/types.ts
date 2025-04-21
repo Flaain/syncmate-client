@@ -1,4 +1,5 @@
-import { Message, SourceRefPath } from '@/entities/Message/model/types';
+import { IMessage, SourceRefPath } from '@/entities/Message';
+
 import { DataWithCursor, SetStateInternal } from '@/shared/model/types';
 
 export type ChatMode = 'default' | 'selecting';
@@ -9,8 +10,8 @@ export interface ChatStore {
     showAnchor: boolean;
     mode: ChatMode;
     showDetails: boolean;
-    selectedMessages: Map<string, Message>;
-    messages: DataWithCursor<Message>;
+    selectedMessages: Map<string, IMessage>;
+    messages: DataWithCursor<IMessage>;
     refs: {
         listRef: React.RefObject<HTMLUListElement | null>;
         textareaRef: React.RefObject<HTMLTextAreaElement | null>;
@@ -19,9 +20,9 @@ export interface ChatStore {
     actions: {
         setChat: SetStateInternal<ChatStore>;
         getChat: () => ChatStore;
-        handleSelectMessage: (message: Message) => void;
+        handleSelectMessage: (message: IMessage) => void;
         handleOptimisticUpdate: (message: string) => {
-            onSuccess: (data: Message) => void;
+            onSuccess: (data: IMessage) => void;
             onError: (error: unknown, message?: string) => void;
             signal?: AbortSignal;
         };

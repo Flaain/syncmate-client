@@ -1,6 +1,9 @@
-import React from "react";
-import { sessionApi, useSession } from "@/entities/session";
+import * as React from "react";
+
 import { feedApi, GlobalResults } from "@/features/Feed";
+
+import { sessionApi, useSession } from "@/entities/session";
+
 import { MIN_USER_SEARCH_LENGTH } from "@/shared/constants";
 import { debounce } from "@/shared/lib/utils/debounce";
 

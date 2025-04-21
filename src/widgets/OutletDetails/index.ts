@@ -1,1 +1,1 @@
-export { OutletDetails } from './ui/ui';
+export * from './ui/ui';

@@ -1,8 +1,10 @@
+import React from 'react';
+
 import { sessionApi } from '@/entities/session';
+
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
-import React from 'react';
 
 export const useActiveSessions = () => {
     const { data, isLoading, setData: setSessions } = useQuery(({ signal }) => sessionApi.getSessions(signal));

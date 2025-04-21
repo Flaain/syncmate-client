@@ -1,10 +1,13 @@
+import React from 'react';
+
+import { Loader2, X } from 'lucide-react';
+
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
+import { Button } from '@/shared/ui/button';
 import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
-import { Loader2, X } from 'lucide-react';
-import React from 'react';
+
 import { sessionApi } from '../api';
 import { iconsMap } from '../model/constants';
 import { SessionProps } from '../model/types';

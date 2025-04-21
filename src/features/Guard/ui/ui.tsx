@@ -1,8 +1,11 @@
-import { Navigate } from 'react-router';
-import { routerList } from '../../shared/constants';
-import { GUARD_TYPE, GuardProps } from './types';
-import { useSession } from '@/entities/session';
-import { useShallow } from 'zustand/shallow';
+import { Navigate } from "react-router-dom";
+import { useShallow } from "zustand/shallow";
+
+import { useSession } from "@/entities/session";
+
+import { routerList } from "@/shared/constants";
+
+import { GUARD_TYPE, GuardProps } from "../model/types";
 
 export const Guard = ({ type, children, fallback }: GuardProps) => {
     const { isAuthInProgress, isAuthorized } = useSession(useShallow((state) => ({

@@ -1,5 +1,7 @@
-import { Message } from "@/entities/Message/model/types";
-import { Avatar, PRESENCE, Recipient, WrappedInPagination } from "@/shared/model/types";
+import { IMessage } from "@/entities/Message";
+import { SearchUser } from "@/entities/profile";
+
+import { Recipient, WrappedInPagination } from "@/shared/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
 
 export enum FEED_TYPE {
@@ -58,7 +60,7 @@ export interface GlobalFeedItemMap {
 export interface FeedUpdateParams {
     lastActionAt?: string;
     itemId: string;
-    lastMessage?: Message;
+    lastMessage?: IMessage;
     shouldSort?: boolean;
 }
 
@@ -69,19 +71,10 @@ export interface FeedUnreadCounterEvent {
     ctx: FEED_TYPE.CONVERSATION;
 }
 
-export interface SearchUser {
-    _id: string;
-    name: string;
-    isOfficial: boolean;
-    avatar?: Avatar;
-    presence: PRESENCE;
-    login: string;
-}
-
 export interface ConversationFeed {
     _id: string;
     recipient: Recipient;
     unreadMessages?: number;
-    lastMessage?: Message;
+    lastMessage?: IMessage;
     participantsTyping?: Array<TypingParticipant>;
 };

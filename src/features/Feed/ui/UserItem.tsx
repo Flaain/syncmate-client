@@ -7,7 +7,7 @@ import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 import { Typography } from '@/shared/ui/Typography';
 
-import { UserFeed } from '../../model/types';
+import { UserFeed } from '../model/types';
 
 export const UserItem = ({ user }: { user: UserFeed }) => {
     const draft = useLayout((state) => state.drafts).get(user._id);

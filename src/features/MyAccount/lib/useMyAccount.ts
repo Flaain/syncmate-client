@@ -1,7 +1,8 @@
 import React from 'react';
-import { useProfile } from '@/entities/profile';
-import { MAX_STATUS_SIZE, STOP_SIZE } from '@/entities/profile/model/constants';
+
 import { useShallow } from 'zustand/shallow';
+
+import { useProfile, MAX_STATUS_SIZE, STOP_SIZE } from '@/entities/profile';
 
 export const useMyAccount = () => {
     const { status, handleSetStatus } = useProfile(useShallow((state) => ({

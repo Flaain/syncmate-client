@@ -1,12 +1,16 @@
+import { LoaderCircle } from 'lucide-react';
+
 import { OTP } from '@/features/OTP/ui/ui';
+
 import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
-import { Typography } from '@/shared/ui/Typography';
 import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { SignupProfile } from '@/widgets/SignupForm/ui/SignupProfile';
-import { LoaderCircle } from 'lucide-react';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useSignup } from '../lib/useSignup';
 import { steps } from '../model/constants';
+import { SignupProfile } from '../ui/SignupProfile';
+
 import { SignupCredentials } from './SignupCredentials';
 
 const components = {

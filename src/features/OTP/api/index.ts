@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
-import { OtpType } from '../model/types';
 import { ApiBaseSuccessData } from '@/shared/api/API';
+
+import { OtpType } from '../model/types';
 
 export const otpApi = {
     create: (body: { email: string; type: OtpType }) => api.post<{ retryDelay: number }>('/auth/otp', body),

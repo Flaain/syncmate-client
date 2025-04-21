@@ -1,4 +1,4 @@
-import { SigninStage } from "@/features/Signin/model/types";
+import { SigninStage } from "@/features/Signin";
 
 export const stageDescription: Record<SigninStage, { title: string; description: string }> = {
     signin: {

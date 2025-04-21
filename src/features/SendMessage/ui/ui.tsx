@@ -1,11 +1,15 @@
+import React from 'react';
+
+import { ArrowDown, SendHorizonal } from 'lucide-react';
+import { useShallow } from 'zustand/shallow';
+
 import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
-import { ArrowDown, SendHorizonal } from 'lucide-react';
-import React from 'react';
-import { useShallow } from 'zustand/shallow';
+
 import { useSendMessage } from '../lib/useSendMessage';
 import { UseMessageParams } from '../model/types';
+
 import { Placeholder } from './Placeholder';
 import { TopBar } from './TopBar';
 

@@ -1,9 +1,11 @@
+import { Loader2 } from 'lucide-react';
+
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { DDM } from '@/shared/ui/DDM';
 import { Typography } from '@/shared/ui/Typography';
-import { Loader2 } from 'lucide-react';
+
 import { OutletHeaderProps } from '../../model/types';
 
 export const DefaultState = ({ name, description, dropdownContent, isOfficial, ...rest }: OutletHeaderProps) => {

@@ -1,10 +1,12 @@
-import { outletHeaderSelector, useChat } from '@/shared/lib/providers/chat';
-import { ChatMode } from '@/shared/lib/providers/chat/types';
-import { Button } from '@/shared/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/shallow';
+
+import { outletHeaderSelector, useChat, ChatMode } from '@/shared/lib/providers/chat';
+import { Button } from '@/shared/ui/button';
+
 import { OutletHeaderProps } from '../model/types';
+
 import { DefaultState } from './DefaultState';
 import { SelectState } from './SelectState';
 

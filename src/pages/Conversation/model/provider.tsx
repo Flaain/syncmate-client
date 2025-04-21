@@ -1,13 +1,17 @@
-import { Message } from '@/entities/Message/model/types';
-import { PRESENCE } from '@/entities/profile/model/types';
-import { useSession } from '@/entities/session';
-import { DEFAULT_TITLE } from '@/shared/constants';
-import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
-import { useLayout, useSocket } from '@/shared/model/store';
 import React from 'react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+
+import { IMessage } from '@/entities/Message';
+import { useSession } from '@/entities/session';
+
+import { DEFAULT_TITLE } from '@/shared/constants';
+import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
+import { useLayout, useSocket } from '@/shared/model/store';
+import { PRESENCE } from '@/shared/model/types';
+
 import { conversationActions } from './actions';
 import { ConversationContext } from './context';
 import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
@@ -93,13 +97,13 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             }));
         })
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: IMessage) => {
             setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }));
 
             message.sender._id !== userId && document.visibilityState === 'hidden' && useLayout.getState().actions.playSound('new_message');
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<IMessage, '_id' | 'text' | 'updatedAt'>) => {
             setChat(({ messages }) => ({
                 messages: {
                     ...messages,
@@ -129,7 +133,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
                     };
 
                     return [...acc, message.inReply && messageIds.includes(message.replyTo?._id!) ? { ...message, replyTo: undefined } : message];
-                }, [] as Array<Message>);
+                }, [] as Array<IMessage>);
 
                 return { messages: { ...messages, data: array } };
             });

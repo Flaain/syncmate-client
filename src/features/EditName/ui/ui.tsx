@@ -1,10 +1,12 @@
-import { useProfile } from '@/entities/profile';
-import { selectProfileName } from '@/entities/profile/model/selectors';
+import { useShallow } from 'zustand/shallow';
+
+import { selectProfileName, useProfile } from '@/entities/profile';
+
 import { editNameModalSelector, useModal } from '@/shared/lib/providers/modal';
+import { Button } from '@/shared/ui/button';
 import { FormInput } from '@/shared/ui/FormInput';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
-import { useShallow } from 'zustand/shallow';
+
 import { useEditName } from '../lib/useEditName';
 
 export const EditName = () => {

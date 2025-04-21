@@ -1,5 +1,6 @@
-import { SidebarMenuProps } from "@/shared/model/types";
 import React from "react";
+
+import { SidebarMenuProps } from "@/shared/model/types";
 
 export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onClose, backToParent }: Partial<SidebarMenuProps> = {}) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);

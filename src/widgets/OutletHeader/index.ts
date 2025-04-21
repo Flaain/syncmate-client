@@ -1,1 +1,1 @@
-export { OutletHeader } from './ui/ui';
+export * from './ui/ui';

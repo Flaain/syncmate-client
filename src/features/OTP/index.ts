@@ -1,2 +1,2 @@
-export { otpApi } from './api';
-export { OTP } from './ui/ui';
+export * from './api'
+export * from './ui/ui'

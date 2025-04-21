@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { emailForSchema, loginForSchema, nameForSchema, passwordForSchema, passwordRules } from '@/shared/constants';
 
 export const firstStepSignUpSchema = z

@@ -1,5 +1,7 @@
-import { MenuItem } from '@/shared/ui/MenuItem';
 import { CircleCheckBig, Copy, Edit, Reply, Trash2 } from 'lucide-react';
+
+import { MenuItem } from '@/shared/ui/MenuItem';
+
 import { PossibleCtxActions } from '../../model/types';
 
 export const IdleContextMenu = ({

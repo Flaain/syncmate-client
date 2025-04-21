@@ -1,15 +1,17 @@
+import React from 'react';
+
+import { CheckCheck } from 'lucide-react';
+import { useShallow } from 'zustand/shallow';
+
 import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
-import { messageContextMenuSelector } from '@/shared/lib/providers/chat';
-import { useChat } from '@/shared/lib/providers/chat/context';
+import { messageContextMenuSelector, useChat } from '@/shared/lib/providers/chat';
 import { ModalConfig, selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { cn } from '@/shared/lib/utils/cn';
 import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
 import { Confirm } from '@/shared/ui/Confirm';
-import { Typography } from '@/shared/ui/Typography';
 import { ContextMenuContent, ContextMenuSeparator } from '@/shared/ui/context-menu';
-import { CheckCheck } from 'lucide-react';
-import React from 'react';
-import { useShallow } from 'zustand/shallow';
+import { Typography } from '@/shared/ui/Typography';
+
 import { useCtxMenuMessage } from '../../lib/useCtxMenuMessage';
 import { ContextMenuProps } from '../../model/types';
 import { ErrorContextMenu } from '../ErrorContextMenu';

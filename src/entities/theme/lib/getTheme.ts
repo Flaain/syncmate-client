@@ -1,4 +1,5 @@
 import { localStorageKeys } from "@/shared/constants";
+
 import { Theme } from "../model/types";
 
 export const getTheme = (): Theme => {

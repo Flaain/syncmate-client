@@ -1,8 +1,11 @@
+import { useShallow } from 'zustand/shallow';
+
 import { profileApi } from '@/entities/profile';
+
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { Confirm } from '@/shared/ui/Confirm';
-import { useShallow } from 'zustand/shallow';
+
 import { conversationApi } from '../api';
 import { useConversation } from '../model/context';
 

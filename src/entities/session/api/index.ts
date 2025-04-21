@@ -1,5 +1,6 @@
 import { api } from '@/shared/api';
 import { ApiBaseSuccessData } from '@/shared/api/API';
+
 import { GetSessionsReturn } from '../model/types';
 
 export const sessionApi = {

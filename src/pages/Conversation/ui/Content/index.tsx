@@ -1,12 +1,16 @@
-import { SendMessage } from '@/features/SendMessage/ui/ui';
+import { useShallow } from 'zustand/shallow';
+
+import { MessagesList } from '@/widgets/MessagesList';
+import { OutletDetails } from '@/widgets/OutletDetails';
+import { OutletHeader } from '@/widgets/OutletHeader';
+
+import { SendMessage } from '@/features/SendMessage';
+
 import { showDetailsSelector, useChat } from '@/shared/lib/providers/chat';
 import { OutletDetailsTypes } from '@/shared/model/types';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
-import { MessagesList } from '@/widgets/MessagesList';
-import { OutletDetails } from '@/widgets/OutletDetails';
-import { OutletHeader } from '@/widgets/OutletHeader';
-import { useShallow } from 'zustand/shallow';
+
 import { conversationApi } from '../../api';
 import { getConversationDescription } from '../../lib/getConversationDescription';
 import { useConversation } from '../../model/context';

@@ -1,11 +1,13 @@
+import { Verified } from 'lucide-react';
+
 import { useProfile } from '@/entities/profile';
+
 import { APP_VERSION } from '@/shared/constants';
 import { cn } from '@/shared/lib/utils/cn';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 import { Typography } from '@/shared/ui/Typography';
-import { Verified } from 'lucide-react';
 
 export const LayoutSheetSkeleton = () => {
     const { profile } = useProfile();

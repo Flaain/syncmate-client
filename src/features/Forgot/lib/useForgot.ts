@@ -1,12 +1,17 @@
+import React from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FieldPath, useForm } from 'react-hook-form';
+
+import { useSigninForm } from '@/widgets/SigninForm/model/store';
+
 import { otpApi } from '@/features/OTP';
 import { useOtp } from '@/features/OTP/model/store';
 import { OtpType } from '@/features/OTP/model/types';
+
 import { ApiException } from '@/shared/api/error';
 import { toast } from '@/shared/lib/toast';
-import { useSigninForm } from '@/widgets/SigninForm/model/store';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
-import { FieldPath, useForm } from 'react-hook-form';
+
 import { forgotAPI } from '../api';
 import { steps } from '../model/constants';
 import { forgotSchema } from '../model/schema';

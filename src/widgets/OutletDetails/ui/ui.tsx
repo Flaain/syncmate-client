@@ -1,13 +1,16 @@
+import React from 'react';
+
+import { X } from 'lucide-react';
+
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useEvents } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Button } from '@/shared/ui/button';
 import { Image } from '@/shared/ui/Image';
 import { OutletDetailsButton } from '@/shared/ui/OutletDetailsButton';
 import { Typography } from '@/shared/ui/Typography';
-import { Button } from '@/shared/ui/button';
-import { X } from 'lucide-react';
-import React from 'react';
+
 import { DETAILS_TABS, OutletDetailsProps } from '../model/types';
 
 const tabsMap: Record<DETAILS_TABS, React.ReactNode> = {

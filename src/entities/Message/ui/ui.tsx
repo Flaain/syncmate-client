@@ -1,12 +1,16 @@
-import { useChat } from '@/shared/lib/providers/chat/context';
-import { cn } from '@/shared/lib/utils/cn';
-import { Typography } from '@/shared/ui/Typography';
-import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
-import { Check, CheckCheck, Clock, Info } from 'lucide-react';
 import React from 'react';
+
+import { Check, CheckCheck, Clock, Info } from 'lucide-react';
+
+import { useChat } from '@/shared/lib/providers/chat';
+import { cn } from '@/shared/lib/utils/cn';
+import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
+import { Typography } from '@/shared/ui/Typography';
+
 import { getBubblesStyles } from '../lib/getBubblesStyles';
 import { useMessage } from '../lib/useMessage';
 import { MessageProps } from '../model/types';
+
 import { MessageContextMenu } from './ContextMenu';
 
 export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {

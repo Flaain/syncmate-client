@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { cn } from '@/shared/lib/utils/cn';
 import { VariantProps, cva } from 'class-variance-authority';
+
+import { cn } from '@/shared/lib/utils/cn';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {}
 

@@ -1,6 +1,8 @@
 import { SigninForm, SigninProvider } from '@/widgets/SigninForm';
 import { SignupForm } from '@/widgets/SignupForm';
+
 import { useAuth } from '../model/store';
+
 import { Welcome } from './Welcome';
 
 const stages = {

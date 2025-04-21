@@ -1,7 +1,9 @@
-import { CONVERSATION_EVENTS, ConversationStore } from './types';
+import { MessageFormState } from '@/features/SendMessage';
+
 import { useSocket } from '@/shared/model/store';
 import { ActionsProvider } from '@/shared/model/types';
-import { MessageFormState } from '@/features/SendMessage/model/types';
+
+import { CONVERSATION_EVENTS, ConversationStore } from './types';
 
 export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationStore>, 'get'>): ConversationStore['actions'] => ({
     handleTypingStatus: () => {

@@ -1,7 +1,10 @@
-import { useEvents } from '@/shared/model/store';
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { createStore } from 'zustand';
+
+import { useEvents } from '@/shared/model/store';
+
 import { chatActions } from './actions';
 import { ChatContext } from './context';
 import { ChatProviderProps, ChatStore } from './types';

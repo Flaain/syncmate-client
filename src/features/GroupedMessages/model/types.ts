@@ -1,6 +1,6 @@
-import { Message } from "@/entities/Message/model/types";
+import { IMessage } from "@/entities/Message";
 
 export interface MessageGroupProps {
-    messages: Array<Message>;
+    messages: Array<IMessage>;
     isLastGroup: boolean;
 }

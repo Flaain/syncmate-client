@@ -1,6 +1,7 @@
+import React from "react";
+
 import { MAX_POINTER_DISTANCE_DDM } from "@/shared/constants";
 import { useEvents } from "@/shared/model/store";
-import React from "react";
 
 interface UseMenuDistanceProps<T extends HTMLElement> {
     ref: React.RefObject<T | null>; 

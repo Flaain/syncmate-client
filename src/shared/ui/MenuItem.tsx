@@ -1,7 +1,8 @@
 import { cn } from '../lib/utils/cn';
-import { Typography } from './Typography';
+
 import { ContextMenuItem } from './context-menu';
 import { DropdownMenuItem } from './dropdown-menu';
+import { Typography } from './Typography';
 
 interface MenuItemProps {
     type: 'ctx' | 'ddm';

@@ -1,17 +1,18 @@
 import { Loader2, X } from 'lucide-react';
 
 import { Feed } from '@/features/Feed';
-import { SidebarDDM } from '@/features/SidebarDDM/ui/ui';
+import { SettingsMenu } from '@/features/SettingsMenu';
+import { SidebarDDM } from '@/features/SidebarDDM';
+
+import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { SidebarMenus } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-
 import { SidebarMenuContainer } from '@/shared/ui/SidebarMenu';
+
 import { useSidebar } from '../model/useSidebar';
-import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
-import { SettingsMenu } from '@/features/SettingsMenu';
 
 export const Sidebar = () => {
     const { activeMenu, changeMenu, panelRef } = useSidebarMenu<SidebarMenus, HTMLDivElement>();

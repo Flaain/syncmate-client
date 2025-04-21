@@ -1,7 +1,10 @@
+import React from 'react';
+
+import ReactDOM from 'react-dom';
+
 import { useEvents } from '@/shared/model/store';
 import { Modal } from '@/shared/ui/Modal';
-import React from 'react';
-import ReactDOM from 'react-dom';
+
 import { useModal } from './store';
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {

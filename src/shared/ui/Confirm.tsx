@@ -1,6 +1,9 @@
-import { Button, ButtonProps } from '@/shared/ui/button';
-import { Loader2 } from 'lucide-react';
 import React from 'react';
+
+import { Loader2 } from 'lucide-react';
+
+import { Button, ButtonProps } from '@/shared/ui/button';
+
 import { Typography } from './Typography';
 
 interface ConfirmProps {

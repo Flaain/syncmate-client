@@ -1,8 +1,11 @@
+import React from "react";
+
 import { ArrowLeft } from "lucide-react";
+
+import { cn } from "../lib/utils/cn";
+
 import { Button } from "./button";
 import { Typography } from "./Typography";
-import React from "react";
-import { cn } from "../lib/utils/cn";
 
 interface SidebarHeaderProps {
     title: string;

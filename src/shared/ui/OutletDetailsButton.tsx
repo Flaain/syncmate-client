@@ -1,8 +1,10 @@
 import { AtSign, Info, Link, LucideIcon, Mail, Phone } from 'lucide-react';
+
 import { toast } from '../lib/toast';
 import { OutletDetailsButtonProps, OutletDetailsTypes } from '../model/types';
-import { Typography } from './Typography';
+
 import { Button } from './button';
+import { Typography } from './Typography';
 
 const toastTitle: Record<OutletDetailsTypes, string> = {
     email: 'Email copied to clipboard',
