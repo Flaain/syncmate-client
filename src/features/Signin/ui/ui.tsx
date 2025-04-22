@@ -1,14 +1,12 @@
 import { LoaderCircle } from 'lucide-react';
 
-import { useAuth } from '@/pages/Auth';
-
-import { useSigninForm } from '@/widgets/SigninForm/model/store';
-
+import { useAuth } from '@/shared/lib/providers/auth';
+import { useSigninForm } from '@/shared/lib/providers/signin';
 import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { FormInput } from '@/shared/ui/FormInput';
 
-import { useSignin } from '../lib/useSignin';
+import { useSignin } from '../model/useSignin';
 
 export const Signin = () => {
     const { form, isSubmitButtonDisabled, onChangeForm, onSubmit, loading } = useSignin();

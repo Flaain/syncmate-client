@@ -1,11 +1,11 @@
-import React from 'react';
 
 import { useShallow } from 'zustand/shallow';
 
 import { getUseCtxMenuMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
-import { Draft, useLayout } from '@/shared/model/store';
+import { useLayout } from '@/shared/model/store';
+import { Draft } from '@/shared/model/types';
 
 import { messageApi } from '../api';
 import { endpoints } from '../model/constants';
@@ -16,19 +16,25 @@ export const useCtxMenuMessage = (message: Message) => {
     
     const onAsyncActionModal = useModal((state) => state.actions.onAsyncActionModal);
     
-    const handleCopyToClipboard = React.useCallback(() => {
+    const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(message.text);
         toast.success('Message copied to clipboard');
-    }, []);
+    };
 
-    const handleMessageDelete = React.useCallback(async () => {
-       await onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
-            closeOnError: true,
-            onReject: () => toast.error('Cannot delete message')
-        });
-    }, [params.id, message]);
+    const handleMessageDelete = () =>
+        onAsyncActionModal(
+            () =>
+                messageApi.delete({
+                    endpoint: `${endpoints[params.type]}/delete/${params.id}`,
+                    messageIds: [message._id]
+                }),
+            {
+                closeOnError: true,
+                onReject: () => toast.error('Cannot delete message')
+            }
+        )
 
-    const handleContextAction = React.useCallback((draft: Draft) => {
+    const handleContextAction = (draft: Draft) => {
         if (isContextActionsBlocked) return;
         
         useLayout.setState((prevState) => {
@@ -38,7 +44,7 @@ export const useCtxMenuMessage = (message: Message) => {
 
             return { drafts: newState };
         });
-    }, [isContextActionsBlocked]);
+    };
 
     return {
         handleCopyToClipboard,

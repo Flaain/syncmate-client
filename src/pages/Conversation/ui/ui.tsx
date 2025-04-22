@@ -1,10 +1,11 @@
 import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 
-import { SourceRefPath } from '@/entities/Message';
+import { SourceRefPath } from '@/entities/message';
 
-import { ApiException } from '@/shared/api/error';
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
+
+import { ApiException } from '@/shared/api';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useSocket } from '@/shared/model/store';

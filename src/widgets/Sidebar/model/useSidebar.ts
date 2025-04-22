@@ -1,6 +1,6 @@
-import * as React from "react";
+import React from "react";
 
-import { feedApi, GlobalResults } from "@/features/Feed";
+import { feedApi, GlobalResults } from "@/features/feed";
 
 import { sessionApi, useSession } from "@/entities/session";
 
@@ -15,13 +15,13 @@ export const useSidebar = () => {
     const searchRef = React.useRef<HTMLInputElement>(null);
     const searchAbortController = React.useRef<AbortController>(new AbortController());
 
-    const handleLogout = React.useCallback(async () => {
+    const handleLogout = async () => {
         await sessionApi.logout();
 
         useSession.getState().actions.onSignout();
-    }, []);
+    };
 
-    const resetSearch = React.useCallback(() => {
+    const resetSearch = () => {
         searchAbortController.current.abort('Search request was cancelled');
         searchAbortController.current = new AbortController();
 
@@ -30,9 +30,9 @@ export const useSidebar = () => {
         setValue('');
         setGlobalResults(null);
         setIsSearching(false);
-    }, []);
+    };
 
-    const handleSearch = React.useCallback(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearch = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
         if (!value) return resetSearch();
         
         const trimmedSearchValue = value.trim();
@@ -43,7 +43,7 @@ export const useSidebar = () => {
             setIsSearching(true);
             delayedSearch(trimmedSearchValue);
         }
-    }, []);
+    }
 
     const delayedSearch = React.useCallback(debounce(async (value: string) => {
         try {

@@ -8,18 +8,18 @@ export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onClos
 
     const panelRef = React.useRef<P>(null);
 
-    const changeMenu = React.useCallback((m: typeof activeMenu) => {
+    const changeMenu = (m: typeof activeMenu) => {
         setActiveMenu(m);
-    }, []);
+    }
 
-    const handleBack = React.useCallback(() => {
+    const handleBack = () => {
         onClose?.();
         setShouldRemove(true);
-    }, []);
+    }
 
-    const onAnimationEnd = React.useCallback(() => {
+    const onAnimationEnd = () => {
         shouldRemove && backToParent?.();
-    }, [shouldRemove]);
+    }
 
     return {
         panelRef,

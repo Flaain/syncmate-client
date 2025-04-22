@@ -1,4 +1,4 @@
-import { IMessage, SourceRefPath } from '@/entities/Message';
+import { IMessage, SourceRefPath } from '@/entities/message';
 
 import { DataWithCursor, SetStateInternal } from '@/shared/model/types';
 

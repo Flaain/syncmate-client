@@ -1,11 +1,14 @@
-import { SigninForm, SigninProvider } from '@/widgets/SigninForm';
-import { SignupForm } from '@/widgets/SignupForm';
+import React from 'react';
 
-import { useAuth } from '../model/store';
+import { SigninForm } from '@/widgets/signin-form';
+import { SignupForm } from '@/widgets/signup-form';
+
+import { AuthStage, useAuth } from '@/shared/lib/providers/auth';
+import { SigninProvider } from '@/shared/lib/providers/signin';
 
 import { Welcome } from './Welcome';
 
-const stages = {
+const stages: Record<AuthStage, React.ReactNode> = {
     welcome: <Welcome />,
     signIn: (
         <SigninProvider>
@@ -16,11 +19,11 @@ const stages = {
 };
 
 export const Auth = () => {
-    const authStage = useAuth((state) => state.authStage);
+    const stage = useAuth((state) => state.authStage);
 
     return (
         <section className='w-full h-svh flex items-center px-5 justify-center bg-primary-dark-200'>
-            {stages[authStage as keyof typeof stages]}
+            {stages[stage]}
         </section>
     );
 };

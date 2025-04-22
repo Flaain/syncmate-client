@@ -27,8 +27,8 @@ export const MessageContextMenu = ({ message, isMessageFromMe, onClose }: Contex
     
     const ref = React.useRef<HTMLDivElement>(null);
     
-    const copyCallback = React.useCallback(() => handleItemClick(handleCopyToClipboard), []);
-    const handleItemClick = React.useCallback((cb: () => void) => { cb(); setShouldRemove(true); }, []);
+    const copyCallback = () => handleItemClick(handleCopyToClipboard);
+    const handleItemClick = (cb: () => void) => { cb(); setShouldRemove(true); };
 
     useMenuDistance({ ref, onClose: () => setShouldRemove(true) });
 

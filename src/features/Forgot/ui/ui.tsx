@@ -1,14 +1,11 @@
 import { LoaderCircle } from 'lucide-react';
 
-import { OTP } from '@/features/OTP/ui/ui';
-
 import { Button } from '@/shared/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormOTP } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 import { PasswordInput } from '@/shared/ui/PasswordInput';
 
-import { useForgot } from '../lib/useForgot';
-import { buttonTitles } from '../model/constants';
+import { useForgot } from '../model/useForgot';
 
 export const Forgot = () => {
     const { form, isNextButtonDisabled, isLoading, onSubmit, onBack, step } = useForgot();
@@ -39,21 +36,7 @@ export const Forgot = () => {
                             )}
                         />
                     )}
-                    {step === 1 && (
-                        <FormField
-                            name='otp'
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem className='relative'>
-                                    <FormLabel className='text-white'>Enter verification code</FormLabel>
-                                    <FormControl>
-                                        <OTP {...field} onComplete={onSubmit} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    )}
+                    {step === 1 && <FormOTP onSubmit={onSubmit} />}
                     {step === 2 && (
                         <>
                             <FormField
@@ -106,7 +89,7 @@ export const Forgot = () => {
                         </Button>
                         {step !== 1 && (
                             <Button className='w-24' disabled={isNextButtonDisabled}>
-                                {isLoading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : buttonTitles[step as keyof typeof buttonTitles]}
+                                {isLoading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
                             </Button>
                         )}
                     </div>

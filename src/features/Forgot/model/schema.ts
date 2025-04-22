@@ -32,3 +32,5 @@ export const thirdStepSchema = z
     });
 
 export const forgotSchema = firstStepSchema.and(secondStepSchema).and(thirdStepSchema);
+
+export type ForgotSchemaType = z.infer<typeof forgotSchema>;

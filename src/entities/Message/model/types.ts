@@ -1,9 +1,3 @@
-import { Recipient } from "@/shared/model/types";
-
-export enum SourceRefPath {
-    CONVERSATION = 'Conversation'
-}
-
 export interface PossibleCtxActions {
     reply: () => void;
     edit: () => void;
@@ -14,27 +8,6 @@ export interface PossibleCtxActions {
     resend: () => void;
     remove: () => void;
 }
-
-export type Message = {
-    _id: string;
-    hasBeenEdited: boolean;
-    text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION };
-    inReply?: boolean;
-    readedAt?: string;
-    hasBeenRead?: boolean;
-    alreadyRead?: boolean;
-    createdAt: string;
-    updatedAt: string;
-    status?: 'pending' | 'error';
-    actions?: {
-        abort?: () => void;
-        remove?: () => void;
-        resend?: () => void;
-    };
-    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
-    sourceRefPath: SourceRefPath.CONVERSATION;
-};
 
 export interface UseMessageProps {
     isMessageFromMe: boolean;

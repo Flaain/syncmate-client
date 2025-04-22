@@ -1,4 +1,4 @@
-import { IMessage } from "@/entities/Message";
+import { IMessage } from "@/entities/message";
 
 import { api } from "@/shared/api";
 import { DataWithCursor } from "@/shared/model/types";

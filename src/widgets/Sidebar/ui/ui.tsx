@@ -1,8 +1,8 @@
 import { Loader2, X } from 'lucide-react';
 
-import { Feed } from '@/features/Feed';
-import { SettingsMenu } from '@/features/SettingsMenu';
-import { SidebarDDM } from '@/features/SidebarDDM';
+import { Feed } from '@/features/feed';
+import { SettingsMenu } from '@/features/settings-menu';
+import { SidebarDDM } from '@/features/sidebar-ddm';
 
 import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
 import { cn } from '@/shared/lib/utils/cn';

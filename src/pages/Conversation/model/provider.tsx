@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 
-import { IMessage } from '@/entities/Message';
+import { IMessage } from '@/entities/message';
 import { useSession } from '@/entities/session';
 
 import { DEFAULT_TITLE } from '@/shared/constants';

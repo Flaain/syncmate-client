@@ -1,5 +1,4 @@
 export * from './api'
-export * from './ui/Skeletons'
 export * from './ui/ui'
 
 export { type Message as IMessage, SourceRefPath } from './model/types'

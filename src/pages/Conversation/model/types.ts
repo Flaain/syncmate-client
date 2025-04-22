@@ -1,8 +1,6 @@
-import { MessageFormState } from '@/features/SendMessage';
+import { IMessage } from '@/entities/message';
 
-import { IMessage } from '@/entities/Message';
-
-import { DataWithCursor, Recipient } from '@/shared/model/types';
+import { DataWithCursor, MessageFormState, Recipient } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',

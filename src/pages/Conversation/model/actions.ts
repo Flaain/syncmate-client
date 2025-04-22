@@ -1,7 +1,5 @@
-import { MessageFormState } from '@/features/SendMessage';
-
 import { useSocket } from '@/shared/model/store';
-import { ActionsProvider } from '@/shared/model/types';
+import { ActionsProvider, MessageFormState } from '@/shared/model/types';
 
 import { CONVERSATION_EVENTS, ConversationStore } from './types';
 

@@ -1,7 +1,6 @@
-import { MessageSkeleton } from '@/entities/Message';
-
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 
+import { MessageSkeleton } from './MessageSkeleton';
 import { Pattern } from './Pattern';
 import { PreAnimatedSkeleton } from './PreAnimatedSkeleton';
 

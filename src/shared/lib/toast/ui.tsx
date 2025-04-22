@@ -44,24 +44,24 @@ export const Toast = ({ toast, removeToast }: ToastProps) => {
         id: null,
     });
 
-    const handleInteraction = React.useCallback(({ type }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleInteraction = ({ type }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         type === 'mouseenter' ? pauseTimer() : startTimer();
-    }, []);
+    };
 
-    const startTimer = React.useCallback(() => {
+    const startTimer = () => {
         config.current.start = Date.now();
         config.current.id = setTimeout(setShouldRemove, toast.recalculateRemainingTime ? config.current.remaining : toast.duration, true);
-    }, [toast]);
+    }
 
-    const pauseTimer = React.useCallback(() => {
-        clearTimeout(config.current.id!);
-        
+    const pauseTimer = () => {
+        clearTimeout(config.current.id!)
+
         config.current = {
-          ...config.current,
-          id: null,
-          remaining: config.current.remaining - (Date.now() - config.current.start)
-        };
-      }, []);
+            ...config.current,
+            id: null,
+            remaining: config.current.remaining - (Date.now() - config.current.start)
+        }
+    }
 
     React.useEffect(() => {
         config.current.remaining = toast.duration;

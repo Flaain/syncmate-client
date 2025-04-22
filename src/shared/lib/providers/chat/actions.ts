@@ -1,4 +1,4 @@
-import { IMessage } from '@/entities/Message';
+import { IMessage } from '@/entities/message';
 import { useProfile } from '@/entities/profile';
 
 import { api } from '@/shared/api';

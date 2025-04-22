@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Guard } from '@/features/Guard';
+import { Guard } from '@/features/guard';
 
 import { ScreenLoader } from '@/shared/ui/ScreenLoader';
 

@@ -5,7 +5,13 @@ import { useSession } from "@/entities/session";
 
 import { routerList } from "@/shared/constants";
 
-import { GUARD_TYPE, GuardProps } from "../model/types";
+export type GUARD_TYPE = 'auth' | 'guest';
+
+export interface GuardProps {
+    type: GUARD_TYPE;
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+}
 
 export const Guard = ({ type, children, fallback }: GuardProps) => {
     const { isAuthInProgress, isAuthorized } = useSession(useShallow((state) => ({

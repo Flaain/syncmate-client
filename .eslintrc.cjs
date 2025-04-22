@@ -20,18 +20,20 @@ module.exports = {
         'boundaries/ignore': ['**/*.test.*']
     },
     rules: {
+        "import/no-named-as-default": 'off',
         'import/order': [
             'error',
             {
                 alphabetize: { order: 'asc', caseInsensitive: true },
                 'newlines-between': 'always',
                 pathGroups: [
-                    { pattern: 'react', group: 'external', position: 'before' },
+                    { group: 'external', position: 'before', pattern: '{react,react-dom/*}' },
                     { group: 'internal', position: 'after', pattern: '@/processes/**' },
                     { group: 'internal', position: 'after', pattern: '@/pages/**' },
                     { group: 'internal', position: 'after', pattern: '@/widgets/**' },
                     { group: 'internal', position: 'after', pattern: '@/features/**' },
                     { group: 'internal', position: 'after', pattern: '@/entities/**' },
+                    { group: 'internal', position: 'after', pattern: '@/shared/lib/assets/**' },
                     { group: 'internal', position: 'after', pattern: '@/shared/**' }
                 ],
                 pathGroupsExcludedImportTypes: ['builtin'],

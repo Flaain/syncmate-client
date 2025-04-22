@@ -18,17 +18,17 @@ interface ConfirmProps {
 export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', onConfirmText = 'Confirm', onConfirmButtonVariant = 'default' }: ConfirmProps) => {
     const [loading, setLoading] = React.useState(false);
 
-    const onClickConfirm = React.useCallback(async () => {
+    const onClickConfirm = async () => {
         try {
-            setLoading(true);
+            setLoading(true)
 
-            await onConfirm();
+            await onConfirm()
         } catch (error) {
-            console.error(error);
+            console.error(error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    }, []);
+    }
 
     return (
         <div className='flex flex-col gap-5 items-start max-w-[350px]'>

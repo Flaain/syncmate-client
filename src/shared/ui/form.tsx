@@ -7,6 +7,7 @@ import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useF
 import { cn } from '@/shared/lib/utils/cn';
 
 import { Label } from './label';
+import { OTP } from './OTP';
 
 type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> = { name: TName };
 type FormItemContextValue = { id: string };
@@ -103,11 +104,33 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
     );
 });
 
+const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElement>) => void }) => {
+    const form = useFormContext();
+
+    if (!form) throw new Error('FormOTP should be used within <Form>');
+
+    return (
+        <FormField
+            name='otp'
+            control={form.control}
+            render={({ field }) => (
+                <FormItem className='relative'>
+                    <FormLabel className='text-white'>Enter verification code</FormLabel>
+                    <FormControl>
+                        <OTP {...field} onComplete={onSubmit} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
+};
+
 FormItem.displayName = 'FormItem';
 FormLabel.displayName = 'FormLabel';
 FormControl.displayName = 'FormControl';
 FormDescription.displayName = 'FormDescription';
 FormMessage.displayName = 'FormMessage';
 
-export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, useFormField };
+export { Form, FormOTP, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, useFormField };
 

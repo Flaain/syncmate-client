@@ -1,4 +1,4 @@
-import { IMessage } from "@/entities/Message";
+import { IMessage } from "@/entities/message";
 import { SearchUser } from "@/entities/profile";
 
 import { Recipient, WrappedInPagination } from "@/shared/model/types";
