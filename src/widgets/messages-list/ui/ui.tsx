@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react';
 
-import { GroupedMessages } from '@/features/GroupedMessages';
+import { GroupedMessages } from '@/features/grouped-messages';
 
 import { Button } from '@/shared/ui/button';
 import { MessageSkeleton } from '@/shared/ui/MessageSkeleton';
@@ -10,7 +10,7 @@ import { MessagesListProps } from '../model/types';
 import { useMessagesList } from '../model/useMessagesList';
 
 export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
-    const { groupedMessages, canFetch, isLoading, isError, isRefetching, refetch, call, listRef } = useMessagesList(getPreviousMessages);
+    const { groupedMessages, canFetch, isLoading, isError, isRefetching, listRef, bottomPlaceholderRef, firstMessageRef, call, refetch } = useMessagesList(getPreviousMessages);
 
     if (!groupedMessages.length) {
         return (
@@ -35,7 +35,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                     <MessageSkeleton />
                 </>
             )}
-            {canFetch && (
+            {!!canFetch && (
                 <li className='flex justify-center items-center my-auto'>
                     <Button
                         variant='text'
@@ -48,8 +48,14 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                 </li>
             )}
             {groupedMessages.map((messages, index, array) => (
-                <GroupedMessages key={messages[0]._id} messages={messages} isLastGroup={index === array.length - 1} />
+                <GroupedMessages 
+                    key={messages[0]._id} 
+                    messages={messages} 
+                    firstMessageRef={!index ? firstMessageRef : null}
+                    isLastGroup={index === array.length - 1} 
+                />
             ))}
+            <li ref={bottomPlaceholderRef} className='w-full h-[1px] p-0 max-xl:-m-5 -m-3 opacity-0 pointer-events-none'></li>
         </ul>
     );
 };

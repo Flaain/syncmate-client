@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';

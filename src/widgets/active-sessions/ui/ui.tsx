@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Confirm } from '@/shared/ui/Confirm';
 import { Typography } from '@/shared/ui/Typography';
 
-import { useActiveSessions } from '../lib/useActiveSessions';
+import { useActiveSessions } from '../model/useActiveSessions';
 
 import { ActiveSessionsSkeleton } from './Skeleton';
 

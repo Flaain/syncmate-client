@@ -23,13 +23,15 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
 
     const onEmojiSelect = ({ native }: EmojiData) => {
-        const { selectionStart, selectionEnd } = textareaRef.current as HTMLTextAreaElement, newPos = selectionStart + native.length;
+        if (textareaRef.current instanceof HTMLTextAreaElement) {
+            const { selectionStart, selectionEnd } = textareaRef.current, newPos = selectionStart + native.length;
 
-        setValue((prev) => `${prev.slice(0, selectionStart)}${native}${prev.slice(selectionEnd)}`);
-        setTimeout(() => {
-            textareaRef.current?.focus();
-            textareaRef.current?.setSelectionRange(newPos, newPos);
-        }, 0);
+            setValue((prev) => `${prev.slice(0, selectionStart)}${native}${prev.slice(selectionEnd)}`);
+            setTimeout(() => {
+                textareaRef.current?.focus();
+                textareaRef.current?.setSelectionRange(newPos, newPos);
+            }, 0);
+        }
     };
 
     React.useEffect(() => { 
@@ -68,7 +70,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
 
     const setDefaultState = React.useCallback(() => {
         useLayout.setState((prevState) => {
-            const newState = new Map([...prevState.drafts]);
+            const newState = new Map(prevState.drafts);
             
             newState.delete(params.id);
             
@@ -104,7 +106,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         if ((!trimmedValue.length && !currentDraft) || trimmedValue === currentDraft?.value) return;
 
         useLayout.setState((prevState) => {
-            const newState = new Map([...prevState.drafts]);
+            const newState = new Map(prevState.drafts);
             const isEmpty = !trimmedValue.length && currentDraft?.state === 'send';
 
             isEmpty ? newState.delete(params.id) : newState.set(params.id, currentDraft ? { ...currentDraft, value: trimmedValue } : { 

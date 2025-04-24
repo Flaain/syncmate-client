@@ -3,21 +3,22 @@ import { useShallow } from 'zustand/shallow';
 
 import { useProfile } from '@/entities/profile';
 
-import { SidebarMenus } from '@/shared/model/types';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Button } from '@/shared/ui/button';
-import { DDM } from '@/shared/ui/DDM';
+import { DDM as DropdownMenu } from '@/shared/ui/DDM';
 import { DropdownMenuSeparator } from '@/shared/ui/dropdown-menu';
 import { Image } from '@/shared/ui/Image';
 import { MenuItem } from '@/shared/ui/MenuItem';
 
+import { SidebarMenus } from './ui';
+
 const iconStyles = 'size-4 mx-1';
 
-export const SidebarDDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | null) => void }) => {
+export const DDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | null) => void }) => {
     const { name, avatar } = useProfile(useShallow((state) => ({ name: state.profile.name, avatar: state.profile.avatar })));
 
     return (
-        <DDM
+        <DropdownMenu
             className='w-[180px]'
             collisionPadding={{ left: 12 }}
             trigger={
@@ -56,6 +57,6 @@ export const SidebarDDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | n
                 text='Settings'
                 onClick={() => changeMenu('settings')}
             />
-        </DDM>
+        </DropdownMenu>
     );
 };

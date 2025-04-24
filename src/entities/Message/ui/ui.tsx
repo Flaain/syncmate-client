@@ -7,13 +7,13 @@ import { cn } from '@/shared/lib/utils/cn';
 import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
 import { Typography } from '@/shared/ui/Typography';
 
-import { getBubblesStyles } from '../lib/getBubblesStyles';
-import { useMessage } from '../lib/useMessage';
 import { MessageProps } from '../model/types';
+import { useMessage } from '../model/useMessage';
+import { getBubblesStyles } from '../utils/getBubblesStyles';
 
-import { MessageContextMenu } from './ContextMenu';
+import { CtxMenu } from './CtxMenu';
 
-export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
+export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
     const { updatedAt, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
@@ -59,6 +59,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                         </svg>
                     )}
                     <div
+                        ref={firstMessageRef}
                         className={cn(
                             'px-2 py-1 xl:m-0 relative max-w-[480px] box-border',
                             inReply && 'flex flex-col gap-2 py-1.5',
@@ -116,7 +117,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                 </li>
             </ContextMenuTrigger>
             {isContextMenuOpen && !isContextActionsBlocked && (
-                <MessageContextMenu
+                <CtxMenu
                     message={message}
                     isMessageFromMe={isMessageFromMe}
                     onClose={() => setIsContextMenuOpen(false)}

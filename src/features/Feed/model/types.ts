@@ -1,7 +1,6 @@
-import { IMessage } from "@/entities/message";
 import { SearchUser } from "@/entities/profile";
 
-import { Recipient, WrappedInPagination } from "@/shared/model/types";
+import { Message, Recipient, WrappedInPagination } from "@/shared/model/types";
 import { TypingParticipant } from "@/shared/ui/Typography";
 
 export enum FEED_TYPE {
@@ -60,7 +59,7 @@ export interface GlobalFeedItemMap {
 export interface FeedUpdateParams {
     lastActionAt?: string;
     itemId: string;
-    lastMessage?: IMessage;
+    lastMessage?: Message;
     shouldSort?: boolean;
 }
 
@@ -75,6 +74,6 @@ export interface ConversationFeed {
     _id: string;
     recipient: Recipient;
     unreadMessages?: number;
-    lastMessage?: IMessage;
+    lastMessage?: Message;
     participantsTyping?: Array<TypingParticipant>;
 };

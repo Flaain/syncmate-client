@@ -1,14 +1,13 @@
 import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 
-import { SourceRefPath } from '@/entities/message';
-
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
 
 import { ApiException } from '@/shared/api';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useSocket } from '@/shared/model/store';
+import { CHAT_TYPE } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 import { OutletError } from '@/shared/ui/OutletError';
@@ -31,10 +30,10 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
         onSelect: ({ messages, ...data }) => data,
         onSuccess: ({ messages }) => {
             setChat({
-                messages,
+                messages: { data: new Map(messages.data), nextCursor: messages.nextCursor },
                 params: {
                     id,
-                    type: SourceRefPath.CONVERSATION,
+                    type: CHAT_TYPE.Conversation,
                     query: { recipientId: id, session_id: useSocket.getState().session_id }
                 }
             });

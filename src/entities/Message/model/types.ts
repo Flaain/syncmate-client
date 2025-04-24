@@ -1,3 +1,12 @@
+import { Message } from "@/shared/model/types";
+
+export interface IdleCtxMenuProps {
+    isMessageFromMe: boolean;
+    message: Message;
+    onCopy: () => void;
+    onItemClick: (cb: () => void) => () => void;
+}
+
 export interface PossibleCtxActions {
     reply: () => void;
     edit: () => void;
@@ -22,6 +31,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLLIElement> {
     isLastGroup: boolean;
     isFirst: boolean;
     isLast: boolean;
+    firstMessageRef: ((node: HTMLDivElement) => void) | null;
 }
 
 export interface ContextMenuProps {

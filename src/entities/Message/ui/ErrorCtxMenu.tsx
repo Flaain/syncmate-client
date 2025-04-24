@@ -2,7 +2,7 @@ import { Copy, SendHorizontalIcon, Trash2 } from 'lucide-react';
 
 import { MenuItem } from '@/shared/ui/MenuItem';
 
-import { PossibleCtxActions } from '../../model/types';
+import { PossibleCtxActions } from '../model/types';
 
 export const ErrorContextMenu = ({ actions }: { actions: Pick<PossibleCtxActions, 'copy' | 'resend' | 'remove'> }) => (
     <>

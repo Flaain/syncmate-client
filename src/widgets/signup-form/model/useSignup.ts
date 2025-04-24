@@ -10,7 +10,6 @@ import { otpApi } from "@/shared/api";
 import { ApiException } from "@/shared/api/error";
 import { useAuth } from "@/shared/lib/providers/auth";
 import { useOtp } from "@/shared/model/store";
-import { OtpType, UserCheckType } from "@/shared/model/types";
 
 import { signupApi } from "../api";
 import { steps } from "../model/constants";
@@ -42,7 +41,7 @@ export const useSignup = () => {
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
 
     const checkEmail = async ({ email }: SignupSchemaType) => {
-        await signupApi.check({ type: UserCheckType.EMAIL, email: email.toLowerCase().trim() });
+        await signupApi.check({ type: 'email', email: email.toLowerCase().trim() });
 
         setStep((prevState) => prevState + 1);
     };
@@ -50,11 +49,11 @@ export const useSignup = () => {
     const checkLogin = async ({ login, email }: SignupSchemaType) => {
         const trimmedEmail = email.toLowerCase().trim();
 
-        await signupApi.check({ type: UserCheckType.LOGIN, login: login.toLowerCase().trim() });
+        await signupApi.check({ type: 'login', login: login.toLowerCase().trim() });
                     
-        const { data: { retryDelay } } = await otpApi.create({ email: trimmedEmail, type: OtpType.EMAIL_VERIFICATION });
+        const { data: { retryDelay } } = await otpApi.create({ email: trimmedEmail, type: 'email_verification' });
         
-        useOtp.setState({ otp: { targetEmail: trimmedEmail, type: OtpType.EMAIL_VERIFICATION, retryDelay } });
+        useOtp.setState({ otp: { targetEmail: trimmedEmail, type: 'email_verification', retryDelay } });
         
         setStep((prevState) => prevState + 1);
     };

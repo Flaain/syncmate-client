@@ -1,20 +1,22 @@
 import { useShallow } from 'zustand/shallow';
 
-import { Message, IMessage } from '@/entities/message';
+import { Message } from '@/entities/message';
 import { useSession } from '@/entities/session';
 
 import { groupedMessagesSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
+import { Message as IMessage } from '@/shared/model/types';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 
 interface MessageGroupProps {
     messages: Array<IMessage>;
     isLastGroup: boolean;
+    firstMessageRef: ((node: HTMLDivElement) => void) | null;
 }
 
-export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) => {
+export const GroupedMessages = ({ messages, firstMessageRef, isLastGroup }: MessageGroupProps) => {
     const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow(groupedMessagesSelector));
 
     const userId = useSession((state) => state.userId);
@@ -26,7 +28,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
 
     const handleDoubleClick = (message: IMessage) => {
         useLayout.setState((prevState) => {
-            const newState = new Map([...prevState.drafts]);
+            const newState = new Map(prevState.drafts);
 
             newState.set(params.id, { state: 'reply', value: '', selectedMessage: message });
 
@@ -47,6 +49,7 @@ export const GroupedMessages = ({ messages, isLastGroup }: MessageGroupProps) =>
                 {messages.map((message, index, array) => (
                     <Message
                         key={message._id}
+                        firstMessageRef={!index ? firstMessageRef : null}
                         isFirst={!index}
                         isMessageFromMe={isMessageFromMe}
                         isLastGroup={isLastGroup}

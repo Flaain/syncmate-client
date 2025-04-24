@@ -1,11 +1,12 @@
-import { api } from '@/shared/api';
+import { api, ApiBaseSuccessData } from '@/shared/api';
+import { Message } from '@/shared/model/types';
 
-import { DefaultParamsAPI, DeleteParamsAPI, Message } from '../model/types';
+import { DefaultParamsAPI, DeleteParamsAPI } from '../model/types';
 
 export const messageApi = {
-    send: <T = Message>({ endpoint, body, signal }: DefaultParamsAPI) => api.post<T>(endpoint, body, { signal }),
-    edit: <T = Message>({ endpoint, body }: DefaultParamsAPI) => api.patch<T>(endpoint, body),
-    reply: <T = Message>({ endpoint, body }: DefaultParamsAPI) => api.post<T>(endpoint, body),
-    delete: <T = Message>({ endpoint, messageIds }: DeleteParamsAPI) => api.delete<T>(endpoint, { params: { messageIds } }),
-    read: ({ endpoint, body }: DefaultParamsAPI) => api.patch(endpoint, body, { keepalive: true })
+    send: ({ endpoint, body, signal }: DefaultParamsAPI) => api.post<Message>(endpoint, body, { signal }),
+    edit: ({ endpoint, body }: DefaultParamsAPI) => api.patch<Message>(endpoint, body),
+    reply: ({ endpoint, body }: DefaultParamsAPI) => api.post<Message>(endpoint, body),
+    delete: ({ endpoint, messageIds }: DeleteParamsAPI) => api.delete<Array<string>>(endpoint, { params: { messageIds } }),
+    read: ({ endpoint, body }: DefaultParamsAPI) => api.patch<ApiBaseSuccessData>(endpoint, body, { keepalive: true })
 };

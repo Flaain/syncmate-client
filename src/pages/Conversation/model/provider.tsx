@@ -4,13 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 
-import { IMessage } from '@/entities/message';
 import { useSession } from '@/entities/session';
 
 import { DEFAULT_TITLE } from '@/shared/constants';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout, useSocket } from '@/shared/model/store';
-import { PRESENCE } from '@/shared/model/types';
+import { Message, PRESENCE } from '@/shared/model/types';
 
 import { conversationActions } from './actions';
 import { ConversationContext } from './context';
@@ -81,68 +80,68 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
-            setChat(({ messages }) => ({
-                messages: {
-                    ...messages,
-                    data: messages.data.map((message) =>
-                        message._id === _id
-                            ? {
-                                  ...message,
-                                  readedAt,
-                                  [message.sender._id === userId ? 'hasBeenRead' : 'alreadyRead']: true
-                              }
-                            : message
-                    )
-                }
-            }));
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data), msg = newMessages.get(_id);
+
+                msg && newMessages.set(_id, {
+                    ...msg,
+                    readedAt,
+                    [msg.sender._id === userId ? 'hasBeenRead' : 'alreadyRead']: true
+                });
+
+                return { messages: { ...messages, data: newMessages } };
+            });
         })
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: IMessage) => {
-            setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }));
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data);
+
+                newMessages.set(message._id, message);
+
+                return { messages: { ...messages, data: newMessages } };
+            });
 
             message.sender._id !== userId && document.visibilityState === 'hidden' && useLayout.getState().actions.playSound('new_message');
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<IMessage, '_id' | 'text' | 'updatedAt'>) => {
-            setChat(({ messages }) => ({
-                messages: {
-                    ...messages,
-                    data: messages.data.map((message) => {
-                        if (message._id === _id) return { ...message, text, updatedAt, hasBeenEdited: true };
-                        if (message.replyTo?._id === _id) return { ...message, replyTo: { ...message.replyTo, text } };
+        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data), editedMsg = newMessages.get(_id);
 
-                        return message;
-                    })
-                }
-            }));
+                editedMsg && newMessages.set(_id, { ...editedMsg, text, updatedAt, hasBeenEdited: true });
+
+                newMessages.forEach((v, k) => v.replyTo?._id === _id && newMessages.set(k, { ...v, replyTo: { ...v.replyTo, text } }));
+
+                return { messages: { ...messages, data: newMessages } };
+            });
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat(({ messages }) => {
-                const array = messages.data.reduce((acc, message) => {
-                    if (messageIds.includes(message._id)) {
-                        useLayout.getState().drafts.get(recipientId)?.selectedMessage?._id === message._id && useLayout.setState(({ drafts }) => {
-                            const newDrafts = new Map([...drafts]);
+                const newMessages = new Map(messages.data);
+                const draft = useLayout.getState().drafts.get(recipientId);
+                const shouldRemove = draft && draft.state !== 'send';
+                
+                let isDraftDeleted = false;
 
-                            newDrafts.delete(recipientId);
+                messageIds.forEach((id) => {
+                    newMessages.delete(id) && shouldRemove && !isDraftDeleted && draft?.selectedMessage?._id === id && useLayout.setState(({ drafts }) => {
+                        const newDrafts = new Map(drafts);
 
-                            return { drafts: newDrafts };
-                        });
+                        draft.state === 'edit' ? newDrafts.delete(recipientId) : newDrafts.set(recipientId, { state: 'send', value: draft.value, selectedMessage: undefined });
 
-                        return acc;
-                    };
+                        isDraftDeleted = true;
 
-                    return [...acc, message.inReply && messageIds.includes(message.replyTo?._id!) ? { ...message, replyTo: undefined } : message];
-                }, [] as Array<IMessage>);
+                        return { drafts: newDrafts };
+                    });
+                });
 
-                return { messages: { ...messages, data: array } };
+                return { messages: { ...messages, data: newMessages } };
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => {
-            store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } }));
-        });
-
+        socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => { store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } })); });
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
         socket?.on(CONVERSATION_EVENTS.START_TYPING, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
         socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));

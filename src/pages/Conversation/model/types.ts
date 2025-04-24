@@ -1,6 +1,4 @@
-import { IMessage } from '@/entities/message';
-
-import { DataWithCursor, MessageFormState, Recipient } from '@/shared/model/types';
+import { DataWithCursor, Message, MessageFormState, Recipient } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',
@@ -29,7 +27,7 @@ export interface ConversationStore {
 export interface Conversation {
     _id: string;
     recipient: Recipient;
-    messages: DataWithCursor<IMessage>;
+    messages: DataWithCursor<Array<[string, Message]>>;
     isInitiatorBlocked?: boolean;
     isRecipientBlocked?: boolean;
     createdAt: string;

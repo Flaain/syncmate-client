@@ -5,6 +5,24 @@ import { ApiException } from '@/shared/api/error';
 
 export type UseQueryCallback<T> = (params: { signal: AbortSignal }) => Promise<ApiBaseResult<T>>;
 
+type UseQueryReducerAction =
+    | { type: UseQueryTypes.LOADING; payload: { isLoading: boolean } }
+    | { type: UseQueryTypes.SUCCESS }
+    | { type: UseQueryTypes.ERROR; payload: { error: ApiException } }
+    | { type: UseQueryTypes.REFETCH; payload: { isRefetching: true } }
+    | { type: UseQueryTypes.RESET; payload: { isLoading: false, isRefetching: false } }
+
+type UseRunQueryAction = 'init' | 'refetch';
+
+enum UseQueryTypes {
+    LOADING = 'loading',
+    SUCCESS = 'success',
+    SET = 'set',
+    REFETCH = 'refetch',
+    RESET = 'reset',
+    ERROR = 'error',
+}
+
 interface UseQueryOptions<T> {
     keys: React.DependencyList;
     retry: boolean | number;
@@ -16,15 +34,6 @@ interface UseQueryOptions<T> {
     onSuccess: (data: T) => void;
     onSelect: (data: T) => void;
     onError: (error: unknown) => void;
-}
-
-enum UseQueryTypes {
-    LOADING = 'loading',
-    SUCCESS = 'success',
-    SET = 'set',
-    REFETCH = 'refetch',
-    RESET = 'reset',
-    ERROR = 'error',
 }
 
 interface UseQueryConfig {
@@ -57,15 +66,6 @@ interface UseQueryReducerState {
     isRefetching: boolean;
     error?: ApiException;
 }
-
-type UseQueryReducerAction =
-    | { type: UseQueryTypes.LOADING; payload: { isLoading: boolean } }
-    | { type: UseQueryTypes.SUCCESS }
-    | { type: UseQueryTypes.ERROR; payload: { error: ApiException } }
-    | { type: UseQueryTypes.REFETCH; payload: { isRefetching: true } }
-    | { type: UseQueryTypes.RESET; payload: { isLoading: false, isRefetching: false } }
-
-type UseRunQueryAction = 'init' | 'refetch';
 
 const errorAction = (error: ApiException): Extract<UseQueryReducerAction, { type: UseQueryTypes.ERROR }> => ({
     type: UseQueryTypes.ERROR,
@@ -134,7 +134,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         config.current.abortController = new AbortController();
     }, []);
     
-    const runQuery = React.useCallback(async (action: UseRunQueryAction) => {
+    const runQuery = async (action: UseRunQueryAction) => {
         try {
             abort();
 
@@ -166,14 +166,15 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
                     dispatch(errorAction(error));
 
                     config.current.currentAction = null;
+                    config.current.retry = Number(options?.retry) || 0;
                 }
                 
                 config.current.interval && clearInterval(config.current.interval);
-                
+
                 options?.onError?.(error);
             }
         }
-    }, [callback]);
+    };
 
     React.useEffect(() => {
         config.current.mounted = true;

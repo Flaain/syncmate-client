@@ -2,17 +2,19 @@ import { Loader2, X } from 'lucide-react';
 
 import { Feed } from '@/features/feed';
 import { SettingsMenu } from '@/features/settings-menu';
-import { SidebarDDM } from '@/features/sidebar-ddm';
 
 import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
-import { SidebarMenus } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { SidebarMenuContainer } from '@/shared/ui/SidebarMenu';
 
 import { useSidebar } from '../model/useSidebar';
+
+import { DDM } from './DDM';
+
+export type SidebarMenus = 'settings';
 
 export const Sidebar = () => {
     const { activeMenu, changeMenu, panelRef } = useSidebarMenu<SidebarMenus, HTMLDivElement>();
@@ -32,7 +34,7 @@ export const Sidebar = () => {
             {!!activeMenu && menus[activeMenu]}
             <SidebarMenuContainer ref={panelRef} hasActiveMenu={!!activeMenu} className='flex flex-col z-0 animate-none !slide-in-from-right-0 transition-transform duration-300'>
                 <div className='flex items-center justify-between gap-5 sticky top-0 p-4 box-border h-[70px]'>
-                    <SidebarDDM changeMenu={changeMenu} />
+                    <DDM changeMenu={changeMenu} />
                     <div className='flex w-full relative'>
                         {isDisconnected && (
                             <div className='absolute left-3 top-1/2 -translate-y-1/2'>

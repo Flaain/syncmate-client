@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
 import { PRESENCE } from '@/shared/model/types';
@@ -34,10 +35,10 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeed
                             skeleton={<AvatarByName name={recipient.name} size='lg' />}
                             className='object-cover object-center min-w-[50px] max-w-[50px] h-[50px] rounded-full'
                         />
-                        {recipient.presence === PRESENCE.ONLINE && <ProfileIndicator />}
+                        {recipient.presence === PRESENCE.online && <ProfileIndicator />}
                     </span>
                 ) : (
-                    <AvatarByName name={recipient.name} size='lg' isOnline={recipient.presence === PRESENCE.ONLINE} />
+                    <AvatarByName name={recipient.name} size='lg' isOnline={recipient.presence === PRESENCE.online} />
                 )}
                 <div className='flex flex-col items-start w-full overflow-hidden'>
                     <Typography

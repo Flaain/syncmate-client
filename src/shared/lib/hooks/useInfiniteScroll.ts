@@ -11,7 +11,7 @@ export const useInfiniteScroll = <T extends HTMLElement, U>(
     callback: UseQueryCallback<U>,
     { deps, onSuccess, root, rootMargin, threshold }: UseInfiniteScrollOptions<U>
 ) => {
-    const { isLoading, isRefetching, isError, data, error, call } = useQuery(callback, { enabled: false, onSuccess });
+    const { isLoading, isRefetching, isError, data, error, call, refetch } = useQuery(callback, { enabled: false, onSuccess });
 
     const observer = React.useRef<IntersectionObserver | null>(null);
 
@@ -33,6 +33,8 @@ export const useInfiniteScroll = <T extends HTMLElement, U>(
         isRefetching,
         isError,
         data,
-        error
+        error,
+        call,
+        refetch
     };
 };

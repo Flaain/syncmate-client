@@ -7,7 +7,6 @@ import { OutletHeader } from '@/widgets/outlet-header';
 import { SendMessage } from '@/features/send-message';
 
 import { showDetailsSelector, useChat } from '@/shared/lib/providers/chat';
-import { OutletDetailsTypes } from '@/shared/model/types';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
 
@@ -55,10 +54,7 @@ export const Content = () => {
                     name={recipient.name}
                     avatarUrl={recipient.avatar?.url}
                     description={description}
-                    info={[
-                        { data: recipient.status, type: OutletDetailsTypes.BIO },
-                        { data: recipient.login, type: OutletDetailsTypes.LOGIN }
-                    ]}
+                    info={[{ data: recipient.status, type: 'bio' }, { data: recipient.login, type: 'login' }]}
                 />
             )}
         </OutletContainer>

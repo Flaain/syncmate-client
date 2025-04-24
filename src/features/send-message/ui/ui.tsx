@@ -7,8 +7,8 @@ import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
 
-import { useSendMessage } from '../model/useSendMessage';
 import { UseMessageParams } from '../model/types';
+import { useSendMessage } from '../model/useSendMessage';
 
 import { Placeholder } from './Placeholder';
 import { TopBar } from './TopBar';
@@ -54,7 +54,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                         variant='text'
                         type='button'
                         size='icon'
-                        className='pl-4'
+                        className='px-4'
                     >
                         <ArrowDown className='w-6 h-6' />
                     </Button>

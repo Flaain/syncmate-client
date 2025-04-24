@@ -2,34 +2,25 @@ import React from "react";
 
 import { useShallow } from "zustand/shallow";
 
-import { IMessage } from "@/entities/message";
-
-import { useQuery } from "@/shared/lib/hooks/useQuery";
+import { useInfiniteScroll } from "@/shared/lib/hooks/useInfiniteScroll";
 import { messagesListSelector, useChat } from "@/shared/lib/providers/chat";
-import { getScrollBottom } from "@/shared/lib/utils/getScrollBottom";
+import { DataWithCursor, Message } from "@/shared/model/types";
 
-import { MAX_SCROLL_BOTTOM, MIN_SCROLL_BOTTOM } from "./constants";
+import { MAX_SCROLL_BOTTOM } from "./constants";
 import { MessagesListProps } from "./types";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
     const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
-    
-    const { isLoading, isError, isRefetching, refetch, call } = useQuery(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
-        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => {
-            // ALL CODE BELOW IS TEMPORARY BECAUSE OF IOS SAFARI BUG. I KNOW IT'S BAD
 
-            const newMessages = { ...messages, data: [...data, ...messages.data], nextCursor }, msgMap = new Map<string, IMessage>();
-
-            for (const msg of newMessages.data) msgMap.set(msg._id, msg);
-
-            return { messages: { data: [...msgMap.values()], nextCursor } };
-        }),
-        retryDelay: 2000,
-        enabled: false,
-        retry: 5,
+    const { isLoading, isError, isRefetching, ref, call, refetch } = useInfiniteScroll<HTMLDivElement, DataWithCursor<Array<[string, Message]>>>(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
+        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { data: new Map([...data, ...messages.data.entries()]), nextCursor } })),
+        deps: [messages.nextCursor]
     });
 
-    const groupedMessages = React.useMemo(() => messages.data.reduce<Array<Array<IMessage>>>((acc, message) => {
+    const observer = React.useRef<IntersectionObserver | null>(null);
+    const bottomPlaceholderRef = React.useRef<HTMLLIElement>(null);
+
+    const groupedMessages = React.useMemo(() => [...messages.data.values()].reduce<Array<Array<Message>>>((acc, message) => {
         const lastGroup = acc[acc.length - 1];
 
         lastGroup && lastGroup[0].sender._id === message.sender._id ? lastGroup.push(message) : acc.push([message]);
@@ -42,35 +33,29 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
     }, [params.id]);
 
     React.useEffect(() => {
-        if (!listRef.current) return;
+        if (!observer.current || !lastMessageRef.current) return;
 
-        const handleScrollContainer = () => {
-            const { scrollTop } = listRef.current as HTMLUListElement;
-
-            !isLoading && !isRefetching && messages.nextCursor && !scrollTop && (isError ? refetch() : call());
-
-            setChat({ showAnchor: getScrollBottom(listRef.current!) >= MAX_SCROLL_BOTTOM });
-        };
-
-        listRef.current?.addEventListener('scroll', handleScrollContainer);
-
-        return () => {
-            listRef.current?.removeEventListener('scroll', handleScrollContainer);
-        };
-    }, [messages.nextCursor, isLoading, isRefetching, isError, call, refetch]);
+        observer.current.takeRecords()[0]?.isIntersecting && lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, [messages.data.size]);
 
     React.useEffect(() => {
-        if (!listRef.current || !lastMessageRef.current) return;
+        if (!listRef.current || !bottomPlaceholderRef.current) return;
 
-        const scrollBottom = getScrollBottom(listRef.current!);
+        observer.current = new IntersectionObserver((entries) => {
+            setChat({ showAnchor: !entries[0].isIntersecting });
+        }, { root: listRef.current, rootMargin: `0px 0px ${MAX_SCROLL_BOTTOM}px 0px` });
 
-        scrollBottom <= MIN_SCROLL_BOTTOM ? lastMessageRef.current.scrollIntoView({ behavior: 'smooth' }) : setChat({ showAnchor: scrollBottom >= MAX_SCROLL_BOTTOM });
-    }, [messages]);
+        observer.current.observe(bottomPlaceholderRef.current);
+
+        return () => { observer.current?.disconnect() };
+    }, []);
 
     return {
+        bottomPlaceholderRef,
         listRef,
+        firstMessageRef: ref,
         groupedMessages,
-        canFetch: !!(!isLoading && messages.nextCursor),
+        canFetch: !isLoading && messages.nextCursor,
         isLoading,
         isRefetching,
         isError,

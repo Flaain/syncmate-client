@@ -1,4 +1,4 @@
-import { OutletDetailsTypes } from "@/shared/model/types";
+import { OutletDetailsButtonType } from "@/shared/model/types";
 
 export enum DETAILS_TABS {
     MEMBERS = 'members',
@@ -13,6 +13,6 @@ export interface OutletDetailsProps {
     title: string;
     description?: string;
     avatarUrl?: string;
-    info?: Array<{ data?: string; type: OutletDetailsTypes }>;
+    info?: Array<{ data?: string; type: OutletDetailsButtonType }>;
     tabs?: Array<DETAILS_TABS>;
 }

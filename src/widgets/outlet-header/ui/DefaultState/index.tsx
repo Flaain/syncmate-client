@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { DDM } from '@/shared/ui/DDM';

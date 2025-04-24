@@ -29,6 +29,7 @@ export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: Us
                 observer.current?.unobserve(entries[0].target);
             }
         });
+        
         node && observer.current.observe(node);
     }, []);
 

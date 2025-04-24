@@ -20,7 +20,7 @@ export const useEvents = create<EventsStore>((set) => ({
     listeners: new Map(),
     addEventListener: <E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void) => {
         set((prevState) => {
-            const listeners = new Map([...prevState.listeners]);
+            const listeners = new Map(prevState.listeners);
 
             listeners.has(type) ? listeners.set(type, new Set([...listeners.get(type)!, listener])) : listeners.set(type, new Set([listener]));
 
@@ -29,7 +29,7 @@ export const useEvents = create<EventsStore>((set) => ({
 
         return () => {
             set((prevState) => {
-                const listeners = new Map([...prevState.listeners]);
+                const listeners = new Map(prevState.listeners);
 
                 listeners.get(type)?.delete(listener);
                 !listeners.get(type)?.size && listeners.delete(type);

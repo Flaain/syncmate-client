@@ -66,7 +66,7 @@ export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info 
             </div>
             {info && (
                 <div className={cn('flex flex-col', tabs && 'border-b-[15px] pb-2 border-solid border-primary-dark-200')}>
-                    {info.map(({ data, type }, index) => data ? <OutletDetailsButton key={index} data={data} type={type} /> : null)}
+                    {info.map(({ data, type }) => data ? <OutletDetailsButton key={type} data={data} type={type} /> : null)}
                 </div>
             )}
             {tabs && (

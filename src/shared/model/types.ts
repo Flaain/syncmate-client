@@ -1,25 +1,49 @@
 import { Socket } from 'socket.io-client';
 import { z } from 'zod';
 
-import { IMessage } from '@/entities/message';
-
 import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
 
+// you might be wondering why not use enum instead of "as const" so i readed this post - https://t.me/temaProg/49. And decided to use as const instea, maybe im wrong.
+
+export const USER_EVENTS = {
+    PRESENCE: 'user.presence',
+    ONLINE: 'user.online',
+    OFFLINE: 'user.offline'
+} as const;
+
+export const PRESENCE = {
+    online: 'online',
+    offline: 'offline'
+} as const;
+
+export const CHAT_TYPE = {
+    Conversation: 'Conversation',
+} as const;
+
+export type SetStateInternal<T> = {
+    _(partial: T | Partial<T> | {  _(state: T): T | Partial<T>; }['_'], replace?: false): void;
+    _(state: T | { _(state: T): T }['_'], replace: true): void;
+}['_'];
+
 export type SchemaNameType = z.infer<typeof nameSchema>;
-export type SidebarMenus = 'settings';
-export type RequestStatuses = 'idle' | 'loading' | 'error';
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;
-export type INTERNAL_SOUNDS = 'new_message';
-export type MessageFormState = 'send' | 'edit' | 'reply';
 export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+export type EventsEntries = Array<{ type: keyof GlobalEventHandlersEventMap, listener: (event: Event) => void }>;
 
-export type OTP_TYPE = 'email_verification' | 'password_reset';
-export type CHAT_TYPE = 'conversation' | 'group';
-export type PRESENCE = 'online' | 'offline';
-export type OUTLET_DETAILS_TYPE = 'email' | 'phone' | 'link' | 'bio' | 'login';
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;
+export type UserCheckParams = { type: Extract<UserCheckType, 'email'>; email: string } | { type: Extract<UserCheckType, 'login'>; login: string };
 
-export type MESSAGE_SOURCE_REF_PATH = 'Conversation'
+export type PRESENCE = keyof typeof PRESENCE;
+export type CHAT_TYPE = keyof typeof CHAT_TYPE;
+
+export type INTERNAL_SOUNDS = 'new_message';
+export type RequestStatuses = 'idle' | 'loading' | 'error';
+export type MessageFormState = 'send' | 'edit' | 'reply';
+export type OtpType = 'email_verification' | 'password_reset';
+export type OutletDetailsButtonType = 'email' | 'phone' | 'link' | 'bio' | 'login';
+export type UserCheckType = 'email' | 'login';
+export type MessageStatus = 'pending' | 'error' | 'idle';
 
 export interface LayoutStore {
     drafts: Map<string, Draft>;
@@ -33,15 +57,13 @@ export interface LayoutStore {
 export interface Draft {
     value: string;
     state: MessageFormState;
-    selectedMessage?: IMessage;
+    selectedMessage?: Message;
 }
 
 export interface EventsStore {
-    listeners: Map<keyof GlobalEventHandlersEventMap, Set<(event: Event) => void>>;
+    listeners: Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>;
     addEventListener<E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void): () => void;
 }
-
-export type EventsEntries = Array<{ type: keyof GlobalEventHandlersEventMap, listener: (event: Event) => void }>;
 
 export interface SocketStore {
     socket: Socket;
@@ -103,41 +125,24 @@ export type Message = {
     alreadyRead?: boolean;
     createdAt: string;
     updatedAt: string;
-    status?: 'pending' | 'error';
+    status?: MessageStatus;
     actions?: {
         abort?: () => void;
         remove?: () => void;
         resend?: () => void;
     };
     sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
-    sourceRefPath: MESSAGE_SOURCE_REF_PATH;
+    sourceRefPath: CHAT_TYPE;
 };
 
 export interface DataWithCursor<T> {
-    data: Array<T>;
+    data: T;
     nextCursor: string | null;
 }
 
-export type SetStateInternal<T> = {
-    _(partial: T | Partial<T> | {
-        _(state: T): T | Partial<T>;
-    }['_'], replace?: false): void;
-    _(state: T | {
-        _(state: T): T;
-    }['_'], replace: true): void;
-}['_'];
-
-export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-
 export interface OutletDetailsButtonProps {
-    type: OUTLET_DETAILS_TYPE;
+    type: OutletDetailsButtonType;
     data: string;
-}
-
-export enum USER_EVENTS {
-    PRESENCE = 'user.presence',
-    ONLINE = 'user.online',
-    OFFLINE = 'user.offline'
 }
 
 export interface ActionsProvider<T> {
@@ -148,17 +153,10 @@ export interface ActionsProvider<T> {
 }
 
 export interface DeleteMessageEventParams {
-    lastMessage: IMessage;
+    lastMessage: Message;
     lastMessageSentAt: string;
     feedId: string;
 }
-
-export enum UserCheckType {
-    EMAIL = 'email',
-    LOGIN = 'login'
-}
-
-export type UserCheckParams = { type: UserCheckType.EMAIL; email: string } | { type: UserCheckType.LOGIN; login: string };
 
 export interface Pagination {
     query: string;

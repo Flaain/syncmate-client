@@ -6,7 +6,6 @@ import { FieldPath, useForm } from 'react-hook-form';
 import { ApiException, otpApi } from '@/shared/api';
 import { useSigninForm } from '@/shared/lib/providers/signin';
 import { useOtp } from '@/shared/model/store';
-import { OtpType } from '@/shared/model/types';
 
 import { forgotAPI } from '../api';
 import { forgotSchema, ForgotSchemaType } from '../model/schema';
@@ -41,9 +40,9 @@ export const useForgot = () => {
     const changeAuthStage = useSigninForm((state) => state.changeSigninStage);
 
     const createPasswordResetOtp = async ({ email }: Omit<ForgotSchemaType, 'confirmPassword'>) => {
-        const { data: { retryDelay } } = await otpApi.create({ email, type: OtpType.PASSWORD_RESET });
+        const { data: { retryDelay } } = await otpApi.create({ email, type: 'password_reset' });
 
-        useOtp.setState({ otp: { targetEmail: email, type: OtpType.PASSWORD_RESET, retryDelay } });
+        useOtp.setState({ otp: { targetEmail: email, type: 'password_reset', retryDelay } });
         
         setStep((prevState) => prevState + 1);
     };
@@ -57,7 +56,7 @@ export const useForgot = () => {
     };
 
     const verifyPasswordResetOtp = async ({ email, otp }: Omit<ForgotSchemaType, 'confirmPassword'>) => {
-        await otpApi.verify({ otp, email, type: OtpType.PASSWORD_RESET });
+        await otpApi.verify({ otp, email, type: 'password_reset' });
 
         setStep((prevState) => prevState + 1);
     };
