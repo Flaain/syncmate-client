@@ -4,7 +4,7 @@ export interface PreAnimatedSkeletonProps extends React.HTMLAttributes<HTMLSpanE
     animate?: boolean;
 }
 
-export const PreAnimatedSkeleton = ({ animate = true, className, ...rest }: PreAnimatedSkeletonProps) => (
+export const PreAnimatedSkeleton = ({ animate = true, className, children, ...rest }: PreAnimatedSkeletonProps) => (
     <span
         {...rest}
         className={cn(
@@ -13,5 +13,7 @@ export const PreAnimatedSkeleton = ({ animate = true, className, ...rest }: PreA
             animate &&
                 'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-gray-200/10 before:to-transparent overflow-hidden isolate before:border-t before:border-primary-gray/30'
         )}
-    ></span>
+    >
+        {children}
+    </span>
 );
