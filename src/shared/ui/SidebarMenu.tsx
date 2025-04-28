@@ -30,10 +30,10 @@ export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarCont
         <div
             ref={ref}
             className={cn(
-                'col-start-1 row-start-1 z-10 bg-primary-dark-150',
-                shouldRemove ? 'slide-out-to-right-full fill-mode-forwards duration-300 animate-out' : 'slide-in-from-right-full duration-300 animate-in',
+                className,
+                'col-start-1 row-start-1 bg-primary-dark-150 duration-300 overflow-hidden z-0',
+                shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
                 hasActiveMenu && '-translate-x-20',
-                className
             )}
             {...rest}
         >
@@ -42,13 +42,17 @@ export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarCont
     )
 );
 
+export const SidebarMenuSeparator = ({ children, className, ...rest }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
+    <div {...rest} className={cn("w-full h-[15px] dark:bg-primary-dark-200 my-2", className)}>{children}</div>
+)
+
 export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProps) => {
     return (
-        <div className='flex items-center gap-5 p-4'>
-            <Button variant='ghost' size='icon' className='rounded-full p-2' onClick={onBack}>
+        <div className='flex items-center gap-5 px-4 py-2'>
+            <Button variant='ghost' size='icon' className='size-10 rounded-full p-2' onClick={onBack}>
                 <ArrowLeft className='size-5' />
             </Button>
-            <Typography as='h2' variant='primary' size='2xl' weight='medium' className='leading-none'>
+            <Typography as='h2' variant='primary' size='xl' weight='medium'>
                 {title}
             </Typography>
             {children}
