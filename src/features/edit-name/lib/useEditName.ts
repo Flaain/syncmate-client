@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { profileApi, selectProfileName, useProfile } from '@/entities/profile';
 
-import { MAX_NAME_LENGTH, NAME_TO_LONG_ERROR } from '@/shared/constants';
+import { NAME_MAX_LENGTH, NAME_TO_LONG_ERROR } from '@/shared/constants';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 
@@ -29,7 +29,7 @@ export const useEditName = () => {
 
         if (name === profileName) return onCloseModal();
         if (!name || !name.length) return handleError('Name is required');
-        if (name.length > MAX_NAME_LENGTH) return handleError(NAME_TO_LONG_ERROR);
+        if (name.length > NAME_MAX_LENGTH) return handleError(NAME_TO_LONG_ERROR);
 
         onAsyncActionModal(() => profileApi.name({ name }), {
             onResolve: () => useProfile.setState((prevState) => ({ profile: { ...prevState.profile, name } })),
