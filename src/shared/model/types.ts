@@ -89,8 +89,7 @@ export interface OtpProps extends Omit<React.HTMLAttributes<HTMLInputElement>, '
 }
 
 export interface SidebarMenuProps { 
-    onClose: () => void, 
-    backToParent: () => void
+    onClose: (shouldRemove?: boolean) => void;
 }
 
 export interface Avatar {

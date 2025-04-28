@@ -1,32 +1,30 @@
 import React from "react";
 
-import { SidebarMenuProps } from "@/shared/model/types";
 
-export const useSidebarMenu = <T extends string, P extends HTMLElement>({ onClose, backToParent }: Partial<SidebarMenuProps> = {}) => {
+export const useSidebarMenu = <T extends string | null, P extends HTMLElement>(onCloseCallback?: (shouldRemove?: boolean) => void) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
     const [activeMenu, setActiveMenu] = React.useState<T | null>(null);
 
     const panelRef = React.useRef<P>(null);
 
-    const changeMenu = (m: typeof activeMenu) => {
-        setActiveMenu(m);
-    }
-
     const handleBack = () => {
-        onClose?.();
+        onCloseCallback?.();
         setShouldRemove(true);
     }
 
     const onAnimationEnd = () => {
-        shouldRemove && backToParent?.();
+        shouldRemove && onCloseCallback?.(true);
     }
+
+    const onClose = (shouldRemove?: boolean) => shouldRemove ? setActiveMenu(null) : panelRef.current?.classList.remove('-translate-x-20');
 
     return {
         panelRef,
         shouldRemove,
         activeMenu,
-        changeMenu,
+        setActiveMenu,
         handleBack,
         onAnimationEnd,
+        onClose,
     }
 }
