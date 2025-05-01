@@ -16,11 +16,11 @@ export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationSt
             const { conversation: { _id, recipient } } = get(), { socket } = useSocket.getState();
             const typingData = { conversationId: _id, recipientId: recipient._id };
             
-            !ctx.isTyping ? ((ctx.isTyping = true), socket?.emit(CONVERSATION_EVENTS.START_TYPING, typingData)) : clearTimeout(ctx.typingTimeout!);
+            !ctx.isTyping ? ((ctx.isTyping = true), socket?.emit(CONVERSATION_EVENTS.TYPING_START, typingData)) : clearTimeout(ctx.typingTimeout!);
 
             ctx.typingTimeout = setTimeout(() => {
                 ctx.isTyping = false;
-                socket?.emit(CONVERSATION_EVENTS.STOP_TYPING, typingData);
+                socket?.emit(CONVERSATION_EVENTS.TYPING_STOP, typingData);
             }, 5000);
         };
     },

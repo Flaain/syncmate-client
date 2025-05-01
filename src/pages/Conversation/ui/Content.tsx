@@ -20,7 +20,14 @@ import { DDM } from './DDM';
 export const Content = () => {
     const { _id, isInitiatorBlocked, isRecipientBlocked, recipient, isRecipientTyping, handleTypingStatus } = useConversation(useShallow(contentSelector));
 
-    const description = getDescription({ data: { recipient, isInitiatorBlocked, isRecipientBlocked }, isRecipientTyping });
+    const description = getDescription({ 
+        lastSeenAt: recipient.lastSeenAt, 
+        presence: recipient.presence, 
+        isInitiatorBlocked, 
+        isRecipientBlocked, 
+        isRecipientTyping 
+    });
+
     const showDetails = useChat(showDetailsSelector);
 
     return (
@@ -54,7 +61,7 @@ export const Content = () => {
                     name={recipient.name}
                     avatarUrl={recipient.avatar?.url}
                     description={description}
-                    info={[{ data: recipient.status, type: 'bio' }, { data: recipient.login, type: 'login' }]}
+                    info={[{ data: recipient.bio, type: 'bio' }, { data: recipient.login, type: 'login' }]}
                 />
             )}
         </OutletContainer>

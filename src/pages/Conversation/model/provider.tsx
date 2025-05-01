@@ -143,8 +143,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
 
         socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => { store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } })); });
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
-        socket?.on(CONVERSATION_EVENTS.START_TYPING, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
-        socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
+        socket?.on(CONVERSATION_EVENTS.TYPING_START, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
+        socket?.on(CONVERSATION_EVENTS.TYPING_STOP, () => store.setState({ isRecipientTyping: false }));
         
         return () => {
             document.title = DEFAULT_TITLE;
@@ -164,8 +164,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             socket?.off(CONVERSATION_EVENTS.CREATED);
             socket?.off(CONVERSATION_EVENTS.DELETED);
 
-            socket?.off(CONVERSATION_EVENTS.START_TYPING);
-            socket?.off(CONVERSATION_EVENTS.STOP_TYPING);
+            socket?.off(CONVERSATION_EVENTS.TYPING_START);
+            socket?.off(CONVERSATION_EVENTS.TYPING_STOP);
         };
     }, [recipientId, conversation]);
 

@@ -12,8 +12,8 @@ export enum CONVERSATION_EVENTS {
     USER_PRESENCE = 'conversation.user.presence',
     USER_BLOCK = 'conversation.user.block',
     USER_UNBLOCK = 'conversation.user.unblock',
-    START_TYPING = 'conversation.start.typing',
-    STOP_TYPING = 'conversation.stop.typing'
+    TYPING_START = 'conversation.typing.start',
+    TYPING_STOP = 'conversation.typing.stop'
 }
 
 export interface ConversationStore {
@@ -34,8 +34,6 @@ export interface Conversation {
     updatedAt: string;
 }
 
-export interface GetDescriptionParams {
-    data: { recipient: Pick<Recipient, 'presence' | 'lastSeenAt'> } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
-    shouldDisplayTypingStatus?: boolean;
+export interface GetDescriptionParams extends Pick<Recipient, 'presence' | 'lastSeenAt'>, Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'> {
     isRecipientTyping: boolean;
 }
