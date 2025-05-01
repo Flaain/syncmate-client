@@ -22,7 +22,7 @@ export const LayoutProvider = () => {
         socket.on('connect', () => {
             useSocket.setState({ isConnected: true });
 
-            socket.emit(USER_EVENTS.PRESENCE, { presence: PRESENCE.ONLINE });
+            socket.emit(USER_EVENTS.PRESENCE, { presence: PRESENCE.online });
         });
 
         socket.on('disconnect', () => { useSocket.setState({ isConnected: false }) });
