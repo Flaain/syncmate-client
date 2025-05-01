@@ -17,7 +17,8 @@ const buttonVariants = cva(
                 ghost: 'dark:focus-visible:ring-primary-dark-50 dark:ring-offset-0 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:focus-visible:bg-primary-dark-50 dark:hover:bg-primary-dark-50',
                 link: 'dark:text-primary-white text-primary-dark-200 hover:underline hover:underline-offset-2',
                 commerce: 'bg-primary-commerce text-primary-white hover:bg-primary-commerce/90',
-                text: 'dark:text-primary-white text-primary-dark-200 hover:opacity-50 ring-offset-0 rounded-none transition-opacity ring-0 ring-transparent focus-visible:ring-0 ring-offset-0 focus-visible:opacity-50 focus focus-visible:ring-offset-0 rounded-none outline-none ring-0'
+                text: 'dark:text-primary-white text-primary-dark-200 hover:opacity-50 ring-offset-0 rounded-none transition-opacity ring-0 ring-transparent focus-visible:ring-0 ring-offset-0 focus-visible:opacity-50 focus focus-visible:ring-offset-0 rounded-none outline-none ring-0',
+                clean: ''
             },
             size: {
                 default: 'h-10 px-4 py-2 min-w-[80px]',
