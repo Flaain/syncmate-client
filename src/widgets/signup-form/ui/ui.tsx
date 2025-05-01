@@ -47,7 +47,7 @@ export const SignupForm = () => {
                             </Button>
                             {!isLastStep && (
                                 <Button className='w-24' disabled={isNextButtonDisabled}>
-                                    {loading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : 'Submit'}
+                                    {loading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : 'Next'}
                                 </Button>
                             )}
                         </div>

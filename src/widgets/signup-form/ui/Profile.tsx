@@ -1,12 +1,16 @@
 import { useFormContext } from 'react-hook-form';
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { FormInput } from '@/shared/ui/FormInput';
+import { FormControl, FormField, FormItem } from '@/shared/ui/form';
+import { Input } from '@/shared/ui/input';
 
 import { SignupSchemaType } from '../model/types';
 
 export const Profile = () => {
     const form = useFormContext<SignupSchemaType>();
+    
+    const nameErrors = form.formState.errors.name?.message;
+    const loginErrors = form.formState.errors.login?.message || form.formState.errors.root?.login?.message;
+    const birthDateErrors = form.formState.errors.birthDate?.message;
 
     return (
         <>
@@ -15,11 +19,15 @@ export const Profile = () => {
                 control={form.control}
                 render={({ field }) => (
                     <FormItem className='relative'>
-                        <FormLabel className='text-white'>Name</FormLabel>
                         <FormControl>
-                            <FormInput {...field} autoFocus placeholder='Enter your name' />
+                            <Input
+                                {...field}
+                                autoFocus
+                                labelClassName='dark:bg-primary-dark-200'
+                                label={nameErrors || 'Enter your name'}
+                                variant={nameErrors ? 'destructive' : 'secondary'}
+                            />
                         </FormControl>
-                        <FormMessage />
                     </FormItem>
                 )}
             />
@@ -28,15 +36,14 @@ export const Profile = () => {
                 control={form.control}
                 render={({ field }) => (
                     <FormItem className='relative'>
-                        <FormLabel className='text-white'>Login</FormLabel>
                         <FormControl>
-                            <FormInput
+                            <Input
                                 {...field}
-                                placeholder='Enter your login'
-                                hasServerError={!!form.formState.errors.root?.login}
+                                labelClassName='dark:bg-primary-dark-200'
+                                label={loginErrors ?? 'Enter your login'}
+                                variant={loginErrors ? 'destructive' : 'secondary'}
                             />
                         </FormControl>
-                        <FormMessage>{form.formState.errors.root?.login?.message}</FormMessage>
                     </FormItem>
                 )}
             />
@@ -45,16 +52,16 @@ export const Profile = () => {
                 control={form.control}
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel className='text-white'>Your birth date</FormLabel>
                         <FormControl>
-                            <FormInput
+                            <Input
                                 {...field}
                                 type='date'
-                                placeholder='Enter your birth date'
+                                labelClassName='dark:bg-primary-dark-200'
+                                label={birthDateErrors || 'Enter your birth date'}
+                                variant={birthDateErrors ? 'destructive' : 'secondary'}
                                 className='block dark:[color-scheme:dark]'
                             />
                         </FormControl>
-                        <FormMessage />
                     </FormItem>
                 )}
             />

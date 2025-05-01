@@ -31,7 +31,7 @@ export const useSignup = () => {
             birthDate: '',
             otp: ''
         },
-        disabled: false,
+        disabled: loading,
         mode: 'all',
         shouldFocusError: true
     })
@@ -99,6 +99,7 @@ export const useSignup = () => {
     const onBack = () => {
         if (!step) return changeAuthStage('welcome');
 
+        form.reset(undefined, { keepValues: true });
         form.resetField('otp');
 
         setStep((prevState) => prevState - 1);
