@@ -2,10 +2,10 @@ import React from 'react';
 
 import { cn } from '../lib/utils/cn';
 
-import { Input } from './input';
+import { Input, InputProps } from './input';
 import { PasswordInput } from './PasswordInput';
 
-export interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface FormInputProps extends InputProps {
     hasServerError?: boolean;
 }
 
@@ -15,7 +15,6 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(({ h
     return props.type === 'password' ? (
         <PasswordInput
             {...props}
-            placeholder='Enter your password'
             className={c}
             value={props.value?.toString().replace(/\s/g, '')}
         />
