@@ -21,6 +21,8 @@ export const useInfiniteScroll = <T extends HTMLElement, U>(
 
             observer.current = new IntersectionObserver((entries) => {
                 entries[0].isIntersecting && call();
+                
+                observer.current?.unobserve(node);
             }, { root, rootMargin, threshold });
 
             node && observer.current.observe(node);
