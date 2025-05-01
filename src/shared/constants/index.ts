@@ -18,6 +18,7 @@ export const localStorageKeys = {
     TOKEN: 'token'
 };
 
+export const MIN_LOGIN_LENGTH = 5;
 export const MIN_USER_SEARCH_LENGTH = 2;
 export const MESSAGES_SKELETON_COUNT = 12;
 export const NAME_MAX_LENGTH = 32;
@@ -42,9 +43,9 @@ export const nameForSchema = z.string().trim().min(1, 'Name is required').max(NA
 export const nameSchema = z.object({ name: nameForSchema });
 
 export const loginForSchema = z
-    .string()
+    .string({ required_error: 'Login is required' })
     .trim()
-    .min(4, 'Login must be at least 5 characters long')
+    .min(MIN_LOGIN_LENGTH, 'Login must be at least 3 characters long')
     .max(32, 'Login must be at most 32 characters long')
     .toLowerCase()
     .regex(ONLY_LATIN_REGEXP, 'Invalid login. Please use only a-z, 0-9 and underscore characters');
