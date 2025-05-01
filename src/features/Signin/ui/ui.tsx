@@ -3,14 +3,14 @@ import { LoaderCircle } from 'lucide-react';
 import { useAuth } from '@/shared/lib/providers/auth';
 import { useSigninForm } from '@/shared/lib/providers/signin';
 import { Button } from '@/shared/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Form, FormControl, FormField, FormItem } from '@/shared/ui/form';
 import { FormInput } from '@/shared/ui/FormInput';
 
 import { useSignin } from '../model/useSignin';
 
 export const Signin = () => {
     const { form, isSubmitButtonDisabled, onChangeForm, onSubmit, loading } = useSignin();
-    
+
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
     const changeSigninStage = useSigninForm((state) => state.changeSigninStage);
 
@@ -29,16 +29,15 @@ export const Signin = () => {
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className='text-white'>Login</FormLabel>
                                 <FormControl>
                                     <FormInput
                                         {...field}
                                         autoFocus
-                                        placeholder='Enter your email address or login'
-                                        hasServerError={!!serverError}
+                                        label={form.formState.errors.login?.message ?? 'Email or Login'}
+                                        variant={form.formState.errors.login || serverError ? 'destructive' : 'secondary'}
+                                        labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
-                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -47,29 +46,33 @@ export const Signin = () => {
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className='text-white'>Password</FormLabel>
                                 <FormControl>
                                     <FormInput
                                         {...field}
                                         type='password'
-                                        placeholder='Enter your password'
-                                        hasServerError={!!serverError}
+                                        label={form.formState.errors.password?.message ?? 'Password'}
+                                        variant={form.formState.errors.password || serverError ? 'destructive' : 'secondary'}
+                                        labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
-                                <div className='flex items-center justify-between'>
-                                    <FormMessage>{form.formState.errors.root?.server.message}</FormMessage>
-                                    <Button
-                                        type='button'
-                                        variant='link'
-                                        onClick={() => changeSigninStage('forgot')}
-                                        className='ml-auto p-0 opacity-50 hover:opacity-100 transition-all ease-in-out duration-200'
-                                    >
-                                        Forgot password?
-                                    </Button>
-                                </div>
                             </FormItem>
                         )}
                     />
+                    <div className='flex items-center justify-between'>
+                        {form.formState.errors.root?.server.message && (
+                            <p className='text-sm font-medium text-primary-destructive dark:text-primary-destructive'>
+                                {form.formState.errors.root.server.message}
+                            </p>
+                        )}
+                        <Button
+                            type='button'
+                            variant='link'
+                            onClick={() => changeSigninStage('forgot')}
+                            className='ml-auto p-0 opacity-50 hover:opacity-100 transition-all ease-in-out duration-200'
+                        >
+                            Forgot password?
+                        </Button>
+                    </div>
                     <div className='flex w-full items-center justify-between'>
                         <Button
                             type='button'
