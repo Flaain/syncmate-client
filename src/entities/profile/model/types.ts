@@ -1,5 +1,13 @@
 import { Avatar, PRESENCE, Profile } from "@/shared/model/types";
 
+export type EditProfilePaths = 'name' | 'lastName' | 'bio';
+
+export interface EditProfile {
+    name: string;
+    lastName: string;
+    bio: string;
+}
+
 export interface ProfileStore {
     profile: Profile;
     isUploadingAvatar: boolean;
