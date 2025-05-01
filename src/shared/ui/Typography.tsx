@@ -46,7 +46,7 @@ const typographyVariants = cva(undefined, {
     variants: {
         variant: {
             primary: 'dark:text-primary-white text-primary-dark-200',
-            secondary: 'dark:text-primary-white/30 text-primary-gray',
+            secondary: 'text-primary-gray',
             commerce: 'text-primary-commerce',
             error: 'text-primary-destructive'
         },
