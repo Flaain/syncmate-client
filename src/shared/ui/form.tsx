@@ -43,23 +43,23 @@ const useFormField = () => {
     };
 };
 
-const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => {
+const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ children }, ref) => {
     const id = React.useId();
 
     return (
         <FormItemContext.Provider value={{ id }}>
-            <div ref={ref} className={cn('space-y-2', className)} {...props} />
+            {children}
         </FormItemContext.Provider>
     );
 });
 
-const FormLabel = React.forwardRef<React.ElementRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>>(({ className, ...props }, ref) => {
+const FormLabel = React.forwardRef<React.ComponentRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>>(({ className, ...props }, ref) => {
     const { formItemId } = useFormField();
 
     return <Label ref={ref} className={className} htmlFor={formItemId} {...props} />;
 });
 
-const FormControl = React.forwardRef<React.ElementRef<typeof Slot>, React.ComponentPropsWithoutRef<typeof Slot>>(({ ...props }, ref) => {
+const FormControl = React.forwardRef<React.ComponentRef<typeof Slot>, React.ComponentPropsWithoutRef<typeof Slot>>(({ ...props }, ref) => {
     const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
     return (
@@ -106,6 +106,11 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 
 const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElement>) => void }) => {
     const form = useFormContext();
+    
+    const onResend = () => {
+        form.clearErrors('root.otp');
+        form.setValue('otp', '');
+    }
 
     if (!form) throw new Error('FormOTP should be used within <Form>');
 
@@ -117,9 +122,9 @@ const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElem
                 <FormItem className='relative'>
                     <FormLabel className='text-white'>Enter verification code</FormLabel>
                     <FormControl>
-                        <OTP {...field} onComplete={onSubmit} />
+                        <OTP {...field} onResendCB={onResend} onComplete={onSubmit} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage>{form.formState.errors.root?.otp?.message}</FormMessage>
                 </FormItem>
             )}
         />
