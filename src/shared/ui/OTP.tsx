@@ -10,10 +10,15 @@ import { Button } from '../ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/input-otp';
 import { Typography } from '../ui/Typography';
 
-export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, disabled, ...rest }, ref) => {
+export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, onResendCB, disabled, ...rest }, ref) => {
     const { isResending, otp, onResend } = useOtp();
 
     const timerRef = React.useRef<NodeJS.Timeout>(null!);
+
+    const handleResend = () => {
+        onResendCB?.();
+        onResend();
+    }
 
     React.useEffect(() => {
         if (!otp?.retryDelay) return;
@@ -64,7 +69,7 @@ export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, d
                     size='text'
                     variant='link'
                     className='self-start'
-                    onClick={onResend}
+                    onClick={handleResend}
                 >
                     {isResending ? (
                         <>
