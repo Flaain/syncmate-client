@@ -17,7 +17,6 @@ export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearc
 
     const { data: localResults, isLoading, setData: setLocalResults } = useQuery<LocalResults>(({ signal }) => feedApi.get(signal), { 
         retry: 5,
-        keys: [socket],
         initialData: { feed: [], nextCursor: null }
     });
 

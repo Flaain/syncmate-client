@@ -12,8 +12,7 @@ import { Typography } from '@/shared/ui/Typography';
 
 import { ExctactFeedItem, FEED_TYPE, LocalFeed } from '../model/types';
 
-export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeedItem<LocalFeed, FEED_TYPE.CONVERSATION> }) => {
-    const recipient = item.recipient;
+export const ConversationItem = ({ feedItem: { item: { recipient, unreadMessages, participantsTyping, lastMessage } } }: { feedItem: ExctactFeedItem<LocalFeed, FEED_TYPE.CONVERSATION> }) => {
     const draft = useLayout((state) => state.drafts).get(recipient._id);
 
     return (
@@ -52,13 +51,13 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeed
                                 <Verified className='w-5 h-5' />
                             </Typography>
                         )}
-                        {!!item.unreadMessages && (
+                        {!!unreadMessages && (
                             <Typography className='dark:text-primary-dark-200 font-semibold text-sm flex items-center justify-center ml-auto size-5 rounded-full bg-primary-white'>
-                                {item.unreadMessages}
+                                {unreadMessages}
                             </Typography>
                         )}
                     </Typography>
-                    {item.participantsTyping?.length ? (
+                    {participantsTyping?.length ? (
                         <Typography as='p' variant='secondary' className='line-clamp-1'>
                             typing...
                         </Typography>
@@ -70,13 +69,13 @@ export const ConversationItem = ({ feedItem: { item } }: { feedItem: ExctactFeed
                             {draft.value}
                         </Typography>
                     ) : (
-                        !!item.lastMessage && (
+                        !!lastMessage && (
                             <div className='flex items-center w-full gap-5'>
                                 <Typography className='break-all dark:text-primary-white/30 text-primary-gray line-clamp-1'>
-                                    {item.lastMessage?.text}
+                                    {lastMessage?.text}
                                 </Typography>
                                 <Typography className='ml-auto' variant='secondary'>
-                                    {new Date(item.lastMessage.createdAt).toLocaleTimeString(navigator.language, {
+                                    {new Date(lastMessage.createdAt).toLocaleTimeString(navigator.language, {
                                         hour: 'numeric',
                                         minute: 'numeric'
                                     })}

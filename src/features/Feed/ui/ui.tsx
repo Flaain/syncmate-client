@@ -29,6 +29,8 @@ export const Feed = ({ globalResults, isSearching, searchValue }: FeedProps) => 
                 <SearchX className='mx-auto size-12 dark:text-primary-dark-50 mb-2' />
                 <Typography as='p' variant='secondary' className='line-clamp-3 break-words px-4 box-border text-center'>
                     There were no results for "{searchValue}".
+                    <br />
+                    Try a new search.
                 </Typography>
             </>
         );
