@@ -31,7 +31,7 @@ export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) 
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 export type EventsEntries = Array<{ type: keyof GlobalEventHandlersEventMap, listener: (event: Event) => void }>;
 
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'bio' | 'avatar'>;
 export type UserCheckParams = { type: Extract<UserCheckType, 'email'>; email: string } | { type: Extract<UserCheckType, 'login'>; login: string };
 
 export type PRESENCE = keyof typeof PRESENCE;
@@ -85,6 +85,7 @@ export interface OtpStore {
 
 export interface OtpProps extends Omit<React.HTMLAttributes<HTMLInputElement>, 'onChange'> {
     disabled?: boolean;
+    onResendCB?: () => void;
     onComplete: (event?: React.FormEvent<HTMLFormElement>) => void;
 }
 
@@ -100,10 +101,11 @@ export interface Avatar {
 export interface Profile {
     _id: string;
     name: string;
+    lastName?: string;
     login: string;
     email: string;
     presence: PRESENCE;
-    status?: string;
+    bio?: string;
     avatar?: Avatar;
     lastSeenAt: string;
     isOfficial: boolean;
