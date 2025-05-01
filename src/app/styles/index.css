@@ -26,10 +26,11 @@ html {
     overscroll-behavior: none;
 }
 
-/* styles above for html and body need to prevent elastic scrolling on iOS Safari*/
+/* styles above for html and body need to prevent elastic scrolling on iOS Safari */
 
-/* 
-html, body, #root {
-    margin: 0;
-    height: 100%;
-  } */
+.hide-password-toggle::-ms-reveal,
+.hide-password-toggle::-ms-clear {
+    visibility: hidden;
+    pointer-events: none;
+    display: none;
+}
