@@ -2,7 +2,7 @@ import React from "react";
 
 import { useShallow } from "zustand/shallow";
 
-import { useProfile } from "@/entities/profile";
+import { EditProfile, EditProfilePaths, profileApi, useProfile } from "@/entities/profile";
 
 import { BIO_MAX_LENGTH, NAME_MAX_LENGTH } from "@/shared/constants";
 
@@ -12,8 +12,6 @@ const fieldRules: Record<string, { required: boolean; maxLength: number }> = {
     bio: { required: false, maxLength: BIO_MAX_LENGTH }
 };
 
-type EditProfilePaths = 'name' | 'lastName' | 'bio';
-
 // Because form is not that hard and big decided to not useForm
 
 export const useProfileMenu = () => {
@@ -21,8 +19,8 @@ export const useProfileMenu = () => {
     
     const [formState, setFormState] = React.useState<Record<EditProfilePaths, { value: string, hasError?: boolean }>>({ 
         name: { value: profile.name },
-        lastName: { value: '' },
-        bio: { value: '' }
+        lastName: { value: profile.lastName ?? '' },
+        bio: { value: profile.bio ?? '' }
     });
 
     const canSubmit = React.useMemo(() => {
@@ -32,8 +30,6 @@ export const useProfileMenu = () => {
     }, [formState, profile]);
 
     const onChange = ({ currentTarget: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-        if (!value.trim().length && !formState[name as keyof typeof formState].value.length) return;
-
         const rules = fieldRules[name];
         
         setFormState((prevState) => ({
@@ -45,12 +41,17 @@ export const useProfileMenu = () => {
         }));
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!canSubmit) return;
 
-        // const obj = Object.entries(formState).reduce((acc, [name, field]) => ({ ...acc, [name]: { ...field, value: field.value.trim() } }), {});
+        try {
 
-        console.log(formState);
+            const { data } = await profileApi.edit(Object.entries(formState).reduce((acc, [name, field]) => ({ ...acc, [name]: field.value.trim() }), {} as EditProfile)) 
+            
+            useProfile.setState((prevState) => ({ profile: { ...prevState.profile, ...data } }));
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return { onChange, handleSubmit, formState, canSubmit };
