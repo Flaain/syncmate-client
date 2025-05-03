@@ -20,7 +20,7 @@ module.exports = {
         'boundaries/ignore': ['**/*.test.*']
     },
     rules: {
-        "import/no-named-as-default": 'off',
+        "import/no-named-as-default": 1,
         'import/order': [
             'error',
             {
