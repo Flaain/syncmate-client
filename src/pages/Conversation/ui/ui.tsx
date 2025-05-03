@@ -29,8 +29,9 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
         retry: 5,
         retryDelay: 2000,
         onSelect: ({ messages, ...data }) => data,
-        onSuccess: ({ messages }) => {
+        onSuccess: ({ messages }, isCached) => {
             setChat({
+                isUpdating: isCached,
                 messages: { data: new Map(messages.data), nextCursor: messages.nextCursor },
                 params: {
                     id,
