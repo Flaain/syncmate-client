@@ -14,7 +14,6 @@ export interface ProfileStore {
     actions: {
         getProfile: () => Promise<void>;
         handleUploadAvatar: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        handleSetStatus: (status: string) => void;
     };
 }
 
