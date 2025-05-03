@@ -2,6 +2,7 @@ import { Loader2 } from 'lucide-react';
 
 import Verified from '@/shared/lib/assets/icons/verified.svg?react';
 
+import { useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { DDM } from '@/shared/ui/DDM';
@@ -12,6 +13,7 @@ import { OutletHeaderProps } from '../../model/types';
 export const DefaultState = ({ name, description, dropdownContent, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
+    const isUpdating = useChat((state) => state.isUpdating);
 
     return (
         <div {...rest} className='flex flex-col items-start w-full'>
@@ -30,16 +32,19 @@ export const DefaultState = ({ name, description, dropdownContent, isOfficial, .
                         </Typography>
                     )}
                 </Typography>
-                {dropdownContent && (
-                    <DDM align='end'>
-                        {dropdownContent}
-                    </DDM>
-                )}
+                {dropdownContent && <DDM align='end'>{dropdownContent}</DDM>}
             </div>
             {isConnected && connectedToNetwork ? (
-                <Typography as='p' variant='secondary'>
-                    {description}
-                </Typography>
+                isUpdating ? (
+                    <Typography className='flex items-center gap-2'>
+                        <Loader2 className='w-5 h-5 animate-spin' />
+                        Updating
+                    </Typography>
+                ) : (
+                    <Typography as='p' variant='secondary'>
+                        {description}
+                    </Typography>
+                )
             ) : (
                 <Typography className='flex items-center gap-2'>
                     <Loader2 className='w-5 h-5 animate-spin' />
