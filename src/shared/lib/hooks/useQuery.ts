@@ -6,45 +6,87 @@ import { QueryCache } from '@/shared/model/queryCache';
 
 export type UseQueryCallback<T> = (params: { signal: AbortSignal }) => Promise<ApiBaseResult<T>>;
 
-type UseQueryReducerAction =
-    | { type: UseQueryTypes.LOADING; payload: { isLoading: boolean } }
-    | { type: UseQueryTypes.UPDAITING; payload: { isUpdating: boolean; } }
-    | { type: UseQueryTypes.SUCCESS }
-    | { type: UseQueryTypes.CACHE_SUCCESS }
-    | { type: UseQueryTypes.ERROR; payload: { error: unknown } }
-    | { type: UseQueryTypes.REFETCH; payload: { isRefetching: true } }
-    | { type: UseQueryTypes.RESET; payload: { isLoading: false, isRefetching: false } }
-
 type UseRunQueryAction = 'init' | 'refetch';
 
-enum UseQueryTypes {
-    LOADING = 'loading',
-    UPDAITING = 'updating',
-    SUCCESS = 'success',
-    SET = 'set',
-    REFETCH = 'refetch',
-    RESET = 'reset',
-    ERROR = 'error',
-    CACHE_SUCCESS = 'cache_success'
-}
-
+/**
+ * Options for configuring the behavior of the `useQuery` hook.
+ *
+ * @template T - The type of the data returned by the query.
+ */
 interface UseQueryOptions<T> {
+    /**
+     * A list of dependencies that determine when the query should be re-executed.
+     */
     keys: React.DependencyList;
+
+    /**
+     * Determines the retry behavior for failed queries. Can be a boolean to enable/disable retries
+     * or a number specifying the maximum number of retry attempts.
+     */
     retry: boolean | number;
+
+    /**
+     * A flag to enable or disable the query. If `false`, the query will not be executed.
+     * @default true
+     */
     enabled: boolean;
+
+    /**
+     * The interval (in milliseconds) at which the query should be refetched automatically.
+     * Set to 0 or undefined to disable automatic refetching.
+     */
     refetchInterval: number;
+
+    /**
+     * Determines whether the query should refetch when the network reconnects.
+     * @default false
+     */
+    refetchOnReconnect: boolean;
+
+    /**
+     * The delay (in milliseconds) before retrying a failed query.
+     */
     retryDelay: number;
+
+    /**
+     * A string prefix used to get and set the query cache.
+     */
     prefix: string;
-    shouldUseCache: boolean;
+
+    /**
+     * The initial data to be used by the query. Can be a value or a function that returns the value.
+     */
     initialData: (() => T) | T;
+
+    /**
+     * A cleanup function that is called when the query is removed or unmounted.
+     */
     cleanup: () => void;
-    onSuccess: (data: T) => void;
+
+    /**
+     * A callback function that is invoked when the query successfully fetches data.
+     *
+     * @param data - The data returned by the query.
+     * @param isCached - Optional flag indicating whether the data was retrieved from the cache.
+     */
+    onSuccess: (data: T, isCached?: boolean) => void;
+
+    /**
+     * A callback function that is invoked to transform or select a subset of the data.
+     *
+     * @param data - The data returned by the query.
+     */
     onSelect: (data: T) => void;
+
+    /**
+     * A callback function that is invoked when the query encounters an error.
+     *
+     * @param error - The error object or value encountered during the query.
+     */
     onError: (error: unknown) => void;
 }
 
 interface UseQueryConfig {
-    currentAction: UseRunQueryAction | null;
     abortController: AbortController;
     retry: number;
     requested: boolean;
@@ -53,91 +95,121 @@ interface UseQueryConfig {
     timeout: ReturnType<typeof setTimeout> | null;
 }
 
+/**
+ * Represents the return type of the `useQuery` hook, providing various states and methods
+ * for managing asynchronous data fetching.
+ *
+ * @template T - The type of the data being fetched.
+ */
 interface UseQueryReturn<T> {
+    /**
+     * Indicates whether the query is currently loading data for the first time.
+     */
     isLoading: boolean;
+
+    /**
+     * Indicates whether the query is currently updating its data (e.g., due to a refetch).
+     */
     isUpdating: boolean;
+
+    /**
+     * Indicates whether the query is currently refetching data.
+     */
     isRefetching: boolean;
-    isSuccess: boolean; 
+
+    /**
+     * Indicates whether the query has successfully fetched data.
+     */
+    isSuccess: boolean;
+
+    /**
+     * Indicates whether the query has successfully retrieved data from the cache.
+     */
     isCacheSuccess: boolean;
+
+    /**
+     * Indicates whether the query has encountered an error.
+     */
     isError: boolean;
-    data: T; 
+
+    /**
+     * The data returned by the query. The type of this data is determined by the generic type `T`.
+     */
+    data: T;
+
+    /**
+     * The error encountered during the query, if any. This is optional and may be undefined.
+     */
     error?: unknown;
+
+    /**
+     * A function to manually trigger the query to fetch data.
+     *
+     * @returns A promise that resolves when the query completes.
+     */
     call: () => Promise<void>;
+
+    /**
+     * Aborts the ongoing query request, if applicable.
+     */
     abort: () => void;
+
+    /**
+     * A function to manually update the query's data state.
+     *
+     * @param value - A function or value to update the current data state.
+     */
     setData: React.Dispatch<React.SetStateAction<T>>;
+
+    /**
+     * A function to refetch the query's data.
+     */
     refetch: () => void;
 }
-  
-interface UseQueryReducerState {
-    isLoading: boolean;
-    isSuccess: boolean;
-    isError: boolean;
-    isRefetching: boolean;
-    isUpdating: boolean;
-    isCacheSuccess: boolean;
-    error?: unknown;
-}
-
-const queryReducer = (state: UseQueryReducerState, action: UseQueryReducerAction): UseQueryReducerState => {
-    switch (action.type) {
-        case UseQueryTypes.LOADING:
-            return { ...state, isLoading: action.payload.isLoading };
-        case UseQueryTypes.UPDAITING:
-            return { ...state, isUpdating: action.payload.isUpdating };
-        case UseQueryTypes.CACHE_SUCCESS:
-            return { ...state, isUpdating: false, isCacheSuccess: true, isLoading: false }
-        case UseQueryTypes.SUCCESS:
-            return {
-                ...state,
-                isUpdating: false,
-                isSuccess: true,
-                isLoading: false,
-                isRefetching: false,
-                isCacheSuccess: false,
-                isError: false,
-                error: undefined
-            };
-        case UseQueryTypes.REFETCH:
-            return { ...state, isRefetching: action.payload.isRefetching };
-        case UseQueryTypes.ERROR:
-            return {
-                ...state,
-                error: action.payload.error,
-                isError: true,
-                isSuccess: false,
-                isRefetching: false,
-                isLoading: state.isUpdating && !state.isCacheSuccess
-            };
-        case UseQueryTypes.RESET:
-            return { ...state, ...action.payload };
-        default:
-            return state;
-    }
-};
-
-const actions: Record<UseRunQueryAction, UseQueryReducerAction> = {
-    init: { type: UseQueryTypes.LOADING, payload: { isLoading: true } },
-    refetch: { type: UseQueryTypes.REFETCH, payload: { isRefetching: true } }
-};
 
 const queryCache = new QueryCache();
 
+/**
+ * A custom hook for managing asynchronous queries with caching, retries, and error handling.
+ * 
+ * @template T - The type of the data returned by the query.
+ * 
+ * @param {UseQueryCallback<T>} callback - A callback function that performs the query and returns the data.
+ * @param {Partial<UseQueryOptions<T>>} [options] - Optional configuration options for the query.
+ * 
+ * @returns {UseQueryReturn<T>} An object containing the query state, data, and utility functions.
+ * 
+ * @example
+ * ```typescript
+ * const { data, isLoading, isError, refetch } = useQuery(async () => {
+ *   const response = await fetch('/api/data');
+ *   return response.json();
+ * }, {
+ *   enabled: true,
+ *   retry: 3,
+ *   onSuccess: (data) => console.log('Query successful:', data),
+ *   onError: (error) => console.error('Query failed:', error),
+ * });
+ * 
+ * if (isLoading) return <div>Loading...</div>;
+ * if (isError) return <div>Error occurred</div>;
+ * 
+ * return <div>Data: {JSON.stringify(data)}</div>;
+ * ```
+ */
 export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
-    const [state, dispatch] = React.useReducer(queryReducer, {
-        isError: false,
-        isLoading: options?.enabled ?? true,
-        isSuccess: false,
-        isRefetching: false,
-        isCacheSuccess: false,
-        isUpdating: false,
-        error: undefined
-    });
-
+    const [isError, setIsError] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(options?.enabled ?? true);
+    const [isSuccess, setIsSuccess] = React.useState(false);
+    const [isRefetching, setIsRefetching] = React.useState(false);
+    const [isCacheSuccess, setIsCacheSuccess] = React.useState(false);
+    const [isUpdating, setIsUpdating] = React.useState(false);
+    
+    const [error, setError] = React.useState<unknown>(undefined);
     const [data, setData] = React.useState<T>(options?.initialData!);
 
     const config = React.useRef<UseQueryConfig>({
         abortController: new AbortController(),
-        currentAction: null,
         mounted: false, 
         requested: false,
         retry: Number(options?.retry) || 0, 
@@ -154,7 +226,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
     
     const runCache = async (retires: number = Number(options?.retry) || 0) => {
         try {
-            dispatch({ type: UseQueryTypes.UPDAITING, payload: { isUpdating: true } });
+            setIsUpdating(true);
 
             const cache = await (await queryCache.open()).match(options!.prefix!);
 
@@ -162,19 +234,20 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
             
             const data = await cache.json();
 
-            if (!state.isSuccess) {
-                dispatch({ type: UseQueryTypes.CACHE_SUCCESS });
-                console.log('cache success', data)
+            if (!isSuccess) {
+                setIsLoading(false);
+                setIsCacheSuccess(true);
+
                 setData(options?.onSelect?.(data) ?? data);
 
-                options?.onSuccess?.(data);
+                options?.onSuccess?.(data, true);
             }
         } catch (error) {
-            if (retires > 0 && !state.isSuccess) return runCache(retires - 1);
+            if (retires > 0 && !isSuccess) return runCache(retires - 1);
 
             console.error(error);
 
-            dispatch({ type: UseQueryTypes.UPDAITING, payload: { isUpdating: false } });
+            setIsUpdating(false);
         }
     };
 
@@ -182,21 +255,23 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         try {
             abort();
 
-            config.current.currentAction !== action && (dispatch(actions[action]), (config.current.currentAction = action));
+            action === 'init' ? setIsLoading(true) : setIsRefetching(true);
 
             const { data, authentic } = await callback({ signal: config.current.abortController.signal });
 
-            const selectedData = options?.onSelect?.(data) ?? data;
+            setIsSuccess(true);
+            setIsLoading(false);
+            setIsUpdating(false);
+            setIsCacheSuccess(false);
+            setIsRefetching(false);
+            setIsError(false);
 
-            dispatch({ type: UseQueryTypes.SUCCESS });
-
-            setData(selectedData);
+            setError(undefined);
+            setData(options?.onSelect?.(data) ?? data);
 
             options?.prefix && queryCache.open().then((cache) => cache?.put(options.prefix!, authentic));
 
-            options?.onSuccess?.(data);
-
-            config.current.currentAction = null;
+            options?.onSuccess?.(data, false);
 
             options?.refetchInterval && (config.current.interval = setInterval(runQuery, options.refetchInterval, 'refetch'));
         } catch (error) {
@@ -208,7 +283,10 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
             if (error instanceof ApiException) {
                 console.error('[useQuery] API Error:', error);
 
-                if (error.response.status === 401) return;
+                if (error.config._retry && error.response.status === 401) {
+                    config.current.timeout && clearTimeout(config.current.timeout);
+                    return;
+                }
 
                 if (config.current.retry > 0) {
                     config.current.retry -= 1;
@@ -222,24 +300,32 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
 
                     config.current.timeout = timeout;
                 } else {
-                    dispatch({ type: UseQueryTypes.ERROR, payload: { error } });
+                    errorSetter(error);
 
                     config.current.requested = false;
-                    config.current.currentAction = null;
                     config.current.retry = Number(options?.retry) || 0;
                 }
-
-                config.current.interval && clearInterval(config.current.interval);
 
                 options?.onError?.(error);
             } else {
                 console.error('[useQuery] Unknown Error:', error);
-
-                dispatch({ type: UseQueryTypes.ERROR, payload: { error: error } });
-
+                
+                errorSetter(error);
+                
                 options?.onError?.(error);
             }
+
+            config.current.interval && clearInterval(config.current.interval);
         }
+    }
+
+    const errorSetter = (error: unknown) => {
+        setError(error);
+
+        setIsError(true);
+        setIsSuccess(false);
+        setIsRefetching(false);
+        setIsLoading(isUpdating && !isCacheSuccess);
     }
 
     React.useEffect(() => {
@@ -248,6 +334,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         if (!(options?.enabled ?? true)) return;
 
         runQuery('init');
+
         options?.prefix && runCache();
 
         return () => {
@@ -260,5 +347,30 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         };
     }, options?.keys ?? []);
 
-    return { ...state, data, setData, abort, call: () => runQuery('init'), refetch: () => runQuery('refetch') };
+    React.useEffect(() => {
+        if (!options?.refetchOnReconnect) return;
+        
+        const handleRefetch = () => runQuery('init')
+
+        window.addEventListener('online', handleRefetch);
+
+        return () => {
+            window.removeEventListener('online', handleRefetch);
+        }
+    }, []);
+
+    return {
+        data,
+        isError,
+        isCacheSuccess,
+        isLoading,
+        isRefetching,
+        isSuccess,
+        isUpdating,
+        error,
+        setData,
+        abort,
+        call: () => runQuery('init'),
+        refetch: () => runQuery('refetch')
+    };
 };
