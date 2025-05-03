@@ -10,6 +10,7 @@ export interface ChatStore {
     showDetails: boolean;
     selectedMessages: Map<string, Message>;
     messages: DataWithCursor<Map<string, Message>>;
+    isUpdating: boolean;
     refs: {
         listRef: React.RefObject<HTMLUListElement | null>;
         textareaRef: React.RefObject<HTMLTextAreaElement | null>;
