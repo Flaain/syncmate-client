@@ -8,7 +8,6 @@ import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { SidebarMenuContainer } from '@/shared/ui/SidebarMenu';
 
 import { useSidebar } from '../model/useSidebar';
 
@@ -31,7 +30,7 @@ export const Sidebar = () => {
     
     return (
         <aside className='grid grid-cols-1 h-dvh sticky top-0 overflow-hidden gap-2 max-md:fixed dark:bg-primary-dark-150 bg-primary-white md:max-w-[420px] w-full md:border-r-2 md:border-r-primary-dark-50 md:border-solid'>
-            <SidebarMenuContainer ref={panelRef} hasActiveMenu={!!activeMenu} className='flex flex-col animate-none !slide-in-from-right-0 transition-transform duration-300'>
+            <div ref={panelRef} className={cn('flex flex-col col-start-1 row-start-1 duration-300 overflow-hidden z-0', activeMenu && '-translate-x-20')}>
                 <div className='flex items-center justify-between gap-5 sticky top-0 p-4 box-border h-[70px]'>
                     <DDM changeMenu={setActiveMenu} />
                     <div className='flex w-full relative'>
@@ -63,7 +62,7 @@ export const Sidebar = () => {
                         Logout
                     </Button>
                 </div>
-            </SidebarMenuContainer>
+            </div>
             {!!activeMenu && menus[activeMenu]}
         </aside>
     );
