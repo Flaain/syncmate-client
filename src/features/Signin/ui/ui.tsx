@@ -4,7 +4,8 @@ import { useAuth } from '@/shared/lib/providers/auth';
 import { useSigninForm } from '@/shared/lib/providers/signin';
 import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/shared/ui/form';
-import { FormInput } from '@/shared/ui/FormInput';
+import { Input } from '@/shared/ui/input';
+import { PasswordInput } from '@/shared/ui/PasswordInput';
 
 import { useSignin } from '../model/useSignin';
 
@@ -15,6 +16,8 @@ export const Signin = () => {
     const changeSigninStage = useSigninForm((state) => state.changeSigninStage);
 
     const serverError = form.formState.errors.root?.server;
+    const loginErrors = form.formState.errors.login?.message;
+    const passwordErrors = form.formState.errors.password?.message;
 
     return (
         <Form {...form}>
@@ -30,11 +33,11 @@ export const Signin = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <FormInput
+                                    <Input
                                         {...field}
                                         autoFocus
-                                        label={form.formState.errors.login?.message ?? 'Email or Login'}
-                                        variant={form.formState.errors.login || serverError ? 'destructive' : 'secondary'}
+                                        label={loginErrors ?? 'Email or Login'}
+                                        variant={loginErrors || serverError ? 'destructive' : 'secondary'}
                                         labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
@@ -47,11 +50,10 @@ export const Signin = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <FormInput
+                                    <PasswordInput
                                         {...field}
-                                        type='password'
-                                        label={form.formState.errors.password?.message ?? 'Password'}
-                                        variant={form.formState.errors.password || serverError ? 'destructive' : 'secondary'}
+                                        label={passwordErrors ?? 'Password'}
+                                        variant={passwordErrors || serverError ? 'destructive' : 'secondary'}
                                         labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
