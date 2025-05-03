@@ -45,7 +45,7 @@ export const LayoutProvider = () => {
 
         const abortController = new AbortController();
 
-        for (const [type, set] of Array.from(listeners.entries())) {
+        for (const { 0: type, 1: set } of Array.from(listeners.entries())) {
             const lastListener = Array.from(set).pop();
 
             if (!lastListener) continue;
