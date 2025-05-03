@@ -23,7 +23,7 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
     const setChat = useChat(setChatSelector);
     const navigate = useNavigate();
     
-    const { isLoading, isUpdating, isCacheSuccess, isError, isRefetching, refetch, data } = useQuery(({ signal }) => conversationApi.get(id!, signal), {
+    const { isLoading, isError, isRefetching, data, refetch } = useQuery(({ signal }) => conversationApi.get(id!, signal), {
         prefix: `/conversation/${id}`,
         keys: [id],
         retry: 5,
@@ -43,9 +43,9 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
         onError: (error) => error instanceof ApiException && error.response.status === 404 && navigate('/')
     });
 
-    if ((!data && isLoading) || !isCacheSuccess && isUpdating) return fallback ?? <ChatSkeleton />;
+    if (!data && isLoading) return fallback ?? <ChatSkeleton />;
 
-    if (isError && !isUpdating && !isCacheSuccess) {
+    if (isError) {
         return (
             <OutletError
                 img={<ErrorLaptop width='100%' height='100%' />}
