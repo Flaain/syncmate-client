@@ -2,7 +2,6 @@ import { create } from 'zustand';
 
 import { otpApi } from '../api';
 import messageNotificationSound from '../lib/assets/sounds/message-notification.mp3';
-import { toast } from '../lib/toast';
 
 import { layoutActions } from './actions';
 import { EventsStore, LayoutStore, OtpStore, SocketStore } from './types';
@@ -21,9 +20,9 @@ export const useEvents = create<EventsStore>((set) => ({
     addEventListener: <E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void) => {
         set((prevState) => {
             const listeners = new Map(prevState.listeners);
-
+            
             listeners.has(type) ? listeners.set(type, new Set([...listeners.get(type)!, listener])) : listeners.set(type, new Set([listener]));
-
+            
             return { listeners };
         });
 
@@ -59,7 +58,6 @@ export const useOtp = create<OtpStore>((set, get) => ({
             set({ otp: { ...otp, retryDelay } });
         } catch (error) {
             console.error(error);
-            toast.error('Cannot resend OTP code');
         } finally {
             set({ isResending: false });
         }
