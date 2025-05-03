@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export const useSidebarMenu = <T extends string | null, P extends HTMLElement>(onCloseCallback?: (shouldRemove?: boolean) => void) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
     const [activeMenu, setActiveMenu] = React.useState<T | null>(null);
