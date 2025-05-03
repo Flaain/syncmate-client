@@ -2,11 +2,12 @@ import React from 'react';
 
 import { CheckCheck } from 'lucide-react';
 
-import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
+import { MAX_POINTER_DISTANCE_DDM } from '@/shared/constants';
 import { useChat } from '@/shared/lib/providers/chat';
 import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
 import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
+import { useEvents } from '@/shared/model/store';
 import { MessageStatus } from '@/shared/model/types';
 import { ContextMenuContent, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { Typography } from '@/shared/ui/Typography';
@@ -19,20 +20,44 @@ import { PendingContextMenu } from './PendingCtxMenu';
 
 export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
-    
+
     const textareaRef = useChat((state) => state.refs.textareaRef);
-    
+
     const ref = React.useRef<HTMLDivElement>(null);
-    
+
     const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(message.text);
         toast.success('Message copied to clipboard');
     };
-    
-    const copyCallback = () => handleItemClick(handleCopyToClipboard);
-    const handleItemClick = (cb: () => void) => () => { cb(); setShouldRemove(true) }
 
-    useMenuDistance({ ref, onClose: () => setShouldRemove(true) });
+    const copyCallback = () => handleItemClick(handleCopyToClipboard);
+    
+    const handleItemClick = (cb: () => void) => () => {
+        cb();
+        setShouldRemove(true);
+    };
+    
+    const addEventListener = useEvents((state) => state.addEventListener);
+    // TODO: move to reusable useMenuDistance hook, delete for now reusbale hook for find bug
+    const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
+        if (!ref.current) return;
+
+        const { x, y, width, height } = ref.current.getBoundingClientRect();
+
+        (Math.abs(clientX - (x + width / 2)) > MAX_POINTER_DISTANCE_DDM || Math.abs(clientY - (y + height / 2)) > MAX_POINTER_DISTANCE_DDM) && setShouldRemove(true);
+    }, []);
+
+    React.useEffect(() => {
+        const removeEventListener = addEventListener('keydown', (event) => event.key === 'Escape' && setShouldRemove(true));
+
+        document.addEventListener('mousemove', handleMouseMove);
+
+        return () => {
+            removeEventListener();
+
+            document.removeEventListener('mousemove', handleMouseMove);
+        };
+    }, []);
 
     const menus: Record<MessageStatus, React.ReactNode> = {
         idle: (
@@ -71,7 +96,8 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
             onAnimationEnd={() => shouldRemove && onClose()}
             onEscapeKeyDown={(event) => event.preventDefault()}
             onCloseAutoFocus={() => textareaRef.current?.focus()}
-            className={cn('z-[999] w-[194px] py-2 px-1 dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white rounded-[10px] flex flex-col', 
+            className={cn(
+                'z-[999] w-[194px] py-2 px-1 dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white rounded-[10px] flex flex-col',
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
             )}
         >
