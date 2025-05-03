@@ -1,15 +1,18 @@
-import { AtSign, Mail } from 'lucide-react';
+import { AtSign, Loader2, Mail } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
 
-import { useProfile } from '@/entities/profile';
+import { settingsSidebarMenuSelector, useProfile } from '@/entities/profile';
 
 import CameraAddIcon from '@/shared/lib/assets/icons/cameraadd.svg?react';
+import DataIcon from '@/shared/lib/assets/icons/data.svg?react';
 import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
 
 import { toast } from '@/shared/lib/toast';
+import { cn } from '@/shared/lib/utils/cn';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { Button } from '@/shared/ui/button';
 import { Image } from '@/shared/ui/Image';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
 import { SidebarMenuButton, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
@@ -18,7 +21,9 @@ import { SettingMenus } from '../../model/types';
 const iconStyles = 'size-6 text-primary-white/60';
 
 export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenus) => void }) => {
-    const { email, name, avatar, login } = useProfile(useShallow((state) => state.profile));
+    const { email, name, avatar, login, isUploadingAvatar, handleUploadAvatar } = useProfile(
+        useShallow(settingsSidebarMenuSelector)
+    );
 
     const handleCopy = (type: 'Email' | 'Login', value: string) => {
         navigator.clipboard.writeText(value);
@@ -50,16 +55,35 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
                     onClick={() => handleCopy('Login', login)}
                     icon={<AtSign className={iconStyles} />}
                 />
-                <Button
-                    variant='text'
-                    size='icon'
-                    className='absolute right-4 top-1/2 rounded-full size-14 bg-primary-blue'
+                <Label
+                    className={cn(
+                        'absolute right-4 top-1/2 group p-4 rounded-full bg-primary-purple hover:bg-primary-purple/70 transition-colors duration-200 ease-in-out',
+                        isUploadingAvatar ? 'cursor-not-allowed' : 'cursor-pointer'
+                    )}
                 >
-                    <CameraAddIcon className='size-6' />
-                </Button>
+                    <Input
+                        type='file'
+                        className='z-50 sr-only'
+                        onChange={handleUploadAvatar}
+                        disabled={isUploadingAvatar}
+                    />
+                    {isUploadingAvatar ? (
+                        <Loader2 className='size-6 text-primary-white animate-spin duration-700' />
+                    ) : (
+                        <CameraAddIcon className='size-6 transition-all text-primary-white' />
+                    )}
+                </Label>
             </div>
             <SidebarMenuSeparator />
             <ul className='px-4 flex flex-col'>
+                <li className='flex'>
+                    <SidebarMenuButton
+                        className='py-4 flex-1'
+                        title='Data ans Storage'
+                        onClick={() => changeMenu('data')}
+                        icon={<DataIcon className={iconStyles} />}
+                    />
+                </li>
                 <li className='flex'>
                     <SidebarMenuButton
                         className='py-4 flex-1'

@@ -1,1 +1,1 @@
-export type SettingMenus = 'privacy' | 'sessions' | 'profile';
+export type SettingMenus = 'privacy' | 'sessions' | 'profile' | 'data';

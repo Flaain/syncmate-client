@@ -5,6 +5,8 @@ import { useShallow } from "zustand/shallow";
 import { EditProfile, EditProfilePaths, profileApi, useProfile } from "@/entities/profile";
 
 import { BIO_MAX_LENGTH, NAME_MAX_LENGTH } from "@/shared/constants";
+import { useQuery } from "@/shared/lib/hooks/useQuery";
+import { toast } from "@/shared/lib/toast";
 
 const fieldRules: Record<string, { required: boolean; maxLength: number }> = {
     name: { required: true, maxLength: NAME_MAX_LENGTH },
@@ -21,6 +23,12 @@ export const useProfileMenu = () => {
         name: { value: profile.name },
         lastName: { value: profile.lastName ?? '' },
         bio: { value: profile.bio ?? '' }
+    });
+
+    const { isLoading, call } = useQuery(({ signal }) => profileApi.edit(Object.entries(formState).reduce((acc, [name, field]) => ({ ...acc, [name]: field.value.trim() }), {} as EditProfile), signal), {
+        onSuccess: (data) => useProfile.setState((prevState) => ({ profile: { ...prevState.profile, ...data } })),
+        onError: () => toast.error('Failed to edit profile. Please try again'),
+        enabled: false
     });
 
     const canSubmit = React.useMemo(() => {
@@ -41,18 +49,5 @@ export const useProfileMenu = () => {
         }));
     }
 
-    const handleSubmit = async () => {
-        if (!canSubmit) return;
-
-        try {
-
-            const { data } = await profileApi.edit(Object.entries(formState).reduce((acc, [name, field]) => ({ ...acc, [name]: field.value.trim() }), {} as EditProfile)) 
-            
-            useProfile.setState((prevState) => ({ profile: { ...prevState.profile, ...data } }));
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    return { onChange, handleSubmit, formState, canSubmit };
+    return { onChange, isLoading, call, formState, canSubmit };
 };

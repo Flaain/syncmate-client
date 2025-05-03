@@ -9,6 +9,7 @@ import { SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu
 
 import { SettingMenus } from '../../model/types';
 import { SettingsContent } from '../../model/view';
+import { DataStorageMenu } from '../data';
 import { ProfileMenu } from '../profile';
 
 import { SettingsMenuSkeleton } from './Skeleton';
@@ -17,7 +18,8 @@ export const SettingsMenu = ({ onClose: onCloseCallback }: SidebarMenuProps) => 
     const { handleBack, onAnimationEnd, setActiveMenu, onClose, activeMenu, panelRef, shouldRemove } = useSidebarMenu<SettingMenus, HTMLDivElement>(onCloseCallback);
 
     const menus: Record<SettingMenus, React.ReactNode> = {
-        profile: <ProfileMenu onClose={onClose} />
+        profile: <ProfileMenu onClose={onClose} />,
+        data: <DataStorageMenu onClose={onClose} />
     }
 
     return (
@@ -26,6 +28,7 @@ export const SettingsMenu = ({ onClose: onCloseCallback }: SidebarMenuProps) => 
                 ref={panelRef}
                 shouldRemove={shouldRemove}
                 hasActiveMenu={!!activeMenu}
+                onBack={handleBack}
                 onAnimationEnd={onAnimationEnd}
             >
                 <SidebarMenuHeader title='Settings' onBack={handleBack}>
