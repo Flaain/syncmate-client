@@ -28,16 +28,16 @@ export const IdleContextMenu = ({ isMessageFromMe, message, onCopy, onItemClick 
 
     return (
         <>
-            <MenuItem type='ctx' text='Reply' icon={<Reply className='size-4' />} onClick={() => handleContextAction('reply')} />
+            <MenuItem type='ctx' text='Reply' icon={<Reply className='size-4' />} onClick={onItemClick(() => handleContextAction('reply'))} />
             <MenuItem type='ctx' text='Copy' icon={<Copy className='size-4' />} onClick={onCopy} />
             {isMessageFromMe && (
                 <>
-                    <MenuItem type='ctx' text='Edit' icon={<Edit className='size-4' />} onClick={() => handleContextAction('edit')} />
+                    <MenuItem type='ctx' text='Edit' icon={<Edit className='size-4' />} onClick={onItemClick(() => handleContextAction('edit'))} />
                     <MenuItem
                         type='ctx'
                         text='Select'
                         icon={<CircleCheckBig className='size-4' />}
-                        onClick={() => handleSelectMessage(message)}
+                        onClick={onItemClick(() => handleSelectMessage(message))}
                     />
                     <MenuItem
                         type='ctx'
