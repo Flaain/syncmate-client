@@ -8,10 +8,11 @@ export const useModal = create<ModalStore>((set, get) => ({
     modals: [],
     isModalDisabled: false,
     actions: {
+        onRemoveModal: () => set((prevState) => ({ modals: prevState.modals.slice(0, -1) })),
         onOpenModal: (config: ModalConfig) => {
             if (config.id && get().modals.find((modal) => modal.id === config.id)) return;
 
-            set((prevState) => ({ modals: [...prevState.modals, { id: uuidv4(), ...config }] }));
+            set((prevState) => ({ modals: [...prevState.modals, { ...config, id: config.id ?? uuidv4() }] }));
         },
         onCloseModal: () => {
             const { modals } = get();
@@ -24,7 +25,6 @@ export const useModal = create<ModalStore>((set, get) => ({
 
             set({ modals });
         },
-        onRemoveModal: () => set((prevState) => ({ modals: prevState.modals.slice(0, -1) })),
         onAsyncActionModal: async <T>(
             cb: () => Promise<T>,
             {
@@ -38,12 +38,12 @@ export const useModal = create<ModalStore>((set, get) => ({
             try {
                 set({ isModalDisabled: disableOnPending });
 
-                const data = await cb();
+                onResolve?.(await cb());
 
-                onResolve?.(data);
                 closeOnSuccess && get().actions.onCloseModal();
             } catch (error) {
                 onReject?.(error);
+                
                 closeOnError && get().actions.onCloseModal();
             } finally {
                 set({ isModalDisabled: false });
