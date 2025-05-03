@@ -27,7 +27,7 @@ const manifest: Partial<ManifestOptions> = {
     display: 'standalone'
 };
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         react(),
         svgr(),
@@ -39,9 +39,12 @@ export default defineConfig({
             manifest: manifest
         })
     ],
+    esbuild: {
+        drop: mode === 'production' ? ['console', 'debugger'] : []
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
         }
     }
-});
+}));
