@@ -10,11 +10,11 @@ import { MAX_SCROLL_BOTTOM } from "./constants";
 import { MessagesListProps } from "./types";
     
 export const useMessagesList = (getPreviousMessages: MessagesListProps['getPreviousMessages']) => {
-    const { refs: { listRef, lastMessageRef }, params, setChat, messages } = useChat(useShallow(messagesListSelector));
+    const { refs: { listRef, lastMessageRef }, isUpdating, params, setChat, messages } = useChat(useShallow(messagesListSelector));
 
     const { isLoading, isError, isRefetching, ref, call, refetch } = useInfiniteScroll<HTMLDivElement, DataWithCursor<Array<[string, Message]>>>(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
         onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { data: new Map([...data, ...messages.data.entries()]), nextCursor } })),
-        deps: [messages.nextCursor]
+        deps: [!isUpdating, messages.nextCursor],
     });
 
     const observer = React.useRef<IntersectionObserver | null>(null);
@@ -55,7 +55,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         listRef,
         firstMessageRef: ref,
         groupedMessages,
-        canFetch: !isLoading && messages.nextCursor,
+        canFetch: !isLoading && messages.nextCursor && !isUpdating,
         isLoading,
         isRefetching,
         isError,
