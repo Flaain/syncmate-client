@@ -13,6 +13,7 @@ const initialState: Omit<ChatStore, 'actions'> = {
     params: null!,
     isContextActionsBlocked: false,
     showDetails: false,
+    isUpdating: false,
     messages: { data: new Map(), nextCursor: null },
     selectedMessages: new Map(),
     mode: 'default',

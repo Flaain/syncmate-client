@@ -32,6 +32,7 @@ export const messagesListSelector = (state: ChatStore) => ({
     refs: state.refs,
     params: state.params,
     messages: state.messages,
+    isUpdating: state.isUpdating,
     setChat: state.actions.setChat
 });
 

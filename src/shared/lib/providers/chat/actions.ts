@@ -65,7 +65,9 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
             try {
                 set(({ messages }) => handleSet(messages, 'pending'));
 
-                onSuccess(await api.call<Message>(error.config));
+                const { data } = await api.call<Message>(error.config);
+
+                onSuccess(data);
             } catch (error) {
                 onError(error);
             }
