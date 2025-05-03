@@ -108,11 +108,6 @@ interface UseQueryReturn<T> {
     isLoading: boolean;
 
     /**
-     * Indicates whether the query is currently updating its data (e.g., due to a refetch).
-     */
-    isUpdating: boolean;
-
-    /**
      * Indicates whether the query is currently refetching data.
      */
     isRefetching: boolean;
@@ -121,11 +116,6 @@ interface UseQueryReturn<T> {
      * Indicates whether the query has successfully fetched data.
      */
     isSuccess: boolean;
-
-    /**
-     * Indicates whether the query has successfully retrieved data from the cache.
-     */
-    isCacheSuccess: boolean;
 
     /**
      * Indicates whether the query has encountered an error.
@@ -361,12 +351,10 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
 
     return {
         data,
-        isError,
-        isCacheSuccess,
-        isLoading,
+        isError: isError && !isUpdating && !isCacheSuccess,
+        isLoading: isLoading || isUpdating && !isCacheSuccess,
         isRefetching,
         isSuccess,
-        isUpdating,
         error,
         setData,
         abort,
