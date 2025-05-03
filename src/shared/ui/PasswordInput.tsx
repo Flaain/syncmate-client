@@ -11,13 +11,12 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(({ c
     const [showPassword, setShowPassword] = React.useState(false);
 
     return (
-        <div className='relative'>
-            <Input
-                {...props}
-                type={showPassword ? 'text' : 'password'}
-                className={cn('reveal pr-10', className)}
-                ref={ref}
-            />
+        <Input
+            {...props}
+            type={showPassword ? 'text' : 'password'}
+            className={cn('hide-password-toggle', className)}
+            ref={ref}
+        >
             <Button
                 type='button'
                 variant='text'
@@ -29,6 +28,6 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(({ c
                 {showPassword ? <EyeIcon className='h-4 w-4' aria-hidden='true' /> : <EyeOffIcon className='h-4 w-4' aria-hidden='true' />}
                 <span className='sr-only'>{showPassword ? 'Hide password' : 'Show password'}</span>
             </Button>
-        </div>
+        </Input>
     );
 });

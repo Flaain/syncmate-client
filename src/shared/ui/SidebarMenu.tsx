@@ -1,50 +1,134 @@
-import React from "react";
+import React from 'react';
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from 'lucide-react';
 
-import { cn } from "../lib/utils/cn";
+import { cn } from '../lib/utils/cn';
+import { useEvents } from '../model/store';
 
-import { Button } from "./button";
-import { Typography } from "./Typography";
+import { Button } from './button';
+import { Typography } from './Typography';
 
 interface SidebarHeaderProps {
+    /**
+     * The title to display in the sidebar header.
+     */
     title: string;
+
+    /**
+     * Callback function triggered when the back button is clicked.
+     */
     onBack: () => void;
+
+    /**
+     * Optional. Additional content to render in the header.
+     */
     children?: React.ReactNode;
 }
 
+/**
+ * Props for the SidebarContainer component, which represents a sidebar menu with optional features.
+ */
 interface SidebarContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+    /**
+     * Determines whether the sidebar can be closed.
+     * If true, a close button or mechanism should be provided.
+     * @default true
+     */
+    closable?: boolean;
+
+    /**
+     * Indicates whether the sidebar should be removed from the DOM when closed.
+     * If true, the sidebar will be unmounted instead of hidden.
+     * @default false
+     */
     shouldRemove?: boolean;
+
+    /**
+     * The content to be displayed inside the sidebar.
+     */
     children: React.ReactNode;
+
+    /**
+     * Indicates whether the sidebar contains an active menu item.
+     * Can be used to apply specific styles or behaviors when a menu item is active.
+     * @default false
+     */
     hasActiveMenu?: boolean;
+
+    /**
+     * Callback function triggered when the escape key is clicked.
+     */
+    onBack?: () => void;
 }
 
+/**
+ * Props for the SidebarMenuButton component, which represents a button in the sidebar menu.
+ */
 interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    /**
+     * The title of the button, typically displayed as the main label.
+     */
     title: string;
-    description?: string;
+
+    /**
+     * Optional. Indicates whether the button is in an active state.
+     * @default false
+     */
+    active?: boolean;
+
+    /**
+     * Optional. A description or additional content to display alongside the button.
+     */
+    description?: React.ReactNode;
+
+    /**
+     * Optional. An icon or visual element to display within the button.
+     */
     icon?: React.ReactNode;
 }
 
 export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarContainerProps>(
-    ({ children, shouldRemove, hasActiveMenu, className, ...rest }, ref) => (
-        <div
-            ref={ref}
-            className={cn(
-                className,
-                'col-start-1 row-start-1 bg-primary-dark-150 duration-300 overflow-hidden z-0',
-                shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
-                hasActiveMenu && '-translate-x-20',
-            )}
-            {...rest}
-        >
-            {children}
-        </div>
-    )
+    ({ children, closable = true, onBack, shouldRemove, hasActiveMenu, className, ...rest }, ref) => {
+        const addEventListener = useEvents((state) => state.addEventListener);
+
+        React.useEffect(() => {
+            if (!closable || !onBack) return;
+
+            const removeEventListener = addEventListener('keydown', (event) => {
+                event.key === 'Escape' && !shouldRemove && onBack();
+            });
+
+            return () => {
+                removeEventListener();
+            };
+        }, []);
+
+        return (
+            <div
+                ref={ref}
+                className={cn(
+                    className,
+                    'col-start-1 row-start-1 bg-primary-dark-150 duration-300 overflow-hidden z-0',
+                    shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
+                    hasActiveMenu && '-translate-x-20'
+                )}
+                {...rest}
+            >
+                {children}
+            </div>
+        );
+    }
 );
 
-export const SidebarMenuSeparator = ({ children, className, ...rest }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div {...rest} className={cn("w-full h-[15px] dark:bg-primary-dark-200 my-2", className)}>{children}</div>
-)
+export const SidebarMenuSeparator = ({
+    children,
+    className,
+    ...rest
+}: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
+    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-200 my-2', className)}>
+        {children}
+    </div>
+);
 
 export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProps) => {
     return (
@@ -60,20 +144,30 @@ export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProp
     );
 };
 
-export const SidebarMenuButton = ({ title, description, icon, className, ...rest }: SidebarMenuButtonProps) => {
+export const SidebarMenuButton = ({ title, description, active, icon, className, ...rest }: SidebarMenuButtonProps) => {
     return (
-        <Button {...rest} variant='ghost' className={cn('flex rounded-[10px] justify-start gap-8 items-center h-auto box-border py-1 px-4', className)}>
+        <Button
+            {...rest}
+            variant={active ? 'change_later' : 'ghost'}
+            className={cn(
+                'flex rounded-[10px] justify-start gap-8 items-center h-auto box-border py-1 px-4',
+                className
+            )}
+        >
             {icon}
             <div className='flex flex-col items-start'>
                 <Typography variant='primary' weight='medium'>
                     {title}
                 </Typography>
-                {description && (
-                    <Typography variant='secondary' size='base'>
-                        {description}
-                    </Typography>
-                )}
+                {description &&
+                    (React.isValidElement(description) ? (
+                        description
+                    ) : (
+                        <Typography as='p' variant='secondary' size='base'>
+                            {description}
+                        </Typography>
+                    ))}
             </div>
         </Button>
-    )
-}
+    );
+};

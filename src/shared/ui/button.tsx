@@ -15,6 +15,7 @@ const buttonVariants = cva(
                 destructive: 'bg-primary-destructive text-white hover:bg-primary-destructive/50',
                 outline: 'border border-primary-white text-primary-white dark:border-primary-dark-50',
                 ghost: 'dark:focus-visible:ring-primary-dark-50 dark:ring-offset-0 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:focus-visible:bg-primary-dark-50 dark:hover:bg-primary-dark-50',
+                change_later: 'dark:focus-visible:ring-primary-dark-50 dark:ring-offset-0 text-primary-dark-200 hover:bg-primary-white dark:text-primary-white dark:focus-visible:bg-primary-dark-50 dark:bg-primary-dark-50',
                 link: 'dark:text-primary-white text-primary-dark-200 hover:underline hover:underline-offset-2',
                 commerce: 'bg-primary-commerce text-primary-white hover:bg-primary-commerce/90',
                 text: 'dark:text-primary-white text-primary-dark-200 hover:opacity-50 ring-offset-0 rounded-none transition-opacity ring-0 ring-transparent focus-visible:ring-0 ring-offset-0 focus-visible:opacity-50 focus focus-visible:ring-offset-0 rounded-none outline-none ring-0',
@@ -35,11 +36,7 @@ const buttonVariants = cva(
     }
 );
 
-export interface ButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof buttonVariants> {
-    asChild?: boolean;
-}
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> { asChild?: boolean }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
