@@ -131,7 +131,6 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
                     />
                 ),
                 withHeader: false,
-                bodyClassName: 'h-auto p-5 w-[400px]'
             });
         }
 
@@ -171,7 +170,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             
             onSuccess(data);
             
-            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });          
+            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });       
         } catch (error) {
             console.error(error);
             onError(error, 'Cannot send message');
