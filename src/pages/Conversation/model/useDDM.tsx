@@ -33,7 +33,6 @@ export const useDDM = () => {
                 />
             ),
             withHeader: false,
-            bodyClassName: 'h-auto p-5 w-fit'
         });        
     }
 
@@ -54,7 +53,6 @@ export const useDDM = () => {
                 />
             ),
             withHeader: false,
-            bodyClassName: 'h-auto p-5 w-fit'
         });   
     };
 
