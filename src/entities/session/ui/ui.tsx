@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Loader2, X } from 'lucide-react';
 
-import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { ModalConfig, selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { Button } from '@/shared/ui/button';
 import { Confirm } from '@/shared/ui/Confirm';
@@ -20,7 +20,7 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
 
     const icon = iconsMap[userAgent?.browser.name as keyof typeof iconsMap] ?? null;
     const createdAt = new Date(session.createdAt);
-    
+
     const handleDrop = async () => {
         setIsDroping(true);
 
@@ -35,6 +35,19 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
         });
 
         setIsDroping(false);
+    };
+
+    const modalConfig: ModalConfig = {
+        content: (
+            <Confirm
+                text='Are you sure you want to terminate this session?'
+                onCancel={onCloseModal}
+                onConfirmText='Terminate'
+                onConfirmButtonVariant='destructive'
+                onConfirm={handleDrop}
+            />
+        ),
+        withHeader: false
     };
 
     return (
@@ -69,21 +82,7 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
                     className='p-0 w-6 h-6 ml-auto overflow-hidden'
                     title='drop session'
                     disabled={isDroping || dropButtonDisabled}
-                    onClick={() =>
-                        onOpenModal({
-                            content: (
-                                <Confirm
-                                    text='Are you sure you want to terminate this session?'
-                                    onCancel={onCloseModal}
-                                    onConfirmText='Terminate'
-                                    onConfirmButtonVariant='destructive'
-                                    onConfirm={handleDrop}
-                                />
-                            ),
-                            bodyClassName: 'h-auto p-4',
-                            withHeader: false
-                        })
-                    }
+                    onClick={() => onOpenModal(modalConfig)}
                 >
                     {isDroping ? <Loader2 className='w-5 h-5 animate-spin' /> : <X className='w-5 h-5' />}
                 </Button>
