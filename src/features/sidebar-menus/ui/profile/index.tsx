@@ -17,7 +17,7 @@ export const ProfileMenu = ({ onClose }: SidebarMenuProps) => {
             shouldRemove={shouldRemove}
             onBack={handleBack}
             onAnimationEnd={onAnimationEnd}
-            className='relative'
+            className='relative !overflow-hidden'
         >
             <SidebarMenuHeader title='Edit Profile' onBack={handleBack} />
             <React.Suspense fallback={<ProfileMenuSkeleton />}>

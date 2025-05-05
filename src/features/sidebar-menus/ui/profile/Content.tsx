@@ -22,6 +22,7 @@ export const ProfileContent = () => {
     const { call, onChange, isLoading, formState, canSubmit } = useProfileMenu();
 
     const nameSymbolsLeft = NAME_MAX_LENGTH - formState.name.value.length;
+    const lastNameSymbolsLeft = NAME_MAX_LENGTH - formState.lastName.value.length;
     const bioSymbolsLeft = BIO_MAX_LENGTH - formState.bio.value.length;
 
     return (
@@ -52,8 +53,8 @@ export const ProfileContent = () => {
                 />
                 <Input
                     name='lastName'
-                    label={nameSymbolsLeft <= 10 ? `Last Name (${nameSymbolsLeft})` : 'Last Name'}
-                    variant={nameSymbolsLeft < 0 ? 'destructive' : 'primary'}
+                    label={lastNameSymbolsLeft <= 10 ? `Last Name (${lastNameSymbolsLeft})` : 'Last Name'}
+                    variant={lastNameSymbolsLeft < 0 ? 'destructive' : 'primary'}
                     value={formState.lastName.value}
                     onChange={onChange}
                 />
