@@ -24,7 +24,7 @@ interface ConfirmProps {
     /**
      * The text message displayed in the confirmation dialog.
      */
-    text: string;
+    text: React.ReactNode;
 
     /**
      * Optional text for the confirm button.
@@ -63,10 +63,8 @@ export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', on
     };
 
     return (
-        <div className='flex flex-col gap-5 items-start max-w-[350px]'>
-            <Typography as='p' variant='primary'>
-                {text}
-            </Typography>
+        <div className='flex flex-col gap-5 items-start max-w-[320px] w-full py-3 px-6 box-border'>
+            {React.isValidElement(text) ? text : <Typography as='p'>{text}</Typography>}
             <div className='flex justify-center gap-5 mt-2 self-end'>
                 <Button onClick={onCancel} variant='secondary' disabled={loading}>
                     {onCancelText}

@@ -14,7 +14,7 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
 
     if (title && !withCloseButton) {
         return (
-            <Typography variant='primary' size='3xl' weight='bold'>
+            <Typography variant='primary' size='2xl' weight='bold'>
                 {title}
             </Typography>
         );
@@ -24,7 +24,7 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
         <>
             {title ? (
                 <div className='flex items-center justify-between w-full'>
-                    <Typography variant='primary' size='3xl' weight='bold'>
+                    <Typography variant='primary' size='2xl' weight='bold'>
                         {title}
                     </Typography>
                     <button onClick={closeHandler} disabled={disabled}>

@@ -5,7 +5,7 @@ import { cva } from 'class-variance-authority';
 import { cn } from '../lib/utils/cn';
 
 export type TypographyVariant = 'primary' | 'secondary' | 'commerce' | 'error';
-export type TypographySize = 'base' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+export type TypographySize = 'base' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 export type TypographyWeight = 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
 export type TypographyAlign = 'left' | 'center' | 'right';
 
@@ -52,6 +52,7 @@ const typographyVariants = cva(undefined, {
         },
         size: {
             base: 'text-base',
+            xs: 'text-xs',
             sm: 'text-sm',
             md: 'text-md',
             lg: 'text-lg max-lg:text-base',

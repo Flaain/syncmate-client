@@ -108,7 +108,7 @@ export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarCont
                 ref={ref}
                 className={cn(
                     className,
-                    'col-start-1 row-start-1 bg-primary-dark-150 duration-300 overflow-hidden z-0',
+                    'col-start-1 row-start-1 bg-primary-dark-150 duration-300 z-0 overflow-auto',
                     shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
                     hasActiveMenu && '-translate-x-20'
                 )}
@@ -132,7 +132,7 @@ export const SidebarMenuSeparator = ({
 
 export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProps) => {
     return (
-        <div className='flex items-center gap-5 px-4 py-2'>
+        <div className='flex items-center gap-5 px-4 py-2 sticky top-0 dark:bg-primary-dark-150 z-[9999]'>
             <Button variant='ghost' size='icon' className='size-10 rounded-full p-2' onClick={onBack}>
                 <ArrowLeft className='size-5' />
             </Button>

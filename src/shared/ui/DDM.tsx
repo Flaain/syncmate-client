@@ -2,9 +2,8 @@ import React from "react";
 
 import { EllipsisVertical } from "lucide-react";
 
-import { MAX_POINTER_DISTANCE_DDM } from "../constants";
+import { useMenuDistance } from "../lib/hooks/useMenuDistance";
 import { cn } from "../lib/utils/cn";
-import { useEvents } from "../model/store";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./dropdown-menu";
 
@@ -18,31 +17,7 @@ export const DDM = ({ children, trigger, className, ...rest }: DDMProps) => {
 
     const ref = React.useRef<HTMLDivElement>(null);
 
-    const addEventListener = useEvents((state) => state.addEventListener);
-    
-    const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
-        if (!ref.current) return;
-
-        const { x, y, width, height } = ref.current.getBoundingClientRect();
-
-        (Math.abs(clientX - (x + width / 2)) > MAX_POINTER_DISTANCE_DDM || Math.abs(clientY - (y + height / 2)) > MAX_POINTER_DISTANCE_DDM) && setIsOpen(false);
-    }, []);
-
-    React.useEffect(() => {
-        if (!isOpen) return;
-
-        const removeEventListener = addEventListener('keydown', (event) => {
-            event.key === 'Escape' && setIsOpen(false)
-        });
-
-        document.addEventListener('mousemove', handleMouseMove);
-
-        return () => {
-            removeEventListener();
-
-            document.removeEventListener('mousemove', handleMouseMove);
-        };
-    }, [isOpen]);
+    useMenuDistance({ ref, onClose: () => setIsOpen(false), earlyReturn: !isOpen });
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
