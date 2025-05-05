@@ -2,12 +2,11 @@ import React from 'react';
 
 import { CheckCheck } from 'lucide-react';
 
-import { MAX_POINTER_DISTANCE_DDM } from '@/shared/constants';
+import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
 import { useChat } from '@/shared/lib/providers/chat';
 import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
 import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
-import { useEvents } from '@/shared/model/store';
 import { MessageStatus } from '@/shared/model/types';
 import { ContextMenuContent, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { Typography } from '@/shared/ui/Typography';
@@ -25,6 +24,8 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
 
     const ref = React.useRef<HTMLDivElement>(null);
 
+    useMenuDistance<HTMLDivElement>({ ref, onClose: () => setShouldRemove(true) })
+
     const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(message.text);
         toast.success('Message copied to clipboard');
@@ -36,28 +37,6 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
         cb();
         setShouldRemove(true);
     };
-    
-    const addEventListener = useEvents((state) => state.addEventListener);
-    // TODO: move to reusable useMenuDistance hook, delete for now reusbale hook for find bug
-    const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
-        if (!ref.current) return;
-
-        const { x, y, width, height } = ref.current.getBoundingClientRect();
-
-        (Math.abs(clientX - (x + width / 2)) > MAX_POINTER_DISTANCE_DDM || Math.abs(clientY - (y + height / 2)) > MAX_POINTER_DISTANCE_DDM) && setShouldRemove(true);
-    }, []);
-
-    React.useEffect(() => {
-        const removeEventListener = addEventListener('keydown', (event) => event.key === 'Escape' && setShouldRemove(true));
-
-        document.addEventListener('mousemove', handleMouseMove);
-
-        return () => {
-            removeEventListener();
-
-            document.removeEventListener('mousemove', handleMouseMove);
-        };
-    }, []);
 
     const menus: Record<MessageStatus, React.ReactNode> = {
         idle: (

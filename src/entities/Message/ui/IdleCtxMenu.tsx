@@ -23,7 +23,6 @@ export const IdleContextMenu = ({ isMessageFromMe, message, onCopy, onItemClick 
             />
         ),
         withHeader: false,
-        bodyClassName: 'h-auto p-5'
     };
 
     return (
