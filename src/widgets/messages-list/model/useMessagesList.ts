@@ -4,6 +4,7 @@ import { useShallow } from "zustand/shallow";
 
 import { useInfiniteScroll } from "@/shared/lib/hooks/useInfiniteScroll";
 import { messagesListSelector, useChat } from "@/shared/lib/providers/chat";
+import { getScrollBottom } from "@/shared/lib/utils/getScrollBottom";
 import { DataWithCursor, Message } from "@/shared/model/types";
 
 import { MAX_SCROLL_BOTTOM } from "./constants";
@@ -29,17 +30,15 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
     }, []), [messages]);
 
     React.useEffect(() => {
-        lastMessageRef.current?.scrollIntoView({ behavior: 'instant' });
-    }, [params.id]);
+        if (!lastMessageRef.current || !listRef.current) return;
 
-    React.useEffect(() => {
-        if (!observer.current || !lastMessageRef.current) return;
-
-        observer.current.takeRecords()[0]?.isIntersecting && lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+        getScrollBottom(listRef.current) < MAX_SCROLL_BOTTOM && lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }, [messages.data.size]);
 
     React.useEffect(() => {
-        if (!listRef.current || !bottomPlaceholderRef.current) return;
+        if (!bottomPlaceholderRef.current) return;
+
+        lastMessageRef.current?.scrollIntoView({ behavior: 'instant' });
 
         observer.current = new IntersectionObserver((entries) => {
             setChat({ showAnchor: !entries[0].isIntersecting });
@@ -48,7 +47,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         observer.current.observe(bottomPlaceholderRef.current);
 
         return () => { observer.current?.disconnect() };
-    }, []);
+    }, [params.id]);
 
     return {
         bottomPlaceholderRef,
