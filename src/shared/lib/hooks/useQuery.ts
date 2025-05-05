@@ -86,15 +86,6 @@ interface UseQueryOptions<T> {
     onError: (error: unknown) => void;
 }
 
-interface UseQueryConfig {
-    abortController: AbortController;
-    retry: number;
-    requested: boolean;
-    mounted: boolean;
-    interval: ReturnType<typeof setInterval> | null;
-    timeout: ReturnType<typeof setTimeout> | null;
-}
-
 /**
  * Represents the return type of the `useQuery` hook, providing various states and methods
  * for managing asynchronous data fetching.
@@ -157,8 +148,6 @@ interface UseQueryReturn<T> {
     refetch: () => void;
 }
 
-const queryCache = new QueryCache();
-
 /**
  * A custom hook for managing asynchronous queries with caching, retries, and error handling.
  * 
@@ -187,6 +176,18 @@ const queryCache = new QueryCache();
  * return <div>Data: {JSON.stringify(data)}</div>;
  * ```
  */
+
+interface UseQueryConfig {
+    abortController: AbortController;
+    retry: number;
+    requested: boolean;
+    mounted: boolean;
+    interval: ReturnType<typeof setInterval> | null;
+    timeout: ReturnType<typeof setTimeout> | null;
+}
+
+const queryCache = new QueryCache();
+
 export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
     const [isError, setIsError] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(options?.enabled ?? true);
@@ -259,7 +260,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
             setError(undefined);
             setData(options?.onSelect?.(data) ?? data);
 
-            options?.prefix && queryCache.open().then((cache) => cache?.put(options.prefix!, authentic));
+            options?.prefix && queryCache.open().then((cache) => cache?.put(options.prefix!, authentic)).catch((e) => console.error('[useQuery] Cache error:', e));
 
             options?.onSuccess?.(data, false);
 
@@ -340,7 +341,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
     React.useEffect(() => {
         if (!options?.refetchOnReconnect) return;
         
-        const handleRefetch = () => runQuery('init')
+        const handleRefetch = () => runQuery('init');
 
         window.addEventListener('online', handleRefetch);
 
