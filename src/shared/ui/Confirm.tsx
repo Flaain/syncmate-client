@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Loader2 } from 'lucide-react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { Button, ButtonProps } from '@/shared/ui/button';
 
@@ -75,7 +75,7 @@ export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', on
                     className='min-w-[100px]'
                     variant={onConfirmButtonVariant}
                 >
-                    {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : onConfirmText}
+                    {loading ? <LoaderIcon className='size-5 animate-loading' /> : onConfirmText}
                 </Button>
             </div>
         </div>

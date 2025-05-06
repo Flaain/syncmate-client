@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { XIcon } from 'lucide-react';
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
 
 import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 import { cn } from '../lib/utils/cn';
@@ -28,12 +28,12 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
                         {title}
                     </Typography>
                     <button onClick={closeHandler} disabled={disabled}>
-                        <XIcon className='dark:text-white' />
+                        <CloseIcon className='dark:text-white' />
                     </button>
                 </div>
             ) : (
                 <button onClick={closeHandler} className='self-end' disabled={disabled}>
-                    <XIcon className='dark:text-white' />
+                    <CloseIcon className='dark:text-white' />
                 </button>
             )}
         </>

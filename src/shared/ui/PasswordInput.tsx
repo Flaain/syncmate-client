@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import EyeIcon from '@/shared/lib/assets/icons/eye.svg?react';
+import EyeCrossIcon from '@/shared/lib/assets/icons/eyecross.svg?react';
 
 import { cn } from '../lib/utils/cn';
 
@@ -25,7 +26,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(({ c
                 onClick={() => setShowPassword((prev) => !prev)}
                 disabled={!props.value || !props.value.toString().trim().length || props.disabled}
             >
-                {showPassword ? <EyeIcon className='h-4 w-4' aria-hidden='true' /> : <EyeOffIcon className='h-4 w-4' aria-hidden='true' />}
+                {showPassword ? <EyeIcon className='size-4' /> : <EyeCrossIcon className='size-4' aria-hidden='true' />}
                 <span className='sr-only'>{showPassword ? 'Hide password' : 'Show password'}</span>
             </Button>
         </Input>

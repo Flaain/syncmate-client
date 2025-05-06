@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { LoaderCircle } from 'lucide-react';
+
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { getOtpRetryTime } from '../lib/utils/getOtpRetryTime';
 import { useOtp } from '../model/store';
@@ -13,7 +14,7 @@ import { Typography } from '../ui/Typography';
 export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, onResendCB, disabled, ...rest }, ref) => {
     const { isResending, otp, onResend } = useOtp();
 
-    const timerRef = React.useRef<NodeJS.Timeout>(null!);
+    const timerRef = React.useRef<ReturnType<typeof setInterval>>(null!);
 
     const handleResend = () => {
         onResendCB?.();
@@ -73,7 +74,7 @@ export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, o
                 >
                     {isResending ? (
                         <>
-                            <LoaderCircle className='w-4 h-4 animate-spin' />
+                            <LoaderIcon className='size-4 animate-loading' />
                             &nbsp;Resend email
                         </>
                     ) : (

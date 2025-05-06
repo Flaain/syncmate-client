@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ArrowLeft } from 'lucide-react';
+import ArrowLeftIcon from '@/shared/lib/assets/icons/arrow_prev.svg?react';
 
 import { cn } from '../lib/utils/cn';
 import { useEvents } from '../model/store';
@@ -134,7 +134,7 @@ export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProp
     return (
         <div className='flex items-center gap-5 px-4 py-2 sticky top-0 dark:bg-primary-dark-150 z-[9999]'>
             <Button variant='ghost' size='icon' className='size-10 rounded-full p-2' onClick={onBack}>
-                <ArrowLeft className='size-5' />
+                <ArrowLeftIcon className='size-5' />
             </Button>
             <Typography as='h2' variant='primary' size='xl' weight='medium'>
                 {title}
@@ -150,7 +150,7 @@ export const SidebarMenuButton = ({ title, description, active, icon, className,
             {...rest}
             variant={active ? 'change_later' : 'ghost'}
             className={cn(
-                'flex rounded-[10px] justify-start gap-8 items-center h-auto box-border py-1 px-4',
+                'flex rounded-[10px] justify-start gap-8 items-center box-border h-14 w-full hover:!bg-primary-gray/10',
                 className
             )}
         >

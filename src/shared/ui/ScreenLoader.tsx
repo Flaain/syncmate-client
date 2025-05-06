@@ -1,7 +1,7 @@
-import { Loader2Icon } from 'lucide-react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 export const ScreenLoader = () => (
-    <div className='flex items-center justify-center h-svh w-full dark:text-primary-white text-primary-dark-100 dark:bg-primary-dark-200 bg-white'>
-        <Loader2Icon className='w-10 h-10 animate-loading' />
+    <div className='flex items-center justify-center h-dvh w-full dark:text-primary-white text-primary-dark-100 dark:bg-primary-dark-200 bg-white'>
+        <LoaderIcon className='size-10 animate-loading' />
     </div>
 );

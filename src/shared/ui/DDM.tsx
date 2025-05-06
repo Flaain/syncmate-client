@@ -1,11 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { EllipsisVertical } from "lucide-react";
+import MoreIcon from '@/shared/lib/assets/icons/more.svg?react';
 
-import { useMenuDistance } from "../lib/hooks/useMenuDistance";
-import { cn } from "../lib/utils/cn";
+import { useMenuDistance } from '../lib/hooks/useMenuDistance';
+import { cn } from '../lib/utils/cn';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./dropdown-menu";
+import { Button } from './button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './dropdown-menu';
 
 interface DDMProps extends React.ComponentProps<typeof DropdownMenuContent> {
     children: React.ReactNode;
@@ -21,12 +22,19 @@ export const DDM = ({ children, trigger, className, ...rest }: DDMProps) => {
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-            <DropdownMenuTrigger asChild={!!trigger} className='outline-none'>
-                {trigger || <EllipsisVertical className='hover:opacity-50 transition-opacity ease-in-out duration-200 outline-none dark:text-primary-white text-primary-dark-50' />}
+            <DropdownMenuTrigger asChild>
+                {trigger || (
+                    <Button className='group flex flex-col size-10 rounded-full' variant='ghost' size='icon'>
+                        <MoreIcon className='text-primary-gray' />
+                    </Button>
+                )}
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 {...rest}
-                className={cn('border-none rounded-lg h-auto backdrop-blur-[50px] dark:bg-menu-background-color z-[999]', className)}
+                className={cn(
+                    'border-none rounded-lg h-auto backdrop-blur-[50px] dark:bg-menu-background-color z-[999]',
+                    className
+                )}
                 asChild
                 loop
                 ref={ref}

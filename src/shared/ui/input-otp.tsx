@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { OTPInput, OTPInputContext } from 'input-otp';
-import { Dot } from 'lucide-react';
+
+import GeometricDotIcon from '@/shared/lib/assets/icons/geometric_dot.svg?react';
 
 import { cn } from '@/shared/lib/utils/cn';
 
@@ -53,7 +54,7 @@ InputOTPSlot.displayName = 'InputOTPSlot';
 const InputOTPSeparator = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
     ({ ...props }, ref) => (
         <div ref={ref} role='separator' {...props}>
-            <Dot />
+            <GeometricDotIcon />
         </div>
     )
 );
