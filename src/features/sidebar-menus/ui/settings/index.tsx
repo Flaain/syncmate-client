@@ -10,6 +10,7 @@ import { SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu
 import { SettingMenus } from '../../model/types';
 import { SettingsContent } from '../../model/view';
 import { DataStorageMenu } from '../data';
+import { PrivacyAnSecuityMenu } from '../privacy';
 import { ProfileMenu } from '../profile';
 
 import { SettingsMenuSkeleton } from './Skeleton';
@@ -19,7 +20,8 @@ export const SettingsMenu = ({ onClose: onCloseCallback }: SidebarMenuProps) => 
 
     const menus: Record<SettingMenus, React.ReactNode> = {
         profile: <ProfileMenu onClose={onClose} />,
-        data: <DataStorageMenu onClose={onClose} />
+        data: <DataStorageMenu onClose={onClose} />,
+        privacy: <PrivacyAnSecuityMenu onClose={onClose}/>
     }
 
     return (

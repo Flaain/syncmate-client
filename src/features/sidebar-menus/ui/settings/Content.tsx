@@ -1,11 +1,13 @@
-import { AtSign, Loader2, Mail } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
 
 import { settingsSidebarMenuSelector, useProfile } from '@/entities/profile';
 
 import CameraAddIcon from '@/shared/lib/assets/icons/cameraadd.svg?react';
 import DataIcon from '@/shared/lib/assets/icons/data.svg?react';
+import EmailIcon from '@/shared/lib/assets/icons/email.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
+import MentionIcon from '@/shared/lib/assets/icons/mention.svg?react';
 
 import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
@@ -47,18 +49,19 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
                     title={email}
                     description='Email'
                     onClick={() => handleCopy('Email', email)}
-                    icon={<Mail className={iconStyles} />}
+                    icon={<EmailIcon className={iconStyles} />}
                 />
                 <SidebarMenuButton
                     title={login.substring(0, 1).toUpperCase() + login.substring(1)}
                     description='Login'
                     onClick={() => handleCopy('Login', login)}
-                    icon={<AtSign className={iconStyles} />}
+                    icon={<MentionIcon className={iconStyles} />}
                 />
                 <Label
+                    aria-disabled={isUploadingAvatar}
                     className={cn(
                         'absolute right-4 top-1/2 group p-4 rounded-full bg-primary-purple hover:bg-primary-purple/70 transition-colors duration-200 ease-in-out',
-                        isUploadingAvatar ? 'cursor-not-allowed' : 'cursor-pointer'
+                        isUploadingAvatar ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                     )}
                 >
                     <Input
@@ -68,7 +71,7 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
                         disabled={isUploadingAvatar}
                     />
                     {isUploadingAvatar ? (
-                        <Loader2 className='size-6 text-primary-white animate-spin duration-700' />
+                        <LoaderIcon className='size-6 text-primary-white animate-loading duration-700' />
                     ) : (
                         <CameraAddIcon className='size-6 transition-all text-primary-white' />
                     )}
@@ -76,17 +79,15 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
             </div>
             <SidebarMenuSeparator />
             <ul className='px-4 flex flex-col'>
-                <li className='flex'>
+                <li>
                     <SidebarMenuButton
-                        className='py-4 flex-1'
                         title='Data ans Storage'
                         onClick={() => changeMenu('data')}
                         icon={<DataIcon className={iconStyles} />}
                     />
                 </li>
-                <li className='flex'>
+                <li>
                     <SidebarMenuButton
-                        className='py-4 flex-1'
                         title='Privacy and Security'
                         onClick={() => changeMenu('privacy')}
                         icon={<LockIcon className={iconStyles} />}

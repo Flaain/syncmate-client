@@ -1,9 +1,10 @@
-import { Check, Loader2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
 
 import { settingsSidebarMenuSelector, useProfile } from '@/entities/profile';
 
 import CameraAddIcon from '@/shared/lib/assets/icons/cameraadd.svg?react';
+import CheckIcon from '@/shared/lib/assets/icons/check.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { BIO_MAX_LENGTH, MIN_LOGIN_LENGTH, NAME_MAX_LENGTH } from '@/shared/constants';
 import { cn } from '@/shared/lib/utils/cn';
@@ -35,7 +36,7 @@ export const ProfileContent = () => {
                         onChange={handleUploadAvatar}
                         disabled={isUploadingAvatar}
                     />
-                    {isUploadingAvatar ? (<Loader2 className='size-12 text-primary-white animate-spin duration-700' />) : (<CameraAddIcon className='size-12 transition-all duration-300 group-hover:size-14 text-primary-white' />)}
+                    {isUploadingAvatar ? (<LoaderIcon className='size-12 text-primary-white animate-loading duration-700' />) : (<CameraAddIcon className='size-12 transition-all duration-300 group-hover:size-14 text-primary-white' />)}
                 </Label>
                 <Image
                     className='size-32 rounded-full self-center border border-solid border-primary-blue opacity-50'
@@ -89,7 +90,7 @@ export const ProfileContent = () => {
                     canSubmit ? 'translate-y-0' : 'translate-y-[calc(100%+20px)]'
                 )}
             >
-                {isLoading ? <Loader2 className='size-8 text-primary-white animate-spin' /> : <Check className='size-8 text-primary-white' />}
+                {isLoading ? <LoaderIcon className='size-8 text-primary-white animate-loading' /> : <CheckIcon className='size-8 text-primary-white' />}
             </Button>
         </>
     );
