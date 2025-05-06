@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Loader2, X } from 'lucide-react';
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { ModalConfig, selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
@@ -79,12 +80,12 @@ export const Session = ({ session, withDropButton, dropButtonDisabled, onDrop }:
                 <Button
                     variant='text'
                     size='icon'
-                    className='p-0 w-6 h-6 ml-auto overflow-hidden'
+                    className='p-0 size-6 ml-auto overflow-hidden'
                     title='drop session'
                     disabled={isDroping || dropButtonDisabled}
                     onClick={() => onOpenModal(modalConfig)}
                 >
-                    {isDroping ? <Loader2 className='w-5 h-5 animate-spin' /> : <X className='w-5 h-5' />}
+                    {isDroping ? <LoaderIcon className='size-5 animate-loading' /> : <CloseIcon className='size-5' />}
                 </Button>
             )}
         </div>
