@@ -1,7 +1,7 @@
-import { Lock, Trash2 } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
 
-import Broom from '@/shared/lib/assets/icons/broom.svg?react';
+import DeleteIcon from '@/shared/lib/assets/icons/delete.svg?react';
+import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
 
 import { MenuItem } from '@/shared/ui/MenuItem';
 
@@ -15,19 +15,18 @@ export const DDM = () => {
 
     return (
         <>
-            {_id && <MenuItem type='ddm' icon={<Broom className='size-4 text-primary-white' />} text='Clear history' />}
             <MenuItem
                 type='ddm'
                 onClick={(event) => handleBlockRecipient(isRecipientBlocked ? 'unblock' : 'block', event)}
                 text={isRecipientBlocked ? 'Unblock user' : 'Block user'}
-                icon={<Lock className='size-4' />}
+                icon={<LockIcon className='size-5' />}
             />
             {_id && (
                 <MenuItem
                     type='ddm'
                     variant='destructive'
                     onClick={handleDeleteConversation}
-                    icon={<Trash2 className='size-4 text-primary-destructive' />}
+                    icon={<DeleteIcon className='size-5 text-primary-destructive' />}
                     text='Delete conversation'
                 />
             )}

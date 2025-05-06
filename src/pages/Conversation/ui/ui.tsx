@@ -1,7 +1,7 @@
-import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { ApiException } from '@/shared/api';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
@@ -53,7 +53,7 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
                 description='Cannot load conversation'
                 callToAction={
                     <Button onClick={refetch} className='mt-5' disabled={isRefetching}>
-                        {isRefetching ? <Loader2 className='size-6 animate-spin' /> : 'try again'}
+                        {isRefetching ? <LoaderIcon className='size-6 animate-loading' /> : 'try again'}
                     </Button>
                 }
             />

@@ -4,10 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 
+import { MIN_SCROLL_BOTTOM } from '@/widgets/messages-list';
+
 import { useSession } from '@/entities/session';
 
 import { DEFAULT_TITLE } from '@/shared/constants';
-import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
+import { conversationProviderSelector, useChat } from '@/shared/lib/providers/chat';
+import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { Message, PRESENCE } from '@/shared/model/types';
 
@@ -17,6 +20,7 @@ import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
 
 export const ConversationProvider = ({ conversation, children }: { conversation: Omit<Conversation, 'messages'>; children: React.ReactNode }) => {
     const { id: recipientId } = useParams() as { id: string };
+    const { setChat, listRef, bottomPlaceholderRef } = useChat(useShallow(conversationProviderSelector));
     const { 0: store } = React.useState(() => createStore<ConversationStore>((_, get) => ({ 
         conversation, 
         isRecipientTyping: false, 
@@ -26,7 +30,6 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     const socket = useSocket(useShallow((state) => state.socket));
     const userId = useSession((state) => state.userId);
     
-    const setChat = useChat(useShallow(setChatSelector));
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -101,8 +104,14 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
 
                 return { messages: { ...messages, data: newMessages } };
             });
+            
+            if (!(message.sender._id === userId)) {
+                const isAboveBottomMin = !!(listRef.current && getScrollBottom(listRef.current) > MIN_SCROLL_BOTTOM);
+                
+                document.visibilityState === 'hidden' || isAboveBottomMin && useLayout.getState().actions.playSound('new_message');
 
-            message.sender._id !== userId && document.visibilityState === 'hidden' && useLayout.getState().actions.playSound('new_message');
+                !isAboveBottomMin && bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {

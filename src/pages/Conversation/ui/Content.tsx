@@ -7,6 +7,8 @@ import { OutletHeader } from '@/widgets/outlet-header';
 import { SendMessage } from '@/features/send-message';
 
 import { showDetailsSelector, useChat } from '@/shared/lib/providers/chat';
+import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { Image } from '@/shared/ui/Image';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
 
@@ -35,6 +37,13 @@ export const Content = () => {
             <div className='flex-1 flex flex-col relative'>
                 <Pattern />
                 <OutletHeader
+                    avatar={
+                        <Image
+                            src={recipient.avatar?.url}
+                            skeleton={<AvatarByName name={recipient.name} size='md' />}
+                            className='object-cover object-center min-w-10 max-w-10 h-10 rounded-full'
+                        />
+                    }
                     name={recipient.name}
                     isOfficial={recipient.isOfficial}
                     description={description}
@@ -46,7 +55,9 @@ export const Content = () => {
                     restrictMessaging={[
                         {
                             reason: !!(isInitiatorBlocked || isRecipientBlocked),
-                            message: isRecipientBlocked ? `You blocked ${recipient.name}` : `${recipient.name} has restricted incoming messages`
+                            message: isRecipientBlocked
+                                ? `You blocked ${recipient.name}`
+                                : `${recipient.name} has restricted incoming messages`
                         },
                         {
                             reason: !_id && recipient.isPrivate,
@@ -61,7 +72,10 @@ export const Content = () => {
                     name={recipient.name}
                     avatarUrl={recipient.avatar?.url}
                     description={description}
-                    info={[{ data: recipient.bio, type: 'bio' }, { data: recipient.login, type: 'login' }]}
+                    info={[
+                        { data: recipient.bio, type: 'bio' },
+                        { data: recipient.login, type: 'login' }
+                    ]}
                 />
             )}
         </OutletContainer>
