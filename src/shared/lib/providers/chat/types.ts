@@ -15,6 +15,7 @@ export interface ChatStore {
         listRef: React.RefObject<HTMLUListElement | null>;
         textareaRef: React.RefObject<HTMLTextAreaElement | null>;
         lastMessageRef: { current: HTMLLIElement | null };
+        bottomPlaceholderRef: { current: HTMLLIElement | null };
     };
     actions: {
         setChat: SetStateInternal<ChatStore>;

@@ -21,7 +21,8 @@ const initialState: Omit<ChatStore, 'actions'> = {
     refs: {
         lastMessageRef: React.createRef(),
         listRef: React.createRef(),
-        textareaRef: React.createRef()
+        textareaRef: React.createRef(),
+        bottomPlaceholderRef: React.createRef(),
     },
 }
 

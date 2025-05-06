@@ -15,7 +15,6 @@ export const getUseCtxMenuMessageSelector = (state: ChatStore) => ({
 
 export const getUseSendMessageSelector = (state: ChatStore) => ({
     textareaRef: state.refs.textareaRef,
-    lastMessageRef: state.refs.lastMessageRef,
     params: state.params,
     handleOptimisticUpdate: state.actions.handleOptimisticUpdate
 });
@@ -58,3 +57,11 @@ export const selectStateSelector = (state: ChatStore) => ({
 });
 
 export const setChatSelector = (state: ChatStore) => state.actions.setChat;
+
+export const conversationProviderSelector = (state: ChatStore) => ({
+    listRef: state.refs.listRef,
+    bottomPlaceholderRef: state.refs.bottomPlaceholderRef,
+    setChat: state.actions.setChat
+});
+
+export const messageSelector = ({ isContextActionsBlocked, isUpdating }: ChatStore) => ({ isContextActionsBlocked, isUpdating });

@@ -78,7 +78,9 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
             const actions = status === 'pending' ? optMsg.actions : { resend: () => handleResend(error!), remove: () => set(rollback) };
 
             isEdit ? newMessages.set(smId!, { ...newMessages.get(smId!)!, status, actions }) : newMessages.set(optMsg._id, optMsg);
-
+            
+            setTimeout(() => get().refs.bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
+            
             return { messages: { ...messages, data: newMessages } };
         };
 
