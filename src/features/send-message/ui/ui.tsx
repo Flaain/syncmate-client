@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { ArrowDown, SendHorizonal } from 'lucide-react';
 import { useShallow } from 'zustand/shallow';
+
+import ArrowDownIcon from '@/shared/lib/assets/icons/arrow_down.svg?react';
+import SendIcon from '@/shared/lib/assets/icons/send.svg?react';
 
 import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { useLayout } from '@/shared/model/store';
@@ -56,7 +58,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                         size='icon'
                         className='px-4'
                     >
-                        <ArrowDown className='w-6 h-6' />
+                        <ArrowDownIcon className='size-6' />
                     </Button>
                 )}
                 <Button
@@ -66,7 +68,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     disabled={!value.trim().length && currentDraft?.state !== 'edit'}
                     className='pr-5'
                 >
-                    <SendHorizonal className='w-6 h-6' />
+                    <SendIcon className='size-6' />
                 </Button>
             </form>
         </div>

@@ -15,7 +15,7 @@ import { EmojiData, UseMessageParams } from './types';
 
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
-    const { params, lastMessageRef, textareaRef, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
+    const { params, textareaRef, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
@@ -169,8 +169,6 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             });
             
             onSuccess(data);
-            
-            lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });       
         } catch (error) {
             console.error(error);
             onError(error, 'Cannot send message');

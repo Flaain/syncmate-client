@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Edit2Icon, Reply, X } from 'lucide-react';
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
+import EditIcon from '@/shared/lib/assets/icons/edit.svg?react';
+import ReplyIcon from '@/shared/lib/assets/icons/reply.svg?react';
 
 import { useEvents } from '@/shared/model/store';
 import { MessageFormState } from '@/shared/model/types';
@@ -14,11 +16,11 @@ const iconStyles = 'dark:text-primary-white text-primary-gray min-w-5 h-5';
 const config: Record<Exclude<MessageFormState, 'send'>, { title: string; icon: React.ReactNode }> = {
     edit: {
         title: 'Edit message',
-        icon: <Edit2Icon className={iconStyles} />
+        icon: <EditIcon className={iconStyles} />
     },
     reply: {
         title: 'Reply to message',
-        icon: <Reply className={iconStyles} />
+        icon: <ReplyIcon className={iconStyles} />
     }
 };
 
@@ -51,7 +53,7 @@ export const TopBar = ({ onClose, state, description, preventClose }: MessageTop
                 )}
             </div>
             <Button variant='text' className='ml-auto pr-0' onClick={preventClose ? undefined : onClose} disabled={preventClose}>
-                <X className='w-6 h-6' />
+                <CloseIcon className='size-6' />
             </Button>
         </div>
     );
