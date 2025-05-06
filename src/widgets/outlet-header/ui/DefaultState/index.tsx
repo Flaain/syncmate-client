@@ -1,6 +1,5 @@
-import { Loader2 } from 'lucide-react';
-
-import Verified from '@/shared/lib/assets/icons/verified.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
+import VerifiedIcon from '@/shared/lib/assets/icons/verified.svg?react';
 
 import { useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
@@ -10,47 +9,36 @@ import { Typography } from '@/shared/ui/Typography';
 
 import { OutletHeaderProps } from '../../model/types';
 
-export const DefaultState = ({ name, description, dropdownContent, isOfficial, ...rest }: OutletHeaderProps) => {
+export const DefaultState = ({ name, description, dropdownContent, avatar, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     const isUpdating = useChat((state) => state.isUpdating);
 
     return (
-        <div {...rest} className='flex flex-col items-start w-full'>
-            <div className='flex items-center w-full'>
-                <Typography
-                    as='h2'
-                    size='lg'
-                    weight='medium'
-                    variant='primary'
-                    className={cn('mr-auto', isOfficial && 'flex items-center gap-2')}
-                >
-                    {name}
-                    {isOfficial && (
-                        <Typography>
-                            <Verified className='w-5 h-5' />
-                        </Typography>
-                    )}
-                </Typography>
-                {dropdownContent && <DDM align='end'>{dropdownContent}</DDM>}
+        <div {...rest} className='flex flex-1 justify-between'>
+            <div className='flex items-center gap-4'>
+                {avatar}
+                <div className='flex flex-col'>
+                    <Typography
+                        as='h2'
+                        weight='medium'
+                        variant='primary'
+                        className={cn('mr-auto', isOfficial && 'flex items-center gap-2')}
+                    >
+                        {name}
+                        {isOfficial && (
+                            <Typography>
+                                <VerifiedIcon className='size-5' />
+                            </Typography>
+                        )}
+                    </Typography>
+                    <Typography className='flex items-center gap-2' variant='secondary' size='sm'>
+                        {(!connectedToNetwork || !isConnected || isUpdating) && <LoaderIcon className='size-5 animate-loading' />}
+                        {!connectedToNetwork ? 'Waiting for network' : !isConnected ? 'Connecting' : isUpdating ? 'Updating' : description} 
+                    </Typography>
+                </div>
             </div>
-            {isConnected && connectedToNetwork ? (
-                isUpdating ? (
-                    <Typography className='flex items-center gap-2'>
-                        <Loader2 className='w-5 h-5 animate-spin' />
-                        Updating
-                    </Typography>
-                ) : (
-                    <Typography as='p' variant='secondary'>
-                        {description}
-                    </Typography>
-                )
-            ) : (
-                <Typography className='flex items-center gap-2'>
-                    <Loader2 className='w-5 h-5 animate-spin' />
-                    {!connectedToNetwork ? 'Waiting for network' : 'Connecting'}
-                </Typography>
-            )}
+            {dropdownContent && <DDM align='end'>{dropdownContent}</DDM>}
         </div>
     );
 };
