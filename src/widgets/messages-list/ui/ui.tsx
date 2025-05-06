@@ -1,7 +1,6 @@
-
-import { Loader2 } from 'lucide-react';
-
 import { GroupedMessages } from '@/features/grouped-messages';
+
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { Button } from '@/shared/ui/button';
 import { MessageSkeleton } from '@/shared/ui/MessageSkeleton';
@@ -27,7 +26,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     return (
         <ul
             ref={listRef}
-            className='overscroll-contain relative flex flex-col size-full px-5 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
+            className='overscroll-contain relative flex flex-col size-full pl-5 pr-3 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
         >
             {isLoading && (
                 <>
@@ -44,7 +43,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                         disabled={isLoading || isRefetching}
                         onClick={isError ? refetch : call}
                     >
-                        {isError ? (isRefetching ? (<Loader2 className='size-6 animate-spin' />) : 'try again') : 'Load previous messages'}
+                        {isError ? (isRefetching ? (<LoaderIcon className='size-6 animate-loading' />) : 'try again') : 'Load previous messages'}
                     </Button>
                 </li>
             )}
