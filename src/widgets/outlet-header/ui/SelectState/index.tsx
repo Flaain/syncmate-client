@@ -1,9 +1,11 @@
 import React from "react";
 
-import { Trash, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 
 import { messageApi, endpoints } from "@/entities/message";
+
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
+import DeleteIcon from '@/shared/lib/assets/icons/delete.svg?react';
 
 import { selectStateSelector, useChat } from "@/shared/lib/providers/chat";
 import { selectModalActions, useModal } from "@/shared/lib/providers/modal";
@@ -34,7 +36,7 @@ export const SelectState = () => {
         onOpenModal({
             content: (
                 <Confirm
-                    text={`Do you want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
+                    text={`Are you sure want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
                     onCancel={onCloseModal}
                     onConfirmButtonVariant='destructive'
                     onConfirmText='Delete'
@@ -53,14 +55,13 @@ export const SelectState = () => {
                 />
             ),
             withHeader: false,
-            bodyClassName: 'h-auto p-5'
         })
     }
 
     return (
         <div className='flex items-center size-full'>
-            <Button variant='text' size='icon' className='mr-2' onClick={() => setChat({ mode: 'default', selectedMessages: new Map() })}>
-                <X className='w-6 h-6' />
+            <Button variant='ghost' size='icon' className="size-10 p-0 rounded-full mr-2 mt-[1px]" onClick={() => setChat({ mode: 'default', selectedMessages: new Map() })}>
+                <CloseIcon className='size-6 text-primary-gray' />
             </Button>
             <Typography>{`${selectedMessages.size} ${selectedMessages.size > 1 ? 'messages' : 'message'}`}</Typography>
             <Button
@@ -68,7 +69,7 @@ export const SelectState = () => {
                 variant='ghost'
                 className='dark:text-red-500 dark:hover:bg-red-500/20 gap-2 ml-auto'
             >
-                <Trash className='w-6 h-6 text-red-500' />
+                <DeleteIcon className='size-6 text-red-500' />
                 Delete
             </Button>
         </div>

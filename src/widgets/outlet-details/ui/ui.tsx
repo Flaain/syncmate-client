@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { X } from 'lucide-react';
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
 
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
@@ -43,7 +43,7 @@ export const OutletDetails = ({ avatarUrl, title, tabs, name, description, info 
         <div className='flex flex-col max-xl:absolute max-xl:top-0 max-xl:right-0 z-[999] py-3 dark:bg-primary-dark-100 h-full max-w-[390px] w-full border-l-2 border-primary-dark-50'>
             <div className='flex items-center gap-5 px-5'>
                 <Button onClick={() => setChat({ showDetails: false })} size='icon' variant='text' className='p-0'>
-                    <X />
+                    <CloseIcon />
                 </Button>
                 <Typography weight='semibold' size='xl'>
                     {title}

@@ -1,6 +1,7 @@
-import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/shallow';
+
+import ArrowLeftIcon from '@/shared/lib/assets/icons/arrow_prev.svg?react';
 
 import { outletHeaderSelector, useChat, ChatMode } from '@/shared/lib/providers/chat';
 import { Button } from '@/shared/ui/button';
@@ -28,10 +29,10 @@ export const OutletHeader = (props: OutletHeaderProps) => {
     return (
         <div
             {...(chatMode === 'default' && { onClick: () => setChat({ showDetails: true }) })}
-            className='flex items-center max-md:gap-5 self-start size-full max-h-[70px] px-5 py-3 box-border dark:bg-primary-dark-100 bg-primary-white sticky top-0 z-[999] cursor-pointer'
+            className='flex items-center max-md:gap-4 self-start size-full max-h-[56px] px-3 box-border dark:bg-primary-dark-100 bg-primary-white sticky top-0 z-[999] cursor-pointer'
         >
-            <Button variant='text' size='icon' className='md:hidden' onClick={handleBack}>
-                <ArrowLeft className='size-6' />
+            <Button variant='ghost' size='icon' className='md:hidden size-10 rounded-full' onClick={handleBack}>
+                <ArrowLeftIcon className='size-6 text-primary-gray' />
             </Button>
             {components[chatMode]}
         </div>
