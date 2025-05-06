@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem, FormOTP } from '@/shared/ui/form';
@@ -85,7 +85,7 @@ export const Forgot = () => {
                         </Button>
                         {step !== 1 && (
                             <Button className='w-24' disabled={isNextButtonDisabled}>
-                                {isLoading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
+                                {isLoading ? <LoaderIcon className='size-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
                             </Button>
                         )}
                     </div>
