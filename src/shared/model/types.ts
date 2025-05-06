@@ -41,7 +41,7 @@ export type INTERNAL_SOUNDS = 'new_message';
 export type RequestStatuses = 'idle' | 'loading' | 'error';
 export type MessageFormState = 'send' | 'edit' | 'reply';
 export type OtpType = 'email_verification' | 'password_reset';
-export type OutletDetailsButtonType = 'email' | 'phone' | 'link' | 'bio' | 'login';
+export type OutletDetailsButtonType = 'email' | 'link' | 'bio' | 'login';
 export type UserCheckType = 'email' | 'login';
 export type MessageStatus = 'pending' | 'error' | 'idle';
 
