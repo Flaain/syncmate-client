@@ -1,4 +1,4 @@
-import { LucideMessagesSquare } from 'lucide-react';
+import ChatsPlaceholderIcon from '@/shared/lib/assets/icons/chatsplaceholder.svg?react';
 
 import { Typography } from '@/shared/ui/Typography';
 
@@ -8,7 +8,7 @@ export const Home = () => {
             <Typography as='h1' variant='primary' size='2xl' weight='bold' align='center' className='max-w-[400px]'>
                 Select a chat to start messaging or create one
             </Typography>
-            <LucideMessagesSquare className='w-32 h-32 dark:text-primary-white text-primary-dark-200' />
+            <ChatsPlaceholderIcon className='text-primary-white size-32' />
         </div>
     );
 };
