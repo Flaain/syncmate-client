@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CheckCheck } from 'lucide-react';
+import CheckCheck from '@/shared/lib/assets/icons/checkcheck.svg?react';
 
 import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
 import { useChat } from '@/shared/lib/providers/chat';

@@ -1,17 +1,19 @@
-import { Copy, XCircle } from 'lucide-react';
+import CopyIcon from '@/shared/lib/assets/icons/copy.svg?react';
+import CrossRoundIcon from '@/shared/lib/assets/icons/crossround.svg?react';
 
 import { MenuItem } from '@/shared/ui/MenuItem';
 
+import { ctxMenuIconStyles } from '../model/constants';
 import { PossibleCtxActions } from '../model/types';
 
 export const PendingContextMenu = ({ actions }: { actions: Pick<PossibleCtxActions, 'copy' | 'abort'> }) => (
     <>
-        <MenuItem type='ctx' text='Copy' icon={<Copy className='size-4' />} onClick={actions.copy} />
+        <MenuItem type='ctx' text='Copy' icon={<CopyIcon className={ctxMenuIconStyles} />} onClick={actions.copy} />
         <MenuItem
             type='ctx'
             variant='destructive'
             text='Cancel sending'
-            icon={<XCircle className='size-4 text-primary-destructive' />}
+            icon={<CrossRoundIcon className={`${ctxMenuIconStyles} text-primary-destructive`} />}
             onClick={actions.abort}
         />
     </>
