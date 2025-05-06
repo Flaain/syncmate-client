@@ -1,4 +1,4 @@
-import { SearchX } from 'lucide-react';
+import DeleteUserIcon from '@/shared/lib/assets/icons/deleteuser.svg?react';
 
 import { Button } from '@/shared/ui/button';
 import { Typography } from '@/shared/ui/Typography';
@@ -26,7 +26,7 @@ export const Feed = ({ globalResults, isSearching, searchValue }: FeedProps) => 
             <FeedSkeleton skeletonsCount={3} animate={isLoading} />
         ) : (
             <>
-                <SearchX className='mx-auto size-12 dark:text-primary-dark-50 mb-2' />
+                <DeleteUserIcon className='mx-auto size-12 dark:text-primary-dark-50 mb-2' />
                 <Typography as='p' variant='secondary' className='line-clamp-3 break-words px-4 box-border text-center'>
                     There were no results for "{searchValue}".
                     <br />
