@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
 import { Button } from '@/shared/ui/button';
@@ -47,7 +47,7 @@ export const SignupForm = () => {
                             </Button>
                             {!isLastStep && (
                                 <Button className='w-24' disabled={isNextButtonDisabled}>
-                                    {loading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : 'Next'}
+                                    {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Next'}
                                 </Button>
                             )}
                         </div>
