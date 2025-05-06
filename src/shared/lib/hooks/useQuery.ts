@@ -225,14 +225,12 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
             
             const data = await cache.json();
 
-            if (!isSuccess) {
-                setIsLoading(false);
-                setIsCacheSuccess(true);
+            setIsLoading(false);
+            setIsCacheSuccess(true);
 
-                setData(options?.onSelect?.(data) ?? data);
+            setData(options?.onSelect?.(data) ?? data);
 
-                options?.onSuccess?.(data, true);
-            }
+            options?.onSuccess?.(data, true);
         } catch (error) {
             if (retires > 0 && !isSuccess) return runCache(retires - 1);
 
