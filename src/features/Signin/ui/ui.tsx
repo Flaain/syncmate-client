@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { useAuth } from '@/shared/lib/providers/auth';
 import { useSigninForm } from '@/shared/lib/providers/signin';
@@ -86,7 +86,7 @@ export const Signin = () => {
                             Back
                         </Button>
                         <Button className='w-24' disabled={isSubmitButtonDisabled}>
-                            {loading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : 'Submit'}
+                            {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Submit'}
                         </Button>
                     </div>
                 </form>
