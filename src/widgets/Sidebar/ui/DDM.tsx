@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/shallow';
 
-import { useProfile } from '@/entities/profile';
+import { sidebarDDMselector, useProfile } from '@/entities/profile';
 
 import ArchiveIcon from '@/shared/lib/assets/icons/archive.svg?react';
 import MenuIcon from '@/shared/lib/assets/icons/menu.svg?react';
@@ -22,7 +22,7 @@ import { SidebarMenus } from './ui';
 const iconStyles = 'size-5 mx-1';
 
 export const DDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | null) => void }) => {
-    const { name, avatar } = useProfile(useShallow((state) => ({ name: state.profile.name, avatar: state.profile.avatar })));
+    const { name, avatar, archived_chats } = useProfile(useShallow(sidebarDDMselector));
 
     return (
         <DropdownMenu
@@ -54,7 +54,13 @@ export const DDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | null) =>
                 icon={<SavedMessagesIcon className={iconStyles} />}
                 text='Saved Messages'
             />
-            <MenuItem className='gap-4' type='ddm' icon={<ArchiveIcon className={iconStyles} />} text='Archived Chats' />
+            <MenuItem
+                className='gap-4'
+                type='ddm'
+                icon={<ArchiveIcon className={iconStyles} />}
+                text='Archived Chats'
+                description={archived_chats}
+            />
             <MenuItem className='gap-4' type='ddm' icon={<StoriesIcon className={iconStyles} />} text='My Stories' />
             <DropdownMenuSeparator className='dark:bg-primary-dark-50' />
             <MenuItem
