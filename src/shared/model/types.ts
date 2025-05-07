@@ -107,6 +107,10 @@ export interface Profile {
     presence: PRESENCE;
     bio?: string;
     avatar?: Avatar;
+    counts: {
+        archived_chats: number;
+        active_sessions: number;
+    }
     lastSeenAt: string;
     isOfficial: boolean;
     isPrivate: boolean;
