@@ -22,9 +22,9 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
     const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
     const { updatedAt, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
-    const { isContextActionsBlocked, isUpdating } = useChat(useShallow(messageSelector));
+    const { isContextActionsBlocked } = useChat(useShallow(messageSelector));
    
-    const stylesForBottomIcon = cn('size-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
+    const stylesForBottomIcon = cn('size-5 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
     
     const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = React.useMemo(() => ({
         idle: hasBeenRead ? <CheckCheckIcon className={stylesForBottomIcon} /> : <CheckIcon className={stylesForBottomIcon} />,
@@ -40,7 +40,7 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                     ref={ref}
                     className={cn(
                         'flex gap-2 relative z-10 items-start',
-                        message.shouldAnimate && 'animate-out fill-mode-forwards scale-75 opacity-0 duration-300',
+                        // message.shouldAnimate && 'animate-out fill-mode-forwards scale-75 opacity-0 duration-300',
                         !isMessageFromMe && isFirst && 'flex-col',
                         isSelected && 'xl:after:-left-full after:-right-5 after:w-svw after:z-[-1] after:absolute after:-top-1 after:-bottom-1 after:dark:bg-primary-dark-50',
                         className
