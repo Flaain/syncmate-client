@@ -68,13 +68,17 @@ interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
     /**
      * The title of the button, typically displayed as the main label.
      */
-    title: string;
+    title?: string;
+    
+    count?: number;
 
     /**
      * Optional. Indicates whether the button is in an active state.
      * @default false
      */
     active?: boolean;
+
+    children?: React.ReactNode;
 
     /**
      * Optional. A description or additional content to display alongside the button.
@@ -125,7 +129,7 @@ export const SidebarMenuSeparator = ({
     className,
     ...rest
 }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-200 my-2', className)}>
+    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-200 my-2 px-8 py-2 box-border dark:text-primary-gray text-sm', className)}>
         {children}
     </div>
 );
@@ -134,7 +138,7 @@ export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProp
     return (
         <div className='flex items-center gap-5 px-4 py-2 sticky top-0 dark:bg-primary-dark-150 z-[9999]'>
             <Button variant='ghost' size='icon' className='size-10 rounded-full p-2' onClick={onBack}>
-                <ArrowLeftIcon className='size-5' />
+                <ArrowLeftIcon className='size-6 text-primary-gray' />
             </Button>
             <Typography as='h2' variant='primary' size='xl' weight='medium'>
                 {title}
@@ -144,30 +148,68 @@ export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProp
     );
 };
 
-export const SidebarMenuButton = ({ title, description, active, icon, className, ...rest }: SidebarMenuButtonProps) => {
+export const SidebarMenuError = ({
+    children,
+    bgSkeleton
+}: {
+    bgSkeleton: React.ReactNode;
+    children: React.ReactNode;
+}) => (
+    <div className='relative'>
+        <div className='absolute flex items-center justify-center inset-0 z-10 bg-primary-dark-150/80'>
+            {children}
+        </div>
+        {bgSkeleton}
+    </div>
+);
+
+export const SidebarMenuButton = ({
+    title,
+    count,
+    description,
+    children,
+    active,
+    icon,
+    className,
+    ...rest
+}: SidebarMenuButtonProps) => {
+    if (!title && !children) throw new Error('At least one prop should be provided: title or children');
+
     return (
         <Button
             {...rest}
             variant={active ? 'change_later' : 'ghost'}
             className={cn(
-                'flex rounded-[10px] justify-start gap-8 items-center box-border h-14 w-full hover:!bg-primary-gray/10',
+                'flex rounded-[10px] justify-start gap-8 py-1 items-center box-border w-full hover:!bg-primary-gray/10',
+                description ? 'h-14' : 'h-12',
                 className
             )}
         >
             {icon}
-            <div className='flex flex-col items-start'>
-                <Typography variant='primary' weight='medium'>
-                    {title}
-                </Typography>
-                {description &&
-                    (React.isValidElement(description) ? (
-                        description
+            {children || (
+                <>
+                    {description ? (
+                        <div className='flex flex-col items-start'>
+                            <Typography weight='medium'>{title}</Typography>
+                            {description &&
+                                (React.isValidElement(description) ? (
+                                    description
+                                ) : (
+                                    <Typography as='p' variant='secondary' size='sm'>
+                                        {description}
+                                    </Typography>
+                                ))}
+                        </div>
                     ) : (
-                        <Typography as='p' variant='secondary' size='base'>
-                            {description}
-                        </Typography>
-                    ))}
-            </div>
+                        <Typography weight='medium'>{title}</Typography>
+                    )}
+                </>
+            )}
+            {!!count && (
+                <Typography className='ml-auto' variant='secondary'>
+                    {count}
+                </Typography>
+            )}
         </Button>
     );
 };

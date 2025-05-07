@@ -8,6 +8,7 @@ interface MenuItemProps {
     type: 'ctx' | 'ddm';
     variant?: 'default' | 'destructive';
     text: string;
+    description?: React.ReactNode;
     icon?: React.ReactNode;
     children?: React.ReactNode;
     displayChildrenFrom?: 'left' | 'right';
@@ -17,6 +18,7 @@ interface MenuItemProps {
 
 export const MenuItem = ({
     type,
+    description,
     className,
     children,
     displayChildrenFrom,
@@ -43,10 +45,11 @@ export const MenuItem = ({
                 <Typography
                     size='sm'
                     weight='medium'
-                    className={cn(variant === 'destructive' && 'dark:text-primary-destructive')}
+                    className={cn('flex items-center', variant === 'destructive' && 'dark:text-primary-destructive')}
                 >
                     {text}
                 </Typography>
+                {!!description && <Typography variant='secondary' size='xs' weight='medium' className='ml-auto'>{description}</Typography>}
                 {children && displayChildrenFrom === 'right' && children}
             </li>
         </Item>
