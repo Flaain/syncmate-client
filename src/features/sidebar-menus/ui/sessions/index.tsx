@@ -4,11 +4,11 @@ import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
 import { SidebarMenuProps } from '@/shared/model/types';
 import { SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu';
 
-import { DataStorageContent } from '../../model/view';
+import { ActiveSessionsMenuContent } from '../../model/view';
 
-import { DataStorageMenuSkeleton } from './Skeleton';
+import { ActiveSessionsMenuSkeleton } from './Skeleton';
 
-export const DataStorageMenu = ({ onClose }: SidebarMenuProps) => {
+export const ActiveSessionsMenu = ({ onClose }: SidebarMenuProps) => {
     const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onClose);
 
     return (
@@ -17,10 +17,11 @@ export const DataStorageMenu = ({ onClose }: SidebarMenuProps) => {
             shouldRemove={shouldRemove}
             onBack={handleBack}
             onAnimationEnd={onAnimationEnd}
+            className='flex flex-col'
         >
-            <SidebarMenuHeader title='Data and Storage' onBack={handleBack} />
-            <React.Suspense fallback={<DataStorageMenuSkeleton />}>
-                <DataStorageContent />
+            <SidebarMenuHeader title='Active Sessions' onBack={handleBack} />
+            <React.Suspense fallback={<ActiveSessionsMenuSkeleton />}>
+                <ActiveSessionsMenuContent />
             </React.Suspense>
         </SidebarMenuContainer>
     );

@@ -38,7 +38,7 @@ export const DataStorageMenuContent = () => {
                     <Typography
                         as='p'
                         variant='secondary'
-                        size='base'
+                        size='sm'
                         className='flex items-center gap-1 whitespace-nowrap'
                     >
                         {usage === 0 ? 'Your cache is currently clear' : (
@@ -49,7 +49,6 @@ export const DataStorageMenuContent = () => {
                     )}
                     </Typography>
                 }
-                className='w-full'
             />
         </div>
     );

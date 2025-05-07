@@ -58,7 +58,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                         size='icon'
                         className='px-4'
                     >
-                        <ArrowDownIcon className='size-6' />
+                        <ArrowDownIcon className='size-6 text-primary-white' />
                     </Button>
                 )}
                 <Button

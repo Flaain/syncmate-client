@@ -67,7 +67,7 @@ export const ProfileContent = () => {
                     onChange={onChange}
                 />
             </form>
-            <SidebarMenuSeparator className='h-auto px-4 py-2 dark:text-primary-gray text-sm'>
+            <SidebarMenuSeparator className='h-auto'>
                 Any details such as age, occupation or city.
                 <br />
                 Example: 23 y.o. designer from San Francisco
@@ -75,7 +75,7 @@ export const ProfileContent = () => {
             <div className='p-4'>
                 <Input name='username' label='Username' value={login} disabled />
             </div>
-            <SidebarMenuSeparator className='h-auto px-4 py-2 text-sm dark:text-primary-gray'>
+            <SidebarMenuSeparator className='h-auto'>
                 You can use a-z, 0-9 and underscore.
                 <br />
                 Minimum length is {MIN_LOGIN_LENGTH} characters.

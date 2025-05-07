@@ -1,28 +1,37 @@
-import SessionsIcon from '@/shared/lib/assets/icons/devices.svg?react';
+import React from 'react';
 
 import { useSidebarMenu } from '@/shared/lib/hooks/useSidebarMenu';
 import { SidebarMenuProps } from '@/shared/model/types';
-import { SidebarMenuButton, SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu';
+import { SidebarMenuContainer, SidebarMenuHeader } from '@/shared/ui/SidebarMenu';
 
-export const PrivacyAnSecuityMenu = ({ onClose }: SidebarMenuProps) => {
-    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onClose);
+import { Menus, PrivacyAndSecurityMenus } from '../../model/types';
+import { PrivacyAndSecurityMenuContent } from '../../model/view';
+import { ActiveSessionsMenu } from '../sessions';
+
+import { PrivacyAndSecurityMenuSkeleton } from './Skeleton';
+
+export const PrivacyAndSecuityMenu = ({ onClose: onCloseCB }: SidebarMenuProps) => {
+    const { panelRef, shouldRemove, onAnimationEnd, activeMenu, setActiveMenu, onClose, handleBack } = useSidebarMenu<PrivacyAndSecurityMenus, HTMLDivElement>(onCloseCB);
+
+    const menus: Menus<PrivacyAndSecurityMenus> = {
+        sessions: <ActiveSessionsMenu onClose={onClose} />
+    }
 
     return (
-        <SidebarMenuContainer
-            ref={panelRef}
-            shouldRemove={shouldRemove}
-            onBack={handleBack}
-            onAnimationEnd={onAnimationEnd}
-            className='relative'
-        >
-            <SidebarMenuHeader title='Privacy and Security' onBack={handleBack} />
-            <div className='px-4 '>
-                <ul className='flex flex-col'>
-                    <li>
-                        <SidebarMenuButton icon={<SessionsIcon className='text-primary-gray' />} title='Active Sessions' className='w-full' />
-                    </li>
-                </ul>
-            </div>
-        </SidebarMenuContainer>
+        <>
+            <SidebarMenuContainer
+                ref={panelRef}
+                hasActiveMenu={!!activeMenu}
+                shouldRemove={shouldRemove}
+                onBack={handleBack}
+                onAnimationEnd={onAnimationEnd}
+            >
+                <SidebarMenuHeader title='Privacy and Security' onBack={handleBack} />
+                <React.Suspense fallback={<PrivacyAndSecurityMenuSkeleton />}>
+                    <PrivacyAndSecurityMenuContent changeMenu={setActiveMenu} />
+                </React.Suspense>
+            </SidebarMenuContainer>
+            {!!activeMenu && menus[activeMenu]}
+        </>
     );
 };
