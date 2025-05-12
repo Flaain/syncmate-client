@@ -16,11 +16,12 @@ import { OutletHeaderProps } from '../../model/types';
 export const DefaultState = ({ name, description, dropdownContent, avatarUrl, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
+    
     const { isUpdating, setChat } = useChat(useShallow(({ isUpdating, actions: { setChat } }) => ({ isUpdating, setChat })));
 
     const handleAvatarClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         event.stopPropagation();
-        
+
         setChat((prevState) => ({ showDetails: !prevState.showDetails }));
     };
 
