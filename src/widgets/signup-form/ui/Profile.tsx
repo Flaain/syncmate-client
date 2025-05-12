@@ -18,7 +18,7 @@ export const Profile = () => {
                 name='name'
                 control={form.control}
                 render={({ field }) => (
-                    <FormItem className='relative'>
+                    <FormItem>
                         <FormControl>
                             <Input
                                 {...field}
@@ -35,7 +35,7 @@ export const Profile = () => {
                 name='login'
                 control={form.control}
                 render={({ field }) => (
-                    <FormItem className='relative'>
+                    <FormItem>
                         <FormControl>
                             <Input
                                 {...field}

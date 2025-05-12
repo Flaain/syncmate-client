@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 import { PasswordInput } from '@/shared/ui/PasswordInput';
+import { Typography } from '@/shared/ui/Typography';
 
 import { useSignin } from '../model/useSignin';
 
@@ -18,7 +19,8 @@ export const Signin = () => {
     const serverError = form.formState.errors.root?.server;
     const loginErrors = form.formState.errors.login?.message;
     const passwordErrors = form.formState.errors.password?.message;
-
+    const rootMessage = form.formState.errors.root?.server.message;
+    
     return (
         <Form {...form}>
             <div className='flex max-md:justify-center flex-1 md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
@@ -61,10 +63,10 @@ export const Signin = () => {
                         )}
                     />
                     <div className='flex items-center justify-between'>
-                        {form.formState.errors.root?.server.message && (
-                            <p className='text-sm font-medium text-primary-destructive dark:text-primary-destructive'>
-                                {form.formState.errors.root.server.message}
-                            </p>
+                        {rootMessage && (
+                            <Typography variant='error' className='text-sm max-md:text-xs'>
+                                {rootMessage}
+                            </Typography>
                         )}
                         <Button
                             type='button'

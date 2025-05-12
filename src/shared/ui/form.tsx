@@ -43,15 +43,11 @@ const useFormField = () => {
     };
 };
 
-const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ children }, ref) => {
+const FormItem = ({ children }: { children: React.ReactNode }) => {
     const id = React.useId();
 
-    return (
-        <FormItemContext.Provider value={{ id }}>
-            {children}
-        </FormItemContext.Provider>
-    );
-});
+    return <FormItemContext.Provider value={{ id }}>{children}</FormItemContext.Provider>;
+};
 
 const FormLabel = React.forwardRef<React.ComponentRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>>(({ className, ...props }, ref) => {
     const { formItemId } = useFormField();
@@ -119,7 +115,7 @@ const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElem
             name='otp'
             control={form.control}
             render={({ field }) => (
-                <FormItem className='relative'>
+                <FormItem>
                     <FormLabel className='text-white'>Enter verification code</FormLabel>
                     <FormControl>
                         <OTP {...field} onResendCB={onResend} onComplete={onSubmit} />
