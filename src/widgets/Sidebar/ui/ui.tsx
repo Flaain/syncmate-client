@@ -50,7 +50,7 @@ export const Sidebar = () => {
                             onChange={handleSearch}
                             value={value}
                             placeholder={!connectedToNetwork ? 'Waiting for network' : !isSocketConnected ? 'Connecting...' : 'Search...'}
-                            className='flex-1 px-12 py-0 rounded-full'
+                            className='flex-1 px-12 py-0 rounded-full font-light'
                         />
                     {!!value.trim().length && (
                         <Button variant='text' size='icon' onClick={resetSearch} className='p-0 absolute right-3 top-1/2 -translate-y-1/2'>

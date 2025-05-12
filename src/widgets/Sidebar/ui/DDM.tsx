@@ -44,7 +44,7 @@ export const DDM = ({ changeMenu }: { changeMenu: (menu: SidebarMenus | null) =>
                 <Image
                     className='size-6 rounded-full border-[1.5px] border-solid border-primary-blue object-cover'
                     src={avatar?.url}
-                    skeleton={<AvatarByName name={name} className='size-5 text-sm' />}
+                    skeleton={<AvatarByName name={name} className='size-6 text-sm' />}
                 />
             </MenuItem>
             <DropdownMenuSeparator className='dark:bg-primary-dark-50' />
