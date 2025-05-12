@@ -1,21 +1,19 @@
-import { Message } from "@/shared/model/types";
+import { Message, MessageStatus } from "@/shared/model/types";
+
+export type CtxItemClickFunc = (cb?: () => void) => () => void;
 
 export interface IdleCtxMenuProps {
     isMessageFromMe: boolean;
     message: Message;
     onCopy: () => void;
-    onItemClick: (cb: () => void) => () => void;
+    onItemClick: CtxItemClickFunc;
 }
 
-export interface PossibleCtxActions {
-    reply: () => void;
-    edit: () => void;
-    delete: () => void;
-    copy: () => void;
-    select: () => void;
-    abort: () => void;
-    resend: () => void;
-    remove: () => void;
+export interface WithStatusCtxMenuProps {
+    status: Exclude<MessageStatus, 'idle'>;
+    actions: Message['actions']; 
+    onCopy: () => void;
+    onItemClick: CtxItemClickFunc;
 }
 
 export interface UseMessageProps {

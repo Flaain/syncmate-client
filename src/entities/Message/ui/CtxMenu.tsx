@@ -7,19 +7,19 @@ import { useChat } from '@/shared/lib/providers/chat';
 import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
 import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
-import { MessageStatus } from '@/shared/model/types';
 import { ContextMenuContent, ContextMenuSeparator } from '@/shared/ui/context-menu';
 import { Typography } from '@/shared/ui/Typography';
 
 import { ContextMenuProps } from '../model/types';
 
-import { ErrorContextMenu } from './ErrorCtxMenu';
 import { IdleContextMenu } from './IdleCtxMenu';
-import { PendingContextMenu } from './PendingCtxMenu';
+import { SelectionCtxMenu } from './SelectionCtxMenu';
+import { WithStatusCtxMenu } from './WithStatusCtxMenu';
 
 export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
 
+    const chatMode = useChat((state) => state.mode);
     const textareaRef = useChat((state) => state.refs.textareaRef);
 
     const ref = React.useRef<HTMLDivElement>(null);
@@ -33,37 +33,9 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
 
     const copyCallback = () => handleItemClick(handleCopyToClipboard);
     
-    const handleItemClick = (cb: () => void) => () => {
-        cb();
+    const handleItemClick = (cb?: () => void) => () => {
+        cb?.();
         setShouldRemove(true);
-    };
-
-    const menus: Record<MessageStatus, React.ReactNode> = {
-        idle: (
-            <IdleContextMenu
-                isMessageFromMe={isMessageFromMe}
-                onCopy={copyCallback}
-                message={message}
-                onItemClick={handleItemClick}
-            />
-        ),
-        pending: (
-            <PendingContextMenu
-                actions={{
-                    copy: copyCallback,
-                    abort: handleItemClick(message.actions?.abort!)
-                }}
-            />
-        ),
-        error: (
-            <ErrorContextMenu
-                actions={{
-                    copy: copyCallback,
-                    resend: handleItemClick(message.actions?.resend!),
-                    remove: handleItemClick(message.actions?.remove!)
-                }}
-            />
-        )
     };
 
     return (
@@ -81,20 +53,32 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
             )}
         >
             <ul>
-                <>
-                    {isMessageFromMe && message.hasBeenRead && message.readedAt && (
-                        <>
-                            <li className='flex flex-col'>
-                                <div className='flex items-center gap-2 px-2'>
-                                    <CheckCheck className='size-5' />
-                                    <Typography size='sm'>{getRelativeMessageTimeString(message.readedAt)}</Typography>
-                                </div>
-                                <ContextMenuSeparator className='dark:bg-primary-dark-50 my-2' />
-                            </li>
-                        </>
-                    )}
-                    {menus[message.status || 'idle']}
-                </>
+                {chatMode === 'default' && isMessageFromMe && message.hasBeenRead && message.readedAt && (
+                    <li className='flex flex-col'>
+                        <div className='flex items-center gap-2 px-2'>
+                            <CheckCheck className='size-5' />
+                            <Typography size='sm'>{getRelativeMessageTimeString(message.readedAt)}</Typography>
+                        </div>
+                        <ContextMenuSeparator className='dark:bg-primary-dark-50 my-2' />
+                    </li>
+                )}
+                {typeof message.status === 'string' && message.status !== 'idle' ? (
+                    <WithStatusCtxMenu
+                        status={message.status}
+                        actions={message.actions}
+                        onItemClick={handleItemClick}
+                        onCopy={copyCallback}
+                    />
+                ) : chatMode === 'selecting' && isMessageFromMe ? (
+                    <SelectionCtxMenu message={message} onItemClick={handleItemClick} />
+                ) : (
+                    <IdleContextMenu
+                        isMessageFromMe={isMessageFromMe}
+                        onCopy={copyCallback}
+                        message={message}
+                        onItemClick={handleItemClick}
+                    />
+                )}
             </ul>
         </ContextMenuContent>
     );

@@ -19,18 +19,12 @@ export const useIdleCtxMenu = (message: Message) => {
     
     const { onAsyncActionModal } = useModal(useShallow(selectModalActions));
 
-    const handleMessageDelete = () =>
-        onAsyncActionModal(
-            () =>
-                messageApi.delete({
-                    endpoint: `${endpoints[params.type]}/delete/${params.id}`,
-                    messageIds: [message._id]
-                }),
-            {
-                closeOnError: true,
-                onReject: () => toast.error('Cannot delete message')
-            }
-        );
+    const handleMessageDelete = async () => {
+        await onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
+            closeOnError: true,
+            onReject: () => toast.error('Cannot delete message')
+        });
+    }
 
     const handleContextAction = (action: 'reply' | 'edit') => {
         if (isCtxBlocked) return;
