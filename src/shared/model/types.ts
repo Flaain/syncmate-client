@@ -12,6 +12,11 @@ export const USER_EVENTS = {
     OFFLINE: 'user.offline'
 } as const;
 
+export const LAYOUT_EVENTS = {
+    UPDATE_DRAFT: 'layout.draft.update'
+} as const;
+
+
 export const PRESENCE = {
     online: 'online',
     offline: 'offline'
@@ -25,6 +30,8 @@ export type SetStateInternal<T> = {
     _(partial: T | Partial<T> | {  _(state: T): T | Partial<T>; }['_'], replace?: false): void;
     _(state: T | { _(state: T): T }['_'], replace: true): void;
 }['_'];
+
+export type LayoutUpdateArgs = ({ type: 'delete', messageIds: Array<string> } | { type: 'edit', _id: string; text: string; updatedAt: string }) & { recipientId: string }
 
 export type SchemaNameType = z.infer<typeof nameSchema>;
 export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>
