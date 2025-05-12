@@ -67,3 +67,19 @@ html {
     height: -webkit-fill-available;
     height: fill-available;
 }
+
+.hoverable-scroll:active::-webkit-scrollbar-thumb,
+.scroll:focus::-webkit-scrollbar-thumb,
+.scroll:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.hoverable-scroll:hover::-webkit-scrollbar-thumb,
+.scroll:focus::-webkit-scrollbar-thumb,
+.scroll:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.hoverable-scroll::-webkit-scrollbar-thumb {
+    visibility: hidden;
+}
