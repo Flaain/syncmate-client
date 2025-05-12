@@ -33,7 +33,7 @@ export const MenuItem = ({
         <Item
             asChild
             className={cn(
-                'active:scale-95 flex items-center gap-5 transition-colors ease-in-out duration-200 dark:text-primary-white text-primary-dark-200 rounded-md hover:bg-primary-gray focus:bg-primary-gray',
+                'active:scale-95 flex items-center gap-4 px-3 transition-colors ease-in-out duration-200 dark:text-primary-white text-primary-dark-200 rounded-md hover:bg-primary-gray focus:bg-primary-gray',
                 variant === 'destructive' ? 'dark:hover:bg-primary-destructive/10 dark:focus:bg-primary-destructive/10' : 'dark:hover:bg-light-secondary-color dark:focus:bg-light-secondary-color',
                 className
             )}
@@ -45,7 +45,7 @@ export const MenuItem = ({
                 <Typography
                     size='sm'
                     weight='medium'
-                    className={cn('flex items-center', variant === 'destructive' && 'dark:text-primary-destructive')}
+                    className={cn('flex items-center whitespace-nowrap', variant === 'destructive' && 'dark:text-primary-destructive')}
                 >
                     {text}
                 </Typography>

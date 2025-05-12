@@ -32,7 +32,7 @@ export const DDM = ({ children, trigger, className, ...rest }: DDMProps) => {
             <DropdownMenuContent
                 {...rest}
                 className={cn(
-                    'border-none rounded-lg h-auto backdrop-blur-[50px] dark:bg-menu-background-color z-[999]',
+                    'border-none rounded-lg h-auto box-border backdrop-blur-[50px] dark:bg-menu-background-color z-[999]',
                     className
                 )}
                 asChild

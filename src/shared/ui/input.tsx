@@ -24,7 +24,7 @@ const inputVariants = cva(
             },
             _size: {
                 base: 'h-[54px] rounded-[10px] p-[15px] text-base',
-                sm: 'h-10 px-3 py-4 rounded-md text-sm'
+                sm: 'h-10 px-3 py-4 rounded-md text-base'
             },
             outline: {
                 none: 'ring-0 hover:ring-0',
@@ -44,12 +44,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, child
     const value = props.value?.toString();
 
     return label ? (
-        <Label className='relative'>
+        <Label className='relative flex'>
             <input
                 {...props}
                 value={value?.trim().length ? value : ''}
                 type={type}
-                placeholder=''
+                placeholder=' '
                 className={cn(inputVariants({ variant, _size, outline }), className)}
                 ref={ref}
             />
