@@ -22,5 +22,5 @@ export interface ToastConfig {
     ref: HTMLDivElement | null;
     start: number;
     remaining: number;
-    id: NodeJS.Timeout | null;
+    id: ReturnType<typeof setTimeout> | null;
 }
