@@ -22,7 +22,7 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
     const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
     const { updatedAt, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
-    const { isContextActionsBlocked, mode } = useChat(useShallow(messageSelector));
+    const { isContextActionsBlocked } = useChat(useShallow(messageSelector));
    
     const stylesForBottomIcon = cn('size-5 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
     
