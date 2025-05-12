@@ -1,23 +1,19 @@
-import { AtSign, Info, Link, LucideIcon, Mail, Phone } from 'lucide-react';
+import EmailIcon from '@/shared/lib/assets/icons/email.svg?react';
+import InfoIcon from '@/shared/lib/assets/icons/info.svg?react';
+import LinkIcon from '@/shared/lib/assets/icons/link.svg?react';
+import MentionIcon from '@/shared/lib/assets/icons/mention.svg?react';
+
 import { toast } from '../lib/toast';
-import { OutletDetailsButtonProps, OutletDetailsTypes } from '../model/types';
-import { Typography } from './Typography';
+import { OutletDetailsButtonProps, OutletDetailsButtonType } from '../model/types';
+
 import { Button } from './button';
+import { Typography } from './Typography';
 
-const toastTitle: Record<OutletDetailsTypes, string> = {
-    email: 'Email copied to clipboard',
-    phone: 'Phone copied to clipboard',
-    link: 'Link copied to clipboard',
-    bio: 'Bio copied to clipboard',
-    login: 'Login copied to clipboard'
-};
-
-const iconMap: Record<OutletDetailsTypes, LucideIcon> = {
-    email: Mail,
-    link: Link,
-    phone: Phone,
-    bio: Info,
-    login: AtSign
+const iconMap: Record<OutletDetailsButtonType, React.FunctionComponent<React.SVGProps<SVGSVGElement> & { title?: string; titleId?: string; desc?: string; descId?: string }>> = {
+    email: EmailIcon,
+    link: LinkIcon,
+    bio: InfoIcon,
+    login: MentionIcon
 }
 
 export const OutletDetailsButton = ({ data, type }: OutletDetailsButtonProps) => {
@@ -25,7 +21,7 @@ export const OutletDetailsButton = ({ data, type }: OutletDetailsButtonProps) =>
 
     const onCopyToClipboard = () => {
         navigator.clipboard.writeText(data);
-        toast.success(toastTitle[type]);
+        toast.success(`${type} copied to clipboard`);
     };
 
     return (

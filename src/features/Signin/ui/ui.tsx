@@ -1,18 +1,23 @@
-import { useAuth } from '@/pages/Auth';
-import { FormInput } from '@/shared/ui/FormInput';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
+
+import { useAuth } from '@/shared/lib/providers/auth';
+import { useSigninForm } from '@/shared/lib/providers/signin';
 import { Button } from '@/shared/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { useSigninForm } from '@/widgets/SigninForm/model/store';
-import { LoaderCircle } from 'lucide-react';
-import { useSignin } from '../lib/useSignin';
+import { Form, FormControl, FormField, FormItem } from '@/shared/ui/form';
+import { Input } from '@/shared/ui/input';
+import { PasswordInput } from '@/shared/ui/PasswordInput';
+
+import { useSignin } from '../model/useSignin';
 
 export const Signin = () => {
     const { form, isSubmitButtonDisabled, onChangeForm, onSubmit, loading } = useSignin();
-    
+
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
     const changeSigninStage = useSigninForm((state) => state.changeSigninStage);
 
     const serverError = form.formState.errors.root?.server;
+    const loginErrors = form.formState.errors.login?.message;
+    const passwordErrors = form.formState.errors.password?.message;
 
     return (
         <Form {...form}>
@@ -27,16 +32,15 @@ export const Signin = () => {
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className='text-white'>Login</FormLabel>
                                 <FormControl>
-                                    <FormInput
+                                    <Input
                                         {...field}
                                         autoFocus
-                                        placeholder='Enter your email address or login'
-                                        hasServerError={!!serverError}
+                                        label={loginErrors ?? 'Email or Login'}
+                                        variant={loginErrors || serverError ? 'destructive' : 'secondary'}
+                                        labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
-                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -45,29 +49,32 @@ export const Signin = () => {
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className='text-white'>Password</FormLabel>
                                 <FormControl>
-                                    <FormInput
+                                    <PasswordInput
                                         {...field}
-                                        type='password'
-                                        placeholder='Enter your password'
-                                        hasServerError={!!serverError}
+                                        label={passwordErrors ?? 'Password'}
+                                        variant={passwordErrors || serverError ? 'destructive' : 'secondary'}
+                                        labelClassName='dark:bg-primary-dark-200'
                                     />
                                 </FormControl>
-                                <div className='flex items-center justify-between'>
-                                    <FormMessage>{form.formState.errors.root?.server.message}</FormMessage>
-                                    <Button
-                                        type='button'
-                                        variant='link'
-                                        onClick={() => changeSigninStage('forgot')}
-                                        className='ml-auto p-0 opacity-50 hover:opacity-100 transition-all ease-in-out duration-200'
-                                    >
-                                        Forgot password?
-                                    </Button>
-                                </div>
                             </FormItem>
                         )}
                     />
+                    <div className='flex items-center justify-between'>
+                        {form.formState.errors.root?.server.message && (
+                            <p className='text-sm font-medium text-primary-destructive dark:text-primary-destructive'>
+                                {form.formState.errors.root.server.message}
+                            </p>
+                        )}
+                        <Button
+                            type='button'
+                            variant='link'
+                            onClick={() => changeSigninStage('forgot')}
+                            className='ml-auto p-0 opacity-50 hover:opacity-100 transition-all ease-in-out duration-200'
+                        >
+                            Forgot password?
+                        </Button>
+                    </div>
                     <div className='flex w-full items-center justify-between'>
                         <Button
                             type='button'
@@ -79,7 +86,7 @@ export const Signin = () => {
                             Back
                         </Button>
                         <Button className='w-24' disabled={isSubmitButtonDisabled}>
-                            {loading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : 'Submit'}
+                            {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Submit'}
                         </Button>
                     </div>
                 </form>

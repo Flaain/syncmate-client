@@ -1,6 +1,8 @@
 import { cva } from 'class-variance-authority';
+
 import { cn } from '../lib/utils/cn';
-import { ProfileIndicator }  from './ProfileIndicator';
+
+import { ProfileIndicator } from './ProfileIndicator';
 
 export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement> {
     name: string;
@@ -9,7 +11,7 @@ export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement>
 }
 
 const avatarVariants = cva(
-    'flex flex-grow-0 flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
+    'flex flex-grow-0 leading-none flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
     {
         variants: {
             size: {

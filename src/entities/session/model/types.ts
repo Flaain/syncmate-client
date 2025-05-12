@@ -43,8 +43,7 @@ export interface Session {
 
 export interface SessionProps {
     session: Session;
-    withDropButton?: boolean;
-    dropButtonDisabled?: boolean;
+    isCurrent?: boolean;
     onDrop?: (session: Session) => void;
 }
 

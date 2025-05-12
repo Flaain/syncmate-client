@@ -1,4 +1,5 @@
-export { ModalProvider } from './provider';
+export * from './provider';
 export * from './selectors';
-export { useModal } from './store';
+export * from './store';
+
 export { type ModalConfig } from './types';

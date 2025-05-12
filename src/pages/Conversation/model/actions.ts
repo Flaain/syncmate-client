@@ -1,7 +1,7 @@
-import { CONVERSATION_EVENTS, ConversationStore } from './types';
 import { useSocket } from '@/shared/model/store';
-import { ActionsProvider } from '@/shared/model/types';
-import { MessageFormState } from '@/features/SendMessage/model/types';
+import { ActionsProvider, MessageFormState } from '@/shared/model/types';
+
+import { CONVERSATION_EVENTS, ConversationStore } from './types';
 
 export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationStore>, 'get'>): ConversationStore['actions'] => ({
     handleTypingStatus: () => {
@@ -16,11 +16,11 @@ export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationSt
             const { conversation: { _id, recipient } } = get(), { socket } = useSocket.getState();
             const typingData = { conversationId: _id, recipientId: recipient._id };
             
-            !ctx.isTyping ? ((ctx.isTyping = true), socket?.emit(CONVERSATION_EVENTS.START_TYPING, typingData)) : clearTimeout(ctx.typingTimeout!);
+            !ctx.isTyping ? ((ctx.isTyping = true), socket?.emit(CONVERSATION_EVENTS.TYPING_START, typingData)) : clearTimeout(ctx.typingTimeout!);
 
             ctx.typingTimeout = setTimeout(() => {
                 ctx.isTyping = false;
-                socket?.emit(CONVERSATION_EVENTS.STOP_TYPING, typingData);
+                socket?.emit(CONVERSATION_EVENTS.TYPING_STOP, typingData);
             }, 5000);
         };
     },

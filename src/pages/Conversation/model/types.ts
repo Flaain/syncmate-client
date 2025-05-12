@@ -1,7 +1,4 @@
-import { Message } from '@/entities/Message/model/types';
-import { Profile } from '@/entities/profile/model/types';
-import { MessageFormState } from '@/features/SendMessage/model/types';
-import { DataWithCursor } from '@/shared/model/types';
+import { DataWithCursor, Message, MessageFormState, Recipient } from '@/shared/model/types';
 
 export enum CONVERSATION_EVENTS {
     JOIN = 'conversation.join',
@@ -15,8 +12,8 @@ export enum CONVERSATION_EVENTS {
     USER_PRESENCE = 'conversation.user.presence',
     USER_BLOCK = 'conversation.user.block',
     USER_UNBLOCK = 'conversation.user.unblock',
-    START_TYPING = 'conversation.start.typing',
-    STOP_TYPING = 'conversation.stop.typing'
+    TYPING_START = 'conversation.typing.start',
+    TYPING_STOP = 'conversation.typing.stop'
 }
 
 export interface ConversationStore {
@@ -30,17 +27,13 @@ export interface ConversationStore {
 export interface Conversation {
     _id: string;
     recipient: Recipient;
-    messages: DataWithCursor<Message>;
+    messages: DataWithCursor<Array<[string, Message]>>;
     isInitiatorBlocked?: boolean;
     isRecipientBlocked?: boolean;
     createdAt: string;
     updatedAt: string;
 }
 
-export interface GetDescriptionParams {
-    data: { recipient: Pick<Recipient, 'presence' | 'lastSeenAt'> } & Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'>;
-    shouldDisplayTypingStatus?: boolean;
+export interface GetDescriptionParams extends Pick<Recipient, 'presence' | 'lastSeenAt'>, Pick<Conversation, 'isInitiatorBlocked' | 'isRecipientBlocked'> {
     isRecipientTyping: boolean;
 }
-
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'status' | 'avatar'>;

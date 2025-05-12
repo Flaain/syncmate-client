@@ -1,4 +1,5 @@
 import { Observer } from "@/shared/model/observer";
+
 import { IToast, ToastOptions } from "./types";
 
 export class Toast extends Observer<IToast> {

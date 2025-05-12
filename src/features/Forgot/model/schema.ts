@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { emailForSchema, passwordForSchema, passwordRules } from '@/shared/constants';
 
 export const firstStepSchema = z.object({
@@ -31,3 +32,5 @@ export const thirdStepSchema = z
     });
 
 export const forgotSchema = firstStepSchema.and(secondStepSchema).and(thirdStepSchema);
+
+export type ForgotSchemaType = z.infer<typeof forgotSchema>;

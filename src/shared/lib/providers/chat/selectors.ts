@@ -15,7 +15,6 @@ export const getUseCtxMenuMessageSelector = (state: ChatStore) => ({
 
 export const getUseSendMessageSelector = (state: ChatStore) => ({
     textareaRef: state.refs.textareaRef,
-    lastMessageRef: state.refs.lastMessageRef,
     params: state.params,
     handleOptimisticUpdate: state.actions.handleOptimisticUpdate
 });
@@ -32,6 +31,7 @@ export const messagesListSelector = (state: ChatStore) => ({
     refs: state.refs,
     params: state.params,
     messages: state.messages,
+    isUpdating: state.isUpdating,
     setChat: state.actions.setChat
 });
 
@@ -50,6 +50,7 @@ export const sendMessageSelector = (state: ChatStore) => ({
 });
 
 export const outletHeaderSelector = (state: ChatStore) => ({ chatMode: state.mode, setChat: state.actions.setChat });
+
 export const selectStateSelector = (state: ChatStore) => ({
     params: state.params,
     selectedMessages: state.selectedMessages,
@@ -57,3 +58,26 @@ export const selectStateSelector = (state: ChatStore) => ({
 });
 
 export const setChatSelector = (state: ChatStore) => state.actions.setChat;
+
+export const conversationProviderSelector = (state: ChatStore) => ({
+    listRef: state.refs.listRef,
+    bottomPlaceholderRef: state.refs.bottomPlaceholderRef,
+    setChat: state.actions.setChat
+});
+
+export const messageSelector = ({ isContextActionsBlocked, mode, isUpdating }: ChatStore) => ({
+    isContextActionsBlocked,
+    isUpdating,
+    mode
+});
+
+export const selectionCtxMenuSelector = ({
+    params,
+    selectedMessages,
+    actions: { setChat, handleSelectMessage }
+}: ChatStore) => ({
+    params,
+    selectedMessages,
+    handleSelectMessage,
+    setChat
+});

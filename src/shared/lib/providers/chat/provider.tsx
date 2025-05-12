@@ -1,7 +1,10 @@
-import { useEvents } from '@/shared/model/store';
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { createStore } from 'zustand';
+
+import { useEvents } from '@/shared/model/store';
+
 import { chatActions } from './actions';
 import { ChatContext } from './context';
 import { ChatProviderProps, ChatStore } from './types';
@@ -10,14 +13,16 @@ const initialState: Omit<ChatStore, 'actions'> = {
     params: null!,
     isContextActionsBlocked: false,
     showDetails: false,
-    messages: { data: [], nextCursor: null },
+    isUpdating: false,
+    messages: { data: new Map(), nextCursor: null },
     selectedMessages: new Map(),
     mode: 'default',
     showAnchor: false,
     refs: {
         lastMessageRef: React.createRef(),
         listRef: React.createRef(),
-        textareaRef: React.createRef()
+        textareaRef: React.createRef(),
+        bottomPlaceholderRef: React.createRef(),
     },
 }
 

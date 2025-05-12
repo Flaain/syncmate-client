@@ -1,26 +1,35 @@
-import { useChat } from '@/shared/lib/providers/chat/context';
-import { cn } from '@/shared/lib/utils/cn';
-import { Typography } from '@/shared/ui/Typography';
-import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
-import { Check, CheckCheck, Clock, Info } from 'lucide-react';
 import React from 'react';
-import { getBubblesStyles } from '../lib/getBubblesStyles';
-import { useMessage } from '../lib/useMessage';
-import { MessageProps } from '../model/types';
-import { MessageContextMenu } from './ContextMenu';
 
-export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
+import { useShallow } from 'zustand/shallow';
+
+import CheckIcon from '@/shared/lib/assets/icons/check.svg?react';
+import CheckCheckIcon from '@/shared/lib/assets/icons/checkcheck.svg?react';
+import SendingIcon from '@/shared/lib/assets/icons/sending.svg?react';
+import SendingErrorIcon from '@/shared/lib/assets/icons/sendingerror.svg?react';
+
+import { messageSelector, useChat } from '@/shared/lib/providers/chat';
+import { cn } from '@/shared/lib/utils/cn';
+import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
+import { Typography } from '@/shared/ui/Typography';
+
+import { MessageProps } from '../model/types';
+import { useMessage } from '../model/useMessage';
+import { getBubblesStyles } from '../utils/getBubblesStyles';
+
+import { CtxMenu } from './CtxMenu';
+
+export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup, isMessageFromMe, className, ...rest }: MessageProps) => {
     const { isContextMenuOpen, createTime, isSelected, ref, setIsContextMenuOpen } = useMessage({ message, isMessageFromMe, isLast, isLastGroup });
     const { updatedAt, text, hasBeenRead, hasBeenEdited, replyTo, inReply, status } = message;
     
-    const isContextActionsBlocked = useChat((state) => state.isContextActionsBlocked);
+    const { isContextActionsBlocked, mode } = useChat(useShallow(messageSelector));
    
-    const stylesForBottomIcon = cn('size-4 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
+    const stylesForBottomIcon = cn('size-5 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
     
     const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = React.useMemo(() => ({
-        idle: hasBeenRead ? <CheckCheck className={stylesForBottomIcon} /> : <Check className={stylesForBottomIcon} />,
-        pending: <Clock className={stylesForBottomIcon} />,
-        error: <Info className={stylesForBottomIcon} />,
+        idle: hasBeenRead ? <CheckCheckIcon className={stylesForBottomIcon} /> : <CheckIcon className={stylesForBottomIcon} />,
+        pending: <SendingIcon className={stylesForBottomIcon} />,
+        error: <SendingErrorIcon className={stylesForBottomIcon} />,
     }), [hasBeenRead, status]);
 
     return (
@@ -31,6 +40,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                     ref={ref}
                     className={cn(
                         'flex gap-2 relative z-10 items-start',
+                        // message.shouldAnimate && 'animate-out fill-mode-forwards scale-75 opacity-0 duration-300',
                         !isMessageFromMe && isFirst && 'flex-col',
                         isSelected && 'xl:after:-left-full after:-right-5 after:w-svw after:z-[-1] after:absolute after:-top-1 after:-bottom-1 after:dark:bg-primary-dark-50',
                         className
@@ -55,6 +65,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                         </svg>
                     )}
                     <div
+                        ref={firstMessageRef}
                         className={cn(
                             'px-2 py-1 xl:m-0 relative max-w-[480px] box-border',
                             inReply && 'flex flex-col gap-2 py-1.5',
@@ -112,7 +123,7 @@ export const Message = ({ message, isFirst, isLast, isLastGroup, isMessageFromMe
                 </li>
             </ContextMenuTrigger>
             {isContextMenuOpen && !isContextActionsBlocked && (
-                <MessageContextMenu
+                <CtxMenu
                     message={message}
                     isMessageFromMe={isMessageFromMe}
                     onClose={() => setIsContextMenuOpen(false)}

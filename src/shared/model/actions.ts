@@ -1,5 +1,4 @@
-import { LayoutStore } from "./store";
-import { ActionsProvider } from "./types";
+import { ActionsProvider, LayoutStore } from "./types";
 
 export const layoutActions = ({ get }: Pick<ActionsProvider<LayoutStore>, 'get'>): LayoutStore['actions'] => ({
     playSound: (name, cb?: (sound: HTMLAudioElement) => void) => {

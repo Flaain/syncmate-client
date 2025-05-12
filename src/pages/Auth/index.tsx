@@ -1,12 +1,14 @@
 import React from 'react';
-import { ScreenLoader } from '@/shared/ui/ScreenLoader';
-import { routerList } from '@/shared/constants';
-import { RouteObject } from 'react-router-dom';
-import { View } from './model/view';
-import { AuthProvider } from './model/store';
-import { Guard } from '@/app/model/Guard';
 
-export { useAuth } from './model/store';
+import { RouteObject } from 'react-router-dom';
+
+import { Guard } from '@/features/guard';
+
+import { routerList } from '@/shared/constants';
+import { AuthProvider } from '@/shared/lib/providers/auth';
+import { ScreenLoader } from '@/shared/ui/ScreenLoader';
+
+import { View } from './model/view';
 
 export const AuthPage: RouteObject = {
     path: routerList.AUTH,

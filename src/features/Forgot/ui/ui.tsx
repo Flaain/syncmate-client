@@ -1,11 +1,11 @@
-import { OTP } from '@/features/OTP/ui/ui';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
+
 import { Button } from '@/shared/ui/button';
-import { LoaderCircle } from 'lucide-react';
-import { PasswordInput } from '@/shared/ui/PasswordInput';
-import { useForgot } from '../lib/useForgot';
+import { Form, FormControl, FormField, FormItem, FormOTP } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
-import { buttonTitles } from '../model/constants';
+import { PasswordInput } from '@/shared/ui/PasswordInput';
+
+import { useForgot } from '../model/useForgot';
 
 export const Forgot = () => {
     const { form, isNextButtonDisabled, isLoading, onSubmit, onBack, step } = useForgot();
@@ -23,34 +23,20 @@ export const Forgot = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className='text-white'>Email</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder='Enter your email address'
-                                            className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                            autoFocus
+                                            label={form.formState.errors.email?.message ?? 'Email'}
+                                            variant={form.formState.errors.email ? 'destructive' : 'secondary'}
+                                            labelClassName='dark:bg-primary-dark-200'
                                         />
                                     </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                     )}
-                    {step === 1 && (
-                        <FormField
-                            name='otp'
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem className='relative'>
-                                    <FormLabel className='text-white'>Enter verification code</FormLabel>
-                                    <FormControl>
-                                        <OTP {...field} onComplete={onSubmit} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    )}
+                    {step === 1 && <FormOTP onSubmit={onSubmit} />}
                     {step === 2 && (
                         <>
                             <FormField
@@ -58,16 +44,14 @@ export const Forgot = () => {
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-white'>Password</FormLabel>
                                         <FormControl>
                                             <PasswordInput
                                                 {...field}
-                                                placeholder='Enter your password'
-                                                className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                                label={form.formState.errors.password?.message ?? 'Password'}
+                                                variant={form.formState.errors.password ? 'destructive' : 'secondary'}
                                                 value={field.value.replace(/\s/g, '')}
                                             />
                                         </FormControl>
-                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -76,16 +60,14 @@ export const Forgot = () => {
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className='text-white'>Confirm password</FormLabel>
                                         <FormControl>
                                             <PasswordInput
                                                 {...field}
-                                                placeholder='Confirm your password'
-                                                className='focus:placeholder:opacity-0 placeholder:transition-opacity placeholder:duration-300 placeholder:ease-in-out dark:ring-offset-0 dark:focus-visible:ring-primary-dark-50 dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 border-none text-white hover:ring-1 dark:placeholder:text-white placeholder:opacity-50 dark:hover:ring-primary-dark-50'
+                                                label={form.formState.errors.password?.message ?? 'Password'}
+                                                variant={form.formState.errors.password ? 'destructive' : 'secondary'}
                                                 value={field.value.replace(/\s/g, '')}
                                             />
                                         </FormControl>
-                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -103,7 +85,7 @@ export const Forgot = () => {
                         </Button>
                         {step !== 1 && (
                             <Button className='w-24' disabled={isNextButtonDisabled}>
-                                {isLoading ? <LoaderCircle className='w-5 h-5 animate-loading' /> : buttonTitles[step as keyof typeof buttonTitles]}
+                                {isLoading ? <LoaderIcon className='size-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
                             </Button>
                         )}
                     </div>

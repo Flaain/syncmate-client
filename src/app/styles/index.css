@@ -1,3 +1,5 @@
+@import url('../../shared//lib/assets/fonts/fonts.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +16,17 @@
     }
 }
 
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.hide-password-toggle::-ms-reveal,
+.hide-password-toggle::-ms-clear {
+    visibility: hidden;
+    pointer-events: none;
+    display: none;
+}
+
 .quotes-none {
     quotes: none;
 }
@@ -26,10 +39,47 @@ html {
     overscroll-behavior: none;
 }
 
-/* styles above for html and body need to prevent elastic scrolling on iOS Safari*/
+/* custom scrollbar */
 
-/* 
-html, body, #root {
-    margin: 0;
-    height: 100%;
-  } */
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #9e9e9e;
+    opacity: 50%;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #424242;
+}
+
+/* custom scrollbar */
+
+.h-fill-available {
+    height: -webkit-fill-available;
+    height: fill-available;
+}
+
+.hoverable-scroll:active::-webkit-scrollbar-thumb,
+.scroll:focus::-webkit-scrollbar-thumb,
+.scroll:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.hoverable-scroll:hover::-webkit-scrollbar-thumb,
+.scroll:focus::-webkit-scrollbar-thumb,
+.scroll:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.hoverable-scroll::-webkit-scrollbar-thumb {
+    visibility: hidden;
+}

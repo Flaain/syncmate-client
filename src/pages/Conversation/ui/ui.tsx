@@ -1,16 +1,20 @@
-import { SourceRefPath } from '@/entities/Message/model/types';
-import { ApiException } from '@/shared/api/error';
+import { useNavigate, useParams } from 'react-router';
+
 import ErrorLaptop from '@/shared/lib/assets/errors/laptop.svg?react';
+import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
+
+import { ApiException } from '@/shared/api';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { useSocket } from '@/shared/model/store';
+import { CHAT_TYPE } from '@/shared/model/types';
+import { Button } from '@/shared/ui/button';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
 import { OutletError } from '@/shared/ui/OutletError';
-import { Button } from '@/shared/ui/button';
-import { Loader2 } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+
 import { conversationApi } from '../api';
 import { ConversationProvider } from '../model/provider';
+
 import { Content } from './Content';
 
 export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
@@ -19,17 +23,19 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
     const setChat = useChat(setChatSelector);
     const navigate = useNavigate();
     
-    const { isLoading, isError, isRefetching, refetch, data } = useQuery(({ signal }) => conversationApi.get(id!, signal), {
+    const { isLoading, isError, isRefetching, data, refetch } = useQuery(({ signal }) => conversationApi.get(id!, signal), {
+        prefix: `/conversation/${id}`,
         keys: [id],
         retry: 5,
         retryDelay: 2000,
         onSelect: ({ messages, ...data }) => data,
-        onSuccess: ({ messages }) => {
+        onSuccess: ({ messages }, isCached) => {
             setChat({
-                messages,
+                isUpdating: isCached,
+                messages: { data: new Map(messages.data), nextCursor: messages.nextCursor },
                 params: {
                     id,
-                    type: SourceRefPath.CONVERSATION,
+                    type: CHAT_TYPE.Conversation,
                     query: { recipientId: id, session_id: useSocket.getState().session_id }
                 }
             });
@@ -47,7 +53,7 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
                 description='Cannot load conversation'
                 callToAction={
                     <Button onClick={refetch} className='mt-5' disabled={isRefetching}>
-                        {isRefetching ? <Loader2 className='size-6 animate-spin' /> : 'try again'}
+                        {isRefetching ? <LoaderIcon className='size-6 animate-loading' /> : 'try again'}
                     </Button>
                 }
             />

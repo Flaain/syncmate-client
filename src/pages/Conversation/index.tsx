@@ -1,10 +1,11 @@
-import { routerList } from '@/shared/constants';
-import { ChatProvider } from '@/shared/lib/providers/chat/provider';
-import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
-import { OutletError } from '@/shared/ui/OutletError';
-import { Button } from '@/shared/ui/button';
 import React from 'react';
+
 import { RouteObject } from 'react-router-dom';
+
+import { routerList } from '@/shared/constants';
+import { ChatProvider } from '@/shared/lib/providers/chat';
+import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
+
 import { View } from './model/view';
 
 const fallback = ChatSkeleton();
@@ -18,15 +19,5 @@ export const ConversationPage: RouteObject = {
             </ChatProvider>
         </React.Suspense>
     ),
-    errorElement: (
-        <OutletError
-            title='Failed to load conversation'
-            description='Please try to refresh the page'
-            callToAction={
-                <Button className='mt-3' onClick={() => window.location.reload()}>
-                    Refresh page
-                </Button>
-            }
-        />
-    )
+    errorElement: fallback
 };

@@ -1,1 +1,0 @@
-export { OutletDetails } from './ui/ui';

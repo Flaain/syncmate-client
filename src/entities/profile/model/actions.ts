@@ -1,8 +1,10 @@
 import { useSession } from "@/entities/session";
+
 import { toast } from "@/shared/lib/toast";
-import { debounce } from "@/shared/lib/utils/debounce";
 import { SetStateInternal } from "@/shared/model/types";
+
 import { profileApi } from "../api";
+
 import { imageValidators } from "./constants";
 import { ProfileStore } from "./types";
 
@@ -20,15 +22,6 @@ export const profileActions = (set: SetStateInternal<ProfileStore>, get: () => P
             useSession.setState({ isAuthInProgress: false });
         }
     },
-    handleSetStatus: debounce(async (status: string) => {
-        try {
-            await profileApi.status({ status });
-
-            set((prevState) => ({ profile: { ...prevState.profile, status } }));
-        } catch (error) {
-            console.error(error);
-        }
-    }, 500),
     handleUploadAvatar: async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files?.length || get().isUploadingAvatar) return;
 

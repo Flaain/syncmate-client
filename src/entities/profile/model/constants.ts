@@ -1,6 +1,6 @@
 export const MAX_STATUS_SIZE = 70;
 export const STOP_SIZE = 200;
-export const MAX_IMAGE_SIZE = 5 * 1024 ** 2;
+export const MAX_IMAGE_SIZE = 5 * 1024 ** 2; // 5MB in bytes
 
 export const validFileTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 export const imageValidators: Array<{ isValid: (file: File) => boolean; message: string }> = [

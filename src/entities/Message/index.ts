@@ -1,3 +1,4 @@
-export { messageApi } from './api';
-export { MessageSkeleton } from './ui/Skeletons';
-export { Message } from './ui/ui';
+export * from './api'
+export * from './ui/ui'
+
+export { endpoints } from './model/constants'

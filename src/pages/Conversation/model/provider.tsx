@@ -1,19 +1,26 @@
-import { Message } from '@/entities/Message/model/types';
-import { PRESENCE } from '@/entities/profile/model/types';
-import { useSession } from '@/entities/session';
-import { DEFAULT_TITLE } from '@/shared/constants';
-import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
-import { useLayout, useSocket } from '@/shared/model/store';
 import React from 'react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { createStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
+
+import { MIN_SCROLL_BOTTOM } from '@/widgets/messages-list';
+
+import { useSession } from '@/entities/session';
+
+import { DEFAULT_TITLE } from '@/shared/constants';
+import { conversationProviderSelector, useChat } from '@/shared/lib/providers/chat';
+import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
+import { useLayout, useSocket } from '@/shared/model/store';
+import { Message, PRESENCE } from '@/shared/model/types';
+
 import { conversationActions } from './actions';
 import { ConversationContext } from './context';
 import { CONVERSATION_EVENTS, Conversation, ConversationStore } from './types';
 
 export const ConversationProvider = ({ conversation, children }: { conversation: Omit<Conversation, 'messages'>; children: React.ReactNode }) => {
     const { id: recipientId } = useParams() as { id: string };
+    const { setChat, listRef, bottomPlaceholderRef } = useChat(useShallow(conversationProviderSelector));
     const { 0: store } = React.useState(() => createStore<ConversationStore>((_, get) => ({ 
         conversation, 
         isRecipientTyping: false, 
@@ -23,7 +30,6 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     const socket = useSocket(useShallow((state) => state.socket));
     const userId = useSession((state) => state.userId);
     
-    const setChat = useChat(useShallow(setChatSelector));
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -77,71 +83,63 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
-            setChat(({ messages }) => ({
-                messages: {
-                    ...messages,
-                    data: messages.data.map((message) =>
-                        message._id === _id
-                            ? {
-                                  ...message,
-                                  readedAt,
-                                  [message.sender._id === userId ? 'hasBeenRead' : 'alreadyRead']: true
-                              }
-                            : message
-                    )
-                }
-            }));
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data), msg = newMessages.get(_id);
+
+                msg && newMessages.set(_id, {
+                    ...msg,
+                    readedAt,
+                    [msg.sender._id === userId ? 'hasBeenRead' : 'alreadyRead']: true
+                });
+
+                return { messages: { ...messages, data: newMessages } };
+            });
         })
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
-            setChat(({ messages }) => ({ messages: { ...messages, data: [...messages.data, message] } }));
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data);
 
-            message.sender._id !== userId && document.visibilityState === 'hidden' && useLayout.getState().actions.playSound('new_message');
+                newMessages.set(message._id, message);
+
+                return { messages: { ...messages, data: newMessages } };
+            });
+            
+            if (!(message.sender._id === userId)) {
+                const isAboveBottomMin = !!(listRef.current && getScrollBottom(listRef.current) > MIN_SCROLL_BOTTOM);
+                
+                document.visibilityState === 'hidden' || isAboveBottomMin && useLayout.getState().actions.playSound('new_message');
+
+                !isAboveBottomMin && bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
-            setChat(({ messages }) => ({
-                messages: {
-                    ...messages,
-                    data: messages.data.map((message) => {
-                        if (message._id === _id) return { ...message, text, updatedAt, hasBeenEdited: true };
-                        if (message.replyTo?._id === _id) return { ...message, replyTo: { ...message.replyTo, text } };
+            setChat(({ messages }) => {
+                const newMessages = new Map(messages.data), editedMsg = newMessages.get(_id);
 
-                        return message;
-                    })
-                }
-            }));
+                editedMsg && newMessages.set(_id, { ...editedMsg, text, updatedAt, hasBeenEdited: true });
+
+                newMessages.forEach((v, k) => v.replyTo?._id === _id && newMessages.set(k, { ...v, replyTo: { ...v.replyTo, text } }));
+
+                return { messages: { ...messages, data: newMessages } };
+            });
         });
 
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat(({ messages }) => {
-                const array = messages.data.reduce((acc, message) => {
-                    if (messageIds.includes(message._id)) {
-                        useLayout.getState().drafts.get(recipientId)?.selectedMessage?._id === message._id && useLayout.setState(({ drafts }) => {
-                            const newDrafts = new Map([...drafts]);
-
-                            newDrafts.delete(recipientId);
-
-                            return { drafts: newDrafts };
-                        });
-
-                        return acc;
-                    };
-
-                    return [...acc, message.inReply && messageIds.includes(message.replyTo?._id!) ? { ...message, replyTo: undefined } : message];
-                }, [] as Array<Message>);
-
-                return { messages: { ...messages, data: array } };
+                const newMessages = new Map(messages.data);
+                
+                messageIds.forEach((id) => newMessages.delete(id));
+                
+                return { messages: { ...messages, data: newMessages } };
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => {
-            store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } }));
-        });
-
+        socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => { store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } })); });
         socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
-        socket?.on(CONVERSATION_EVENTS.START_TYPING, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
-        socket?.on(CONVERSATION_EVENTS.STOP_TYPING, () => store.setState({ isRecipientTyping: false }));
+        socket?.on(CONVERSATION_EVENTS.TYPING_START, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
+        socket?.on(CONVERSATION_EVENTS.TYPING_STOP, () => store.setState({ isRecipientTyping: false }));
         
         return () => {
             document.title = DEFAULT_TITLE;
@@ -161,8 +159,8 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             socket?.off(CONVERSATION_EVENTS.CREATED);
             socket?.off(CONVERSATION_EVENTS.DELETED);
 
-            socket?.off(CONVERSATION_EVENTS.START_TYPING);
-            socket?.off(CONVERSATION_EVENTS.STOP_TYPING);
+            socket?.off(CONVERSATION_EVENTS.TYPING_START);
+            socket?.off(CONVERSATION_EVENTS.TYPING_STOP);
         };
     }, [recipientId, conversation]);
 

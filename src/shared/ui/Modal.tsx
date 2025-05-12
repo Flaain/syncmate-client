@@ -1,7 +1,10 @@
-import { XIcon } from 'lucide-react';
 import React from 'react';
+
+import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
+
 import { ModalBodyProps, ModalProps } from '../lib/providers/modal/types';
 import { cn } from '../lib/utils/cn';
+
 import { Typography } from './Typography';
 
 const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<ModalProps, 'children' | 'onRemove' | 'bodyClassName' | 'size' | 'withHeader'>) => {
@@ -11,7 +14,7 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
 
     if (title && !withCloseButton) {
         return (
-            <Typography variant='primary' size='3xl' weight='bold'>
+            <Typography variant='primary' size='2xl' weight='bold'>
                 {title}
             </Typography>
         );
@@ -21,16 +24,16 @@ const ModalHeader = ({ title, withCloseButton, closeHandler, disabled }: Omit<Mo
         <>
             {title ? (
                 <div className='flex items-center justify-between w-full'>
-                    <Typography variant='primary' size='3xl' weight='bold'>
+                    <Typography variant='primary' size='2xl' weight='bold'>
                         {title}
                     </Typography>
                     <button onClick={closeHandler} disabled={disabled}>
-                        <XIcon className='dark:text-white' />
+                        <CloseIcon className='dark:text-white' />
                     </button>
                 </div>
             ) : (
                 <button onClick={closeHandler} className='self-end' disabled={disabled}>
-                    <XIcon className='dark:text-white' />
+                    <CloseIcon className='dark:text-white' />
                 </button>
             )}
         </>

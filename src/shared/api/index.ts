@@ -1,22 +1,13 @@
-import { useProfile } from '@/entities/profile';
-import { useSession } from '@/entities/session';
-import { noRefreshPaths } from '../constants';
-import { API } from './API';
+import { OtpType } from '../model/types';
 
-export const api = new API({ baseUrl: import.meta.env.VITE_BASE_URL, credentials: 'include' });
+import { API, ApiBaseSuccessData } from './API';
 
-api.interceptors.response.use(undefined, async (error) => {
-    if (error.response.status === 401 && !error.config._retry && !noRefreshPaths.includes(error.config.url.pathname)) {
-        error.config._retry = true;
-        try {
-            await api.get('/auth/refresh');
+export { ApiException } from './error'
+export { type ApiBaseSuccessData } from './API';
 
-            return api.call(error.config!);
-        } catch (error) {
-            useSession.getState().actions.onSignout();
-            useProfile.setState({ profile: null! });
-        }
-    }
+export const api = new API({ baseUrl: import.meta.env.VITE_BACKEND_URL, credentials: 'include' });
 
-    return Promise.reject(error);
-});
+export const otpApi = {
+    create: (body: { email: string; type: OtpType }) => api.post<{ retryDelay: number }>('/auth/otp', body),
+    verify: (body: { otp: string; email: string; type: OtpType }) => api.post<ApiBaseSuccessData>('/auth/otp/verify', body)
+};

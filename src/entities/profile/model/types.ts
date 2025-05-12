@@ -1,6 +1,11 @@
-export enum PRESENCE {
-    ONLINE = 'online',
-    OFFLINE = 'offline'
+import { Avatar, PRESENCE, Profile } from "@/shared/model/types";
+
+export type EditProfilePaths = 'name' | 'lastName' | 'bio';
+
+export interface EditProfile {
+    name: string;
+    lastName: string;
+    bio: string;
 }
 
 export interface ProfileStore {
@@ -9,27 +14,14 @@ export interface ProfileStore {
     actions: {
         getProfile: () => Promise<void>;
         handleUploadAvatar: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        handleSetStatus: (status: string) => void;
     };
 }
 
-export interface Profile {
+export interface SearchUser {
     _id: string;
     name: string;
-    login: string;
-    email: string;
-    presence: PRESENCE;
-    status?: string;
-    avatar?: Avatar;
-    lastSeenAt: string;
     isOfficial: boolean;
-    isPrivate: boolean;
-    isDeleted: boolean;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface Avatar {
-    _id: string;
-    url: string;
+    avatar?: Avatar;
+    presence: PRESENCE;
+    login: string;
 }

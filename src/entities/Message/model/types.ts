@@ -1,30 +1,25 @@
-import { Recipient } from "@/pages/Conversation/model/types";
+import { Message, MessageStatus } from "@/shared/model/types";
 
-export enum SourceRefPath {
-    CONVERSATION = 'Conversation'
+export type CtxItemClickFunc = (cb?: () => void) => () => void;
+
+export interface IdleCtxMenuProps {
+    isMessageFromMe: boolean;
+    message: Message;
+    onCopy: () => void;
+    onItemClick: CtxItemClickFunc;
 }
 
-export type Message = {
-    _id: string;
-    hasBeenEdited: boolean;
-    text: string;
-    replyTo?: Pick<Message, '_id' | 'text'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION };
-    inReply?: boolean;
-    readedAt?: string;
-    hasBeenRead?: boolean;
-    alreadyRead?: boolean;
-    createdAt: string;
-    updatedAt: string;
-    status?: 'pending' | 'error';
-    actions?: {
-        abort?: () => void;
-        remove?: () => void;
-        resend?: () => void;
-    };
-    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: SourceRefPath.CONVERSATION;
+export interface WithStatusCtxMenuProps {
+    status: Exclude<MessageStatus, 'idle'>;
+    actions: Message['actions']; 
+    onCopy: () => void;
+    onItemClick: CtxItemClickFunc;
 }
 
 export interface UseMessageProps {
+    isMessageFromMe: boolean;
+    isLastGroup?: boolean;
+    isLast?: boolean;
     message: Message;
 }
 
@@ -34,6 +29,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLLIElement> {
     isLastGroup: boolean;
     isFirst: boolean;
     isLast: boolean;
+    firstMessageRef: ((node: HTMLDivElement) => void) | null;
 }
 
 export interface ContextMenuProps {

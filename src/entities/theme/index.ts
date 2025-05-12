@@ -1,1 +1,1 @@
-export { useTheme } from './model/store';
+export * from './model/store';

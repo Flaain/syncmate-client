@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
-import { SigninSchemaType } from '../model/types';
-import { Profile } from '@/entities/profile/model/types';
+import { Profile } from '@/shared/model/types';
+
+import { SigninSchemaType } from '../model/schema';
 
 export const signinApi = {
     signin: (body: SigninSchemaType) => api.post<Profile>('/auth/signin', body)

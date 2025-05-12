@@ -1,5 +1,4 @@
-import { Message, SourceRefPath } from '@/entities/Message/model/types';
-import { DataWithCursor, SetStateInternal } from '@/shared/model/types';
+import { CHAT_TYPE, DataWithCursor, Message, SetStateInternal } from '@/shared/model/types';
 
 export type ChatMode = 'default' | 'selecting';
 
@@ -10,11 +9,13 @@ export interface ChatStore {
     mode: ChatMode;
     showDetails: boolean;
     selectedMessages: Map<string, Message>;
-    messages: DataWithCursor<Message>;
+    messages: DataWithCursor<Map<string, Message>>;
+    isUpdating: boolean;
     refs: {
         listRef: React.RefObject<HTMLUListElement | null>;
         textareaRef: React.RefObject<HTMLTextAreaElement | null>;
         lastMessageRef: { current: HTMLLIElement | null };
+        bottomPlaceholderRef: { current: HTMLLIElement | null };
     };
     actions: {
         setChat: SetStateInternal<ChatStore>;
@@ -31,7 +32,7 @@ export interface ChatStore {
 export interface ChatParams {
     id: string;
     query: Record<string, any>;
-    type: SourceRefPath;
+    type: CHAT_TYPE;
 }
 
 export interface ChatProviderProps {

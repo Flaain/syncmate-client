@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router";
-import { ConversationPage } from "./Conversation";
-import { HomePage } from "./Home";
+
+import { ConversationPage } from "./conversation";
+import { HomePage } from "./home";
 
 export const pages: Array<RouteObject> = [HomePage, ConversationPage];
