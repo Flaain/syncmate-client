@@ -9,14 +9,14 @@ import { ModalProvider } from '@/shared/lib/providers/modal';
 import { Toaster } from '@/shared/lib/toast';
 import { uuidv4 } from '@/shared/lib/utils/uuidv4';
 import { useEvents, useLayout, useSocket } from '@/shared/model/store';
-import { PRESENCE, USER_EVENTS } from '@/shared/model/types';
+import { LAYOUT_EVENTS, LayoutUpdateArgs, PRESENCE, USER_EVENTS } from '@/shared/model/types';
 
 export const LayoutProvider = () => {
     const listeners = useEvents((state) => state.listeners);
 
     React.useEffect(() => {
         const session_id = uuidv4();
-        const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true, query: { session_id } });
+        const socket = io(import.meta.env.VITE_BACKEND_URL, { withCredentials: true, query: { session_id } });
         const abortController = new AbortController();
 
         socket.on('connect', () => {
@@ -27,6 +27,52 @@ export const LayoutProvider = () => {
 
         socket.on('disconnect', () => { useSocket.setState({ isConnected: false }) });
 
+        socket.on(LAYOUT_EVENTS.UPDATE_DRAFT, (args: LayoutUpdateArgs) => {
+            const draft = useLayout.getState().drafts.get(args.recipientId);
+
+            if (draft && draft.state !== 'send') {
+                if (args.type === 'delete') {
+                    const { messageIds, recipientId } = args;
+
+                    for (let i = 0; i < messageIds.length; i += 1) {
+                        if (draft.selectedMessage?._id === messageIds[i]) {
+                            useLayout.setState(({ drafts }) => {
+                                const newDrafts = new Map(drafts);
+    
+                                draft.state === 'edit' ? newDrafts.delete(recipientId) : newDrafts.set(recipientId, {
+                                    state: 'send',
+                                    value: draft.value,
+                                    selectedMessage: undefined
+                                });
+    
+                                return { drafts: newDrafts };
+                            });
+    
+                            break;
+                        }
+                    }
+                } else {
+                    const { _id, text, updatedAt, recipientId } = args;
+                    console.log(_id, draft.selectedMessage, text)
+                    draft.selectedMessage?._id === _id && useLayout.setState(({ drafts }) => {
+                        const newDrafts = new Map(drafts);
+
+                        newDrafts.set(recipientId, {
+                            ...draft,
+                            selectedMessage: {
+                                ...draft.selectedMessage!,
+                                text,
+                                updatedAt,
+                                hasBeenEdited: true
+                            }
+                        });
+
+                        return { drafts: newDrafts };
+                    });
+                }
+            }
+        });
+
         useSocket.setState({ socket, session_id });
 
         window.addEventListener('online', () => useLayout.setState({ connectedToNetwork: true }), { signal: abortController.signal });
@@ -34,6 +80,9 @@ export const LayoutProvider = () => {
 
         return () => {
             abortController.abort();
+
+            socket.off(LAYOUT_EVENTS.UPDATE_DRAFT);
+
             socket.disconnect();
 
             useSocket.setState({ socket: null!, session_id: null, isConnected: false });
