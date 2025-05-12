@@ -59,7 +59,7 @@ export const SelectState = () => {
     }
 
     return (
-        <div className='flex items-center size-full'>
+        <div className='flex items-center size-full animate-in slide-in-from-top-5 duration-200'>
             <Button variant='ghost' size='icon' className="size-10 p-0 rounded-full mr-2 mt-[1px]" onClick={() => setChat({ mode: 'default', selectedMessages: new Map() })}>
                 <CloseIcon className='size-6 text-primary-gray' />
             </Button>

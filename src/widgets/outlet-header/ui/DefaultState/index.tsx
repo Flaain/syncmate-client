@@ -26,11 +26,7 @@ export const DefaultState = ({ name, description, dropdownContent, avatar, isOff
                         className={cn('mr-auto', isOfficial && 'flex items-center gap-2')}
                     >
                         {name}
-                        {isOfficial && (
-                            <Typography>
-                                <VerifiedIcon className='size-5' />
-                            </Typography>
-                        )}
+                        {isOfficial && <VerifiedIcon className='size-5 text-primary-blue' />}
                     </Typography>
                     <Typography className='flex items-center gap-2' variant='secondary' size='sm'>
                         {(!connectedToNetwork || !isConnected || isUpdating) && <LoaderIcon className='size-5 animate-loading' />}
@@ -38,7 +34,7 @@ export const DefaultState = ({ name, description, dropdownContent, avatar, isOff
                     </Typography>
                 </div>
             </div>
-            {dropdownContent && <DDM align='end'>{dropdownContent}</DDM>}
+            {dropdownContent && <DDM sideOffset={15} align='end'>{dropdownContent}</DDM>}
         </div>
     );
 };
