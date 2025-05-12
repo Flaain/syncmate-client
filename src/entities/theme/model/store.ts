@@ -1,7 +1,14 @@
 import { create } from 'zustand';
 
-import { getTheme } from '../lib/getTheme';
+import { Theme, ThemeStore } from './types';
 
-import { Theme } from './types';
+export const useTheme = create<ThemeStore>((set) => ({
+    theme: null,
+    actions: {
+        changeTheme: (theme: Theme) => {
+            set({ theme });
 
-export const useTheme = create<{ theme: Theme }>(() => ({ theme: getTheme() }));
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+        }
+    }
+}));
