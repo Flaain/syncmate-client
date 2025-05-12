@@ -129,23 +129,9 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat(({ messages }) => {
                 const newMessages = new Map(messages.data);
-                const draft = useLayout.getState().drafts.get(recipientId);
-                const shouldRemove = draft && draft.state !== 'send';
                 
-                let isDraftDeleted = false;
-
-                messageIds.forEach((id) => {
-                    newMessages.delete(id) && shouldRemove && !isDraftDeleted && draft?.selectedMessage?._id === id && useLayout.setState(({ drafts }) => {
-                        const newDrafts = new Map(drafts);
-
-                        draft.state === 'edit' ? newDrafts.delete(recipientId) : newDrafts.set(recipientId, { state: 'send', value: draft.value, selectedMessage: undefined });
-
-                        isDraftDeleted = true;
-
-                        return { drafts: newDrafts };
-                    });
-                });
-
+                messageIds.forEach((id) => newMessages.delete(id));
+                
                 return { messages: { ...messages, data: newMessages } };
             });
         });

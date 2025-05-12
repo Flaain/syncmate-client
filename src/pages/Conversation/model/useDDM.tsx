@@ -1,7 +1,10 @@
+import React from 'react';
+
 import { useShallow } from 'zustand/shallow';
 
 import { profileApi } from '@/entities/profile';
 
+import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { Confirm } from '@/shared/ui/Confirm';
@@ -14,11 +17,23 @@ import { recipientSelector } from './selectors';
 export const useDDM = () => {
     const { onAsyncActionModal, onCloseModal, onOpenModal } = useModal(useShallow(selectModalActions));
     
+    const setChat = useChat(setChatSelector);
+
     const recipient = useConversation(recipientSelector);
 
-    const handleBlockRecipient = async (type: 'block' | 'unblock', event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        event.stopPropagation();
+    const handleItemClick = React.useCallback((cb?: (...args: any) => void, ...args: Array<any>) => {
+        return (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+            event.stopPropagation();
+            cb?.(...args);
+        }
+    }, []);
+    
+    const handleSelectMessages = () => setChat((prevState) => ({ 
+        mode: prevState.mode === 'default' ? 'selecting' : 'default', 
+        selectedMessages: new Map() 
+    }));
 
+    const handleBlockRecipient = (type: 'block' | 'unblock') => {
         onOpenModal({
             content: (
                 <Confirm
@@ -36,9 +51,7 @@ export const useDDM = () => {
         });        
     }
 
-    const handleDeleteConversation = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        event.stopPropagation();
-
+    const handleDeleteConversation = () => {
         onOpenModal({
             content: (
                 <Confirm
@@ -59,5 +72,7 @@ export const useDDM = () => {
     return {
         handleBlockRecipient,
         handleDeleteConversation,
+        handleItemClick,
+        handleSelectMessages
     };
 };

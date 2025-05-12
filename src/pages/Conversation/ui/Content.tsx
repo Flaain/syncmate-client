@@ -55,9 +55,7 @@ export const Content = () => {
                     restrictMessaging={[
                         {
                             reason: !!(isInitiatorBlocked || isRecipientBlocked),
-                            message: isRecipientBlocked
-                                ? `You blocked ${recipient.name}`
-                                : `${recipient.name} has restricted incoming messages`
+                            message: isRecipientBlocked ? `You blocked ${recipient.name}` : `${recipient.name} has restricted incoming messages`
                         },
                         {
                             reason: !_id && recipient.isPrivate,
