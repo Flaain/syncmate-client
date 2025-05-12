@@ -37,8 +37,10 @@ export const useModal = create<ModalStore>((set, get) => ({
         ) => {
             try {
                 set({ isModalDisabled: disableOnPending });
-
-                onResolve?.(await cb());
+                
+                const data = await cb();
+                
+                onResolve?.(data);
 
                 closeOnSuccess && get().actions.onCloseModal();
             } catch (error) {

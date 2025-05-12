@@ -50,6 +50,7 @@ export const sendMessageSelector = (state: ChatStore) => ({
 });
 
 export const outletHeaderSelector = (state: ChatStore) => ({ chatMode: state.mode, setChat: state.actions.setChat });
+
 export const selectStateSelector = (state: ChatStore) => ({
     params: state.params,
     selectedMessages: state.selectedMessages,
@@ -64,4 +65,19 @@ export const conversationProviderSelector = (state: ChatStore) => ({
     setChat: state.actions.setChat
 });
 
-export const messageSelector = ({ isContextActionsBlocked, isUpdating }: ChatStore) => ({ isContextActionsBlocked, isUpdating });
+export const messageSelector = ({ isContextActionsBlocked, mode, isUpdating }: ChatStore) => ({
+    isContextActionsBlocked,
+    isUpdating,
+    mode
+});
+
+export const selectionCtxMenuSelector = ({
+    params,
+    selectedMessages,
+    actions: { setChat, handleSelectMessage }
+}: ChatStore) => ({
+    params,
+    selectedMessages,
+    handleSelectMessage,
+    setChat
+});
