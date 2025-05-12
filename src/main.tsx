@@ -8,7 +8,8 @@ import { registerSW } from 'virtual:pwa-register';
 import { router } from './app/model/router';
 import { useProfile } from './entities/profile';
 import { useSession } from './entities/session';
-import { ThemeProvider } from './entities/theme';
+import { useTheme } from './entities/theme';
+import { getTheme } from './entities/theme/lib/getTheme';
 import { api } from './shared/api';
 import { noRefreshPaths } from './shared/constants';
 
@@ -33,12 +34,11 @@ api.interceptors.response.use(undefined, async (error) => {
     return Promise.reject(error);
 });
 
+useTheme.getState().actions.changeTheme(getTheme());
 useProfile.getState().actions.getProfile();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <ThemeProvider>
-            <RouterProvider router={router} />
-        </ThemeProvider>
+        <RouterProvider router={router} />
     </React.StrictMode>
 );
