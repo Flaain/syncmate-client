@@ -10,7 +10,7 @@ import { feedApi } from "../api";
 import { getFilteredGlobalResults, getFilteredLocalResults } from "../utils/feedFilters";
 import { getSortedFeedByLastMessage } from "../utils/getSortedFeed";
 
-import { FEED_EVENT, FEED_TYPE, FeedProps, FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, LocalFeedCounterMapType, LocalResults } from "./types";
+import { FEED_EVENT, FEED_TYPE, FeedProps, FeedUnreadCounterEvent, FeedUpdateParams, LocalFeed, LocalResults } from "./types";
 
 export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearching'>) => {
     const socket = useSocket(socketSelector);
@@ -84,14 +84,15 @@ export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearc
         });
 
         socket?.on(FEED_EVENT.UNREAD_COUNTER, ({ itemId, count, action, ctx }: FeedUnreadCounterEvent) => {
-            setLocalResults((prevState) => {
-                const actions: Record<typeof action, (unreadMessages?: number) => number> = {
-                    set: () => count ?? 0,
-                    dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
-                };
+            const actions: Record<typeof action, (unreadMessages?: number) => number> = {
+                set: () => count ?? 0,
+                dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
+            };
 
-                const source: LocalFeedCounterMapType = {
-                    Conversation: (feedItem) => {
+            setLocalResults((prevState) => {
+                return {
+                    ...prevState,
+                    feed: prevState.feed.map((feedItem) => {
                         if (feedItem.item._id === itemId) {
                             return {
                                 ...feedItem,
@@ -103,12 +104,7 @@ export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearc
                         }
 
                         return feedItem;
-                    }
-                };
-
-                return {
-                    ...prevState,
-                    feed: prevState.feed.map(source[ctx])
+                    })
                 };
             });
         });
