@@ -6,8 +6,10 @@ import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
 import { getFileSize } from '@/shared/lib/utils/getFileSize';
 
+import { _StorageEstimate } from './types';
+
 export const useDataStorageMenu = () => {
-    const [estimation, setEstimation] = React.useState<StorageEstimate | null>(null);
+    const [estimation, setEstimation] = React.useState<_StorageEstimate | null>(null);
     
     const { onAsyncActionModal } = useModal(useShallow(selectModalActions));
 

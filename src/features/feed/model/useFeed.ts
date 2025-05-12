@@ -83,7 +83,7 @@ export const useFeed = ({ searchValue, globalResults }: Omit<FeedProps, 'isSearc
             })
         });
 
-        socket?.on(FEED_EVENT.UNREAD_COUNTER, ({ itemId, count, action, ctx }: FeedUnreadCounterEvent) => {
+        socket?.on(FEED_EVENT.UNREAD_COUNTER, ({ itemId, count, action }: FeedUnreadCounterEvent) => {
             const actions: Record<typeof action, (unreadMessages?: number) => number> = {
                 set: () => count ?? 0,
                 dec: (unread) => Math.max((unread ?? 0) - (count ?? 1), 0)
