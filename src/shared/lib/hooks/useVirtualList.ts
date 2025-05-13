@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useLatest } from "./useLatest";
+
 const ATTRIBUTE_NAME = 'data-virtual-index';
 
 type Key = string | number;
@@ -59,14 +61,6 @@ interface DynamicSizeListItem {
     index: number;
     offsetTop: number;
     height: number;
-}
-
-export const useLatest = <T>(value: T) => {
-    const valueRef = React.useRef(value);
-    
-    React.useInsertionEffect(() => { valueRef.current = value });
-    
-    return valueRef;
 }
 
 export const useVirtualList = ({ count, itemHeight, overscan = 3, scrollingDelay = 150, getItemKey, getScrollElement, estimateItemHeight }: UseVirtualListProps) => {
