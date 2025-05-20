@@ -1,7 +1,8 @@
 import React from "react";
 
-import { MAX_POINTER_DISTANCE_DDM } from "@/shared/constants";
 import { useEvents } from "@/shared/model/store";
+
+const MAX_POINTER_DISTANCE_DDM = 180;
 
 interface UseMenuDistanceProps<T extends HTMLElement> {
     /**
@@ -21,9 +22,25 @@ interface UseMenuDistanceProps<T extends HTMLElement> {
      * @default false
      */
     earlyReturn?: boolean;
+
+    /**
+     * The maximum distance in pixels from the center of the target element
+     * to trigger the menu.
+     * @default MAX_POINTER_DISTANCE_DDM
+     * @see {@link MAX_POINTER_DISTANCE_DDM}
+     */
+    x_distance?: number;
+
+    /**
+     * The maximum distance in pixels from the center of the target element
+     * to trigger the menu.
+     * @default MAX_POINTER_DISTANCE_DDM
+     * @see {@link MAX_POINTER_DISTANCE_DDM}
+     */
+    y_distance?: number;
 }
 
-export const useMenuDistance = <E extends HTMLElement>({ ref, onClose, earlyReturn }: UseMenuDistanceProps<E>) => {
+export const useMenuDistance = <E extends HTMLElement>({ ref, x_distance, y_distance, onClose, earlyReturn }: UseMenuDistanceProps<E>) => {
     const addEventListener = useEvents((state) => state.addEventListener);
 
     const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
@@ -31,7 +48,7 @@ export const useMenuDistance = <E extends HTMLElement>({ ref, onClose, earlyRetu
 
         const { x, y, width, height } = ref.current.getBoundingClientRect();
 
-        (Math.abs(clientX - (x + width / 2)) > MAX_POINTER_DISTANCE_DDM || Math.abs(clientY - (y + height / 2)) > MAX_POINTER_DISTANCE_DDM) && onClose();
+        (Math.abs(clientX - (x + width / 2)) > (x_distance ?? MAX_POINTER_DISTANCE_DDM) || Math.abs(clientY - (y + height / 2)) > (y_distance ?? MAX_POINTER_DISTANCE_DDM)) && onClose();
     }, []);
 
     React.useEffect(() => {

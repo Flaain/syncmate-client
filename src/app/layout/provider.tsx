@@ -53,7 +53,7 @@ export const LayoutProvider = () => {
                     }
                 } else {
                     const { _id, text, updatedAt, recipientId } = args;
-                    console.log(_id, draft.selectedMessage, text)
+
                     draft.selectedMessage?._id === _id && useLayout.setState(({ drafts }) => {
                         const newDrafts = new Map(drafts);
 

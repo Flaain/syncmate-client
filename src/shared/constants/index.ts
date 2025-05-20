@@ -18,12 +18,12 @@ export const localStorageKeys = {
     TOKEN: 'token'
 };
 
+export const ESTIMATED_MESSAGE_SIZE = 40;
 export const MIN_LOGIN_LENGTH = 5;
 export const MIN_USER_SEARCH_LENGTH = 2;
 export const MESSAGES_SKELETON_COUNT = 12;
 export const NAME_MAX_LENGTH = 32;
 export const BIO_MAX_LENGTH = 120;
-export const MAX_POINTER_DISTANCE_DDM = 180;
 
 export const ONLY_LATIN_REGEXP = /^[a-zA-Z0-9_]*$/;
 export const ALLOW_CYRILLIC_REGEXP = /^[\p{L}0-9\s]*$/u;

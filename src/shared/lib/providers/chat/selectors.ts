@@ -37,6 +37,7 @@ export const messagesListSelector = (state: ChatStore) => ({
 
 export const groupedMessagesSelector = (state: ChatStore) => ({
     textareaRef: state.refs.textareaRef,
+    listRef: state.refs.listRef,
     params: state.params,
     mode: state.mode,
     handleSelectMessage: state.actions.handleSelectMessage

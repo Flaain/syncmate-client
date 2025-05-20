@@ -2,6 +2,7 @@ import React from "react";
 
 import { useShallow } from "zustand/shallow";
 
+import { ESTIMATED_MESSAGE_SIZE } from "@/shared/constants";
 import { useInfiniteScroll } from "@/shared/lib/hooks/useInfiniteScroll";
 import { messagesListSelector, useChat } from "@/shared/lib/providers/chat";
 import { DataWithCursor, Message } from "@/shared/model/types";
@@ -13,7 +14,15 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
     const { refs: { listRef, bottomPlaceholderRef }, isUpdating, params, setChat, messages } = useChat(useShallow(messagesListSelector));
 
     const { isLoading, isError, isRefetching, ref, call, refetch } = useInfiniteScroll<HTMLDivElement, DataWithCursor<Array<[string, Message]>>>(({ signal }) => getPreviousMessages(params.id, messages.nextCursor!, signal), { 
-        onSuccess: ({ data, nextCursor }) => setChat(({ messages }) => ({ messages: { data: new Map([...data, ...messages.data.entries()]), nextCursor } })),
+        onSuccess: ({ data, nextCursor }) => {
+            requestAnimationFrame(() => {
+                if (!listRef.current) return;
+
+                listRef.current.scrollTop = data.length * ESTIMATED_MESSAGE_SIZE; // prevent scroll stick to the top after fetching
+            });
+
+            setChat(({ messages }) => ({ messages: { data: new Map([...data, ...messages.data.entries()]), nextCursor } }));
+        },
         deps: [!isUpdating, messages.nextCursor],
     });
 
@@ -44,7 +53,7 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
 
         observer.current.observe(bottomPlaceholderRef.current);
 
-        return () => { observer.current?.disconnect() };
+        return () => observer.current?.disconnect();
     }, [params.id]);
 
     return {

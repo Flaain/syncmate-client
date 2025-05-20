@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Emoji } from 'frimousse';
 import { useShallow } from 'zustand/shallow';
 
 import { messageApi, endpoints } from '@/entities/message';
@@ -11,7 +12,7 @@ import { useLayout } from '@/shared/model/store';
 import { MessageFormState } from '@/shared/model/types';
 import { Confirm } from '@/shared/ui/Confirm';
 
-import { EmojiData, UseMessageParams } from './types';
+import { UseMessageParams } from './types';
 
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
@@ -22,26 +23,33 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
 
-    const onEmojiSelect = ({ native }: EmojiData) => {
+    const valueRef = React.useRef(value);
+    
+    const onEmojiSelect = ({ emoji }: Emoji) => {
         if (textareaRef.current instanceof HTMLTextAreaElement) {
-            const { selectionStart, selectionEnd } = textareaRef.current, newPos = selectionStart + native.length;
+            const { selectionStart, selectionEnd } = textareaRef.current, newPos = selectionStart + emoji.length;
 
-            setValue((prev) => `${prev.slice(0, selectionStart)}${native}${prev.slice(selectionEnd)}`);
-            setTimeout(() => {
+            setValue((prev) => `${prev.slice(0, selectionStart)}${emoji}${prev.slice(selectionEnd)}`);
+
+            requestAnimationFrame(() => {
                 textareaRef.current?.focus();
                 textareaRef.current?.setSelectionRange(newPos, newPos);
-            }, 0);
+            });
         }
     };
 
-    React.useEffect(() => { 
-        if (!textareaRef.current) return;
-        
-        const end = value.length;
-        
-        textareaRef.current.setSelectionRange(end, end);
-        textareaRef.current.focus();
-     }, []);
+    React.useInsertionEffect(() => { valueRef.current = value; }, [value]);
+
+    React.useEffect(() => {
+        requestAnimationFrame(() => {
+            if (!textareaRef.current) return;
+            
+            const end = valueRef.current.length;
+            
+            textareaRef.current.focus();
+            textareaRef.current.setSelectionRange(end, end);
+        });
+    }, [params.id]);
 
     React.useEffect(() => { setValue(currentDraft?.value ?? '') }, [currentDraft]);
 
@@ -210,7 +218,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         } catch (error) {
             console.error(error);
         } finally {
-            setTimeout(() => textareaRef.current?.focus(), 0);
+            requestAnimationFrame(() => textareaRef.current?.focus());
         }
     };
 

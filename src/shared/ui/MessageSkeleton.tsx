@@ -1,6 +1,8 @@
 import { cn } from '@/shared/lib/utils/cn';
 import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
 
+import { ESTIMATED_MESSAGE_SIZE } from '../constants';
+
 export const MessageSkeleton = ({ key }: { key?: number }) => {
     const index = Math.round(Math.random());
     const isEven = !(index % 2);
@@ -15,9 +17,12 @@ export const MessageSkeleton = ({ key }: { key?: number }) => {
                 )}
             >
                 <PreAnimatedSkeleton
-                    style={{ height: `${Math.floor(Math.random() * 101) + 40}px`, width: `${Math.floor(Math.random() * 101) + 120}px` }}
+                    style={{ 
+                        height: `${Math.floor(Math.random() * (100 - ESTIMATED_MESSAGE_SIZE + 1) + ESTIMATED_MESSAGE_SIZE)}px`, 
+                        width: `${Math.floor(Math.random() * 101) + 120}px` 
+                    }}
                     className={cn(
-                        'dark:bg-primary-dark-50 box-border pl-5 pr-12 py-1 mt-2 w-full max-w-[480px] flex items-end gap-3 self-start',
+                        'dark:bg-primary-dark-50 box-border pl-5 pr-12 py-1 w-full max-w-[480px] flex items-end gap-3 self-start',
                         !isEven
                             ? 'rounded-es-[15px] rounded-ss-[15px] xl:rounded-ee-[15px] rounded-se-[15px] rounded-ee-[0px] xl:rounded-ss-[15px] xl:rounded-es-[0px]'
                             : 'rounded-ss-[15px] rounded-es-[0px] rounded-se-[15px] rounded-ee-[15px]'

@@ -16,6 +16,7 @@
                 "@radix-ui/react-slot": "^1.1.0",
                 "class-variance-authority": "^0.7.0",
                 "clsx": "^2.1.1",
+                "frimousse": "^0.2.0",
                 "input-otp": "^1.4.2",
                 "react": "^19.1.0",
                 "react-dom": "^19.1.0",
@@ -7187,6 +7188,19 @@
             "funding": {
                 "type": "patreon",
                 "url": "https://github.com/sponsors/rawify"
+            }
+        },
+        "node_modules/frimousse": {
+            "version": "0.2.0",
+            "resolved": "https://registry.npmjs.org/frimousse/-/frimousse-0.2.0.tgz",
+            "integrity": "sha512-viSrsVQWKR4Q7xzC0lkx3Wu9i1+IHrth0QXn0nlIIJXpltwUnjkGXSTuoW7WHI5aJ4z49WR8E/pyQizFjlNtTA==",
+            "license": "MIT",
+            "workspaces": [
+                ".",
+                "site"
+            ],
+            "peerDependencies": {
+                "react": "^18 || ^19"
             }
         },
         "node_modules/fs-extra": {

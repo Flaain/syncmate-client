@@ -40,7 +40,8 @@ export default {
                 }
             },
             transitionProperty: {
-                height: 'height'
+                height: 'height',
+                width: 'width'
             },
             animation: {
                 loading: 'loading .5s linear infinite',

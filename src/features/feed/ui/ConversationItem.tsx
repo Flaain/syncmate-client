@@ -48,7 +48,7 @@ export const ConversationItem = ({ feedItem: { item: { recipient, unreadMessages
                         {recipient.name}
                         {recipient.isOfficial && <Verified className='size-4 text-primary-blue ml-2' />}
                         {!!unreadMessages && (
-                            <Typography size='xs' className='dark:text-primary-white font-semibold p-3 flex items-center justify-center ml-auto size-5 rounded-full bg-primary-blue mb-1'>
+                            <Typography size='xs' className='dark:text-primary-white font-semibold p-2 flex items-center justify-center ml-auto size-5 rounded-full bg-primary-blue mb-1'>
                                 {unreadMessages > 100 ? '99' : unreadMessages}
                             </Typography>
                         )}
