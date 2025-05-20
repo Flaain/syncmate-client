@@ -31,10 +31,10 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
 
     return (
         <>
-            <div className='flex flex-col sticky bottom-0 w-full z-[999]'>
-            {isEmojiPickerOpen && (
-                <EmojiPicker onClose={() => setIsEmojiPickerOpen(false)} onEmojiSelect={onEmojiSelect} />
-            )}
+            <div className='flex flex-col sticky bottom-0 w-full z-[999] pointer-events-auto'>
+                {isEmojiPickerOpen && (
+                    <EmojiPicker onClose={() => setIsEmojiPickerOpen(false)} onEmojiSelect={onEmojiSelect} />
+                )}
                 {(currentDraft?.state ?? 'send') !== 'send' && (
                     <TopBar
                         onClose={setDefaultState}

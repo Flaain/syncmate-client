@@ -17,7 +17,7 @@ export const useLayout = create<LayoutStore>((_, get) => ({
 
 export const useEvents = create<EventsStore>((set) => ({
     listeners: new Map(),
-    addEventListener: <E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void) => {
+    addEventListener: <E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E], options?: boolean | AddEventListenerOptions) => void) => {
         set((prevState) => {
             const listeners = new Map(prevState.listeners);
             

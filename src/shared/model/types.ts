@@ -69,7 +69,7 @@ export interface Draft {
 
 export interface EventsStore {
     listeners: Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>;
-    addEventListener<E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void): () => void;
+    addEventListener<E extends keyof GlobalEventHandlersEventMap>(type: E, listener: (event: GlobalEventHandlersEventMap[E]) => void, options?: boolean | AddEventListenerOptions): () => void;
 }
 
 export interface SocketStore {
