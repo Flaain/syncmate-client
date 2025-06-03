@@ -115,7 +115,7 @@ abstract class ApiInterceptors {
         return this._interceptors.response.size;
     }
 
-    protected readonly invokeResponseInterceptors = async <T>(authentic: Response, clone: Response, initialConfig: RequestConfig) => {
+    protected invokeResponseInterceptors = async <T>(authentic: Response, clone: Response, initialConfig: RequestConfig) => {
         const url = new URL(clone.url);
         const data = await clone.json();
 
@@ -157,10 +157,10 @@ abstract class ApiInterceptors {
         return response;
     };
 
-    protected readonly invokeRequestInterceptors = async (config: RequestConfig) => {
+    protected invokeRequestInterceptors = async (config: RequestConfig) => {
         if (!this.requestInterceptorsSize) return config;
         
-        for (const { onSuccess, onFailure } of [...this._interceptors.request.values()]) {
+        for (const { onSuccess, onFailure } of Array.from(this._interceptors.request.values())) {
             try {
                 if (!onSuccess) continue;
 
