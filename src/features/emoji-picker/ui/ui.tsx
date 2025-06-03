@@ -7,16 +7,11 @@ import SearchIcon from '@/shared/lib/assets/icons/search.svg?react';
 import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
 import { useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
+import { addEventListenerSelector } from '@/shared/model/selectors';
 import { useEvents } from '@/shared/model/store';
 import { Typography } from '@/shared/ui/Typography';
 
-export const EmojiPicker = ({
-    onClose,
-    onEmojiSelect
-}: {
-    onClose: () => void;
-    onEmojiSelect: (emoji: Emoji) => void;
-}) => {
+export const EmojiPicker = ({ onClose, onEmojiSelect }: { onClose: () => void; onEmojiSelect: (emoji: Emoji) => void }) => {
     const [shouldRemove, setShouldRemove] = React.useState(false);
 
     const textareaRef = useChat((state) => state.refs.textareaRef);
@@ -24,7 +19,7 @@ export const EmojiPicker = ({
 
     useMenuDistance<HTMLDivElement>({ ref, x_distance: 250, y_distance: 300, onClose: () => setShouldRemove(true) });
 
-    const addEventListener = useEvents((state) => state.addEventListener);
+    const addEventListener = useEvents(addEventListenerSelector);
 
     React.useEffect(() => {
         if (!ref.current) return;
@@ -57,7 +52,7 @@ export const EmojiPicker = ({
             onAnimationEnd={() => shouldRemove && onClose()}
             onEmojiSelect={onEmojiSelect}
             className={cn(
-                'absolute pointer-events-auto max-w-[300px] overflow-hidden bottom-[calc(100%+5px)] right-5 z-[999] isolate flex h-[368px] w-fit flex-col bg-white dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] rounded-[10px]',
+                'absolute pointer-events-auto max-w-[300px] overflow-hidden bottom-[calc(100%+5px)] right-4 z-[999] isolate flex h-[368px] w-fit flex-col bg-white dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] rounded-[15px]',
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
             )}
         >
@@ -94,7 +89,7 @@ export const EmojiPicker = ({
                         ),
                         Emoji: ({ emoji, ...props }) => (
                             <button
-                                className='relative flex aspect-square size-8 items-center justify-center overflow-hidden rounded-md text-lg data-[active]:bg-neutral-100/80 dark:data-[active]:bg-neutral-800/80 before:absolute before:inset-0 before:-z-1 before:hidden before:items-center before:justify-center before:text-[2.5em] before:blur-lg before:saturate-200 before:content-(--emoji) data-[active]:before:flex'
+                                className='relative flex aspect-square size-8 transition-all duration-200 ease-in-out items-center justify-center overflow-hidden rounded-md text-2xl data-[active]:bg-neutral-100/80 dark:data-[active]:bg-primary-dark-50 before:absolute before:inset-0 before:-z-1 before:hidden before:items-center before:justify-center before:text-[2.5em] before:blur-lg before:saturate-200 before:content-(--emoji) data-[active]:before:flex'
                                 style={{ '--emoji': `"${emoji.emoji}"` } as React.CSSProperties}
                                 {...props}
                             >
