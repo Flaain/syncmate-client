@@ -1,5 +1,6 @@
 import React from "react";
 
+import { addEventListenerSelector } from "@/shared/model/selectors";
 import { useEvents } from "@/shared/model/store";
 
 const MAX_POINTER_DISTANCE_DDM = 180;
@@ -41,7 +42,7 @@ interface UseMenuDistanceProps<T extends HTMLElement> {
 }
 
 export const useMenuDistance = <E extends HTMLElement>({ ref, x_distance, y_distance, onClose, earlyReturn }: UseMenuDistanceProps<E>) => {
-    const addEventListener = useEvents((state) => state.addEventListener);
+    const addEventListener = useEvents(addEventListenerSelector);
 
     const handleMouseMove = React.useCallback(({ clientX, clientY }: MouseEvent) => {
         if (!ref.current) return;

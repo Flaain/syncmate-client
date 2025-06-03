@@ -4,7 +4,7 @@ import { ApiBaseResult } from '@/shared/api/API';
 import { ApiException } from '@/shared/api/error';
 import { QueryCache } from '@/shared/model/queryCache';
 
-export type UseQueryCallback<T> = (params: { signal: AbortSignal }) => Promise<ApiBaseResult<T>>;
+export type UseQueryCallback<T> = (params: { signal: AbortSignal; args?: T }) => Promise<ApiBaseResult<T>>;
 
 type UseRunQueryAction = 'init' | 'refetch';
 
@@ -128,7 +128,7 @@ interface UseQueryReturn<T> {
      *
      * @returns A promise that resolves when the query completes.
      */
-    call: () => Promise<void>;
+    call: (args?: T) => Promise<void>;
 
     /**
      * Aborts the ongoing query request, if applicable.
@@ -240,13 +240,13 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         }
     };
 
-    const runQuery = async (action: UseRunQueryAction) => {
+    const runQuery = async (action: UseRunQueryAction, d?: T) => {
         try {
             abort();
 
             action === 'init' ? setIsLoading(true) : setIsRefetching(true);
 
-            const { data, authentic } = await callback({ signal: config.current.abortController.signal });
+            const { data, authentic } = await callback({ signal: config.current.abortController.signal, args: d });
 
             setIsSuccess(true);
             setIsLoading(false);
@@ -357,7 +357,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         error,
         setData,
         abort,
-        call: () => runQuery('init'),
+        call: (args?: T) => runQuery('init', args),
         refetch: () => runQuery('refetch')
     };
 };
