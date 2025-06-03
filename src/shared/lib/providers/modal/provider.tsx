@@ -2,6 +2,7 @@ import React from 'react';
 
 import ReactDOM from 'react-dom';
 
+import { addEventListenerSelector } from '@/shared/model/selectors';
 import { useEvents } from '@/shared/model/store';
 import { Modal } from '@/shared/ui/Modal';
 
@@ -14,7 +15,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     const focusableElements = React.useRef<Array<HTMLElement>>([]);
     const activeIndex = React.useRef(-1);
     
-    const addEventListener = useEvents((state) => state.addEventListener);
+    const addEventListener = useEvents(addEventListenerSelector);
     
     const handleTabDown = (event: React.KeyboardEvent<HTMLDivElement> | KeyboardEvent) => {
         event.preventDefault();
