@@ -20,7 +20,7 @@ const inputVariants = cva(
                 destructive: 'bg-transparent caret-primary-destructive dark:focus-visible-ring-primary-destructive dark:hover:ring-primary-destructive dark:text-primary-white font-normal peer border border-solid border-primary-destructive',
                 primary: 'bg-transparent caret-primary-purple dark:focus-visible:ring-primary-purple dark:hover:ring-primary-purple disabled:dark:hover:border-primary-gray/20 dark:text-primary-white font-normal peer border border-solid border-primary-gray/20 dark:focus-visible:border-primary-purple dark:hover:border-primary-purple',
                 secondary: 'bg-transparent caret-primary-white dark:focus-visible:ring-primary-dark-50 dark:hover:ring-primary-dark-50 dark:text-primary-white font-normal peer border border-solid border-primary-gray/20 dark:focus-visible:border-primary-dark-50 dark:hover:border-primary-dark-50',
-                dark: 'dark:focus:bg-primary-dark-200 dark:bg-primary-dark-100 text-white dark:placeholder:text-white placeholder:opacity-50 dark:focus-visible:ring-primary-dark-50 dark:hover:ring-primary-dark-50 placeholder:opacity-50 border-none'
+                dark: 'dark:focus:bg-primary-dark-200 dark:bg-primary-dark-150 text-white dark:placeholder:text-white placeholder:opacity-50 dark:focus-visible:ring-primary-dark-50 dark:hover:ring-primary-dark-50 placeholder:opacity-50 border-none'
             },
             _size: {
                 base: 'h-[54px] rounded-[10px] p-[15px] text-base',
@@ -56,7 +56,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, child
             <Typography
                 title={label}
                 className={cn(
-                    'absolute select-none pointer-events-none text-base font-normal line-clamp-1 break-all duration-200 transform -translate-y-4 scale-[0.85] max-sm:scale-75 max-sm:peer-focus:scale-75 top-1 z-10 origin-left start-[10px] mr-[5px] px-[5px] bg-white dark:bg-primary-dark-150 dark:text-primary-gray peer-focus:dark:text-primary-purple peer-disabled:peer-hover:dark:text-primary-gray peer-hover:dark:text-primary-purple peer-focus:-translate-y-4 peer-focus:font-normal peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-[0.85] peer-placeholder-shown:font-normal rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto',
+                    'absolute select-none pointer-events-none text-base font-normal line-clamp-1 break-all duration-200 transform -translate-y-4 scale-[0.85] max-sm:scale-75 max-sm:peer-focus:scale-75 top-1 z-10 origin-left start-[10px] mr-[5px] px-[5px] bg-white dark:bg-primary-dark dark:text-primary-gray peer-focus:dark:text-primary-purple peer-disabled:peer-hover:dark:text-primary-gray peer-hover:dark:text-primary-purple peer-focus:-translate-y-4 peer-focus:font-normal peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-[0.85] peer-placeholder-shown:font-normal rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto',
                     labelClassName,
                     variant === 'secondary' && 'dark:peer-focus:text-primary-white dark:peer-hover:text-primary-white',
                     variant === 'destructive' && 'dark:text-primary-destructive peer-hover:dark:text-primary-destructive peer-focus:dark:text-primary-destructive'

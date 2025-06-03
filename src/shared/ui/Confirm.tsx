@@ -4,6 +4,8 @@ import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
 import { Button, ButtonProps } from '@/shared/ui/button';
 
+import { AvatarByName } from './AvatarByName';
+import { Image } from './Image';
 import { Typography } from './Typography';
 
 /**
@@ -22,9 +24,9 @@ interface ConfirmProps {
     onCancel: () => void;
 
     /**
-     * The text message displayed in the confirmation dialog.
+     * The description displayed in the confirmation dialog.
      */
-    text: React.ReactNode;
+    description: React.ReactNode;
 
     /**
      * Optional text for the confirm button.
@@ -44,10 +46,26 @@ interface ConfirmProps {
      * @see{@link ButtonProps.variant}
      * @default 'default'
      */
-    onConfirmButtonVariant?: ButtonProps['variant'];
+    onConfirmButtonIntent?: ButtonProps['intent'];
+
+    title?: string;
+    withAvatar?: boolean;
+    avatarUrl?: string;
+    name?: string;
 }
 
-export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', onConfirmText = 'Confirm', onConfirmButtonVariant = 'default' }: ConfirmProps) => {
+export const Confirm = ({
+    withAvatar,
+    title,
+    description,
+    onConfirm,
+    avatarUrl,
+    name,
+    onCancel,
+    onCancelText = 'Cancel',
+    onConfirmText = 'Confirm',
+    onConfirmButtonIntent = 'primary'
+}: ConfirmProps) => {
     const [loading, setLoading] = React.useState(false);
 
     const onClickConfirm = async () => {
@@ -63,17 +81,50 @@ export const Confirm = ({ text, onConfirm, onCancel, onCancelText = 'Cancel', on
     };
 
     return (
-        <div className='flex flex-col gap-5 items-start max-w-[320px] w-full py-3 px-6 box-border'>
-            {React.isValidElement(text) ? text : <Typography as='p'>{text}</Typography>}
-            <div className='flex justify-center gap-5 mt-2 self-end'>
-                <Button onClick={onCancel} variant='secondary' disabled={loading}>
+        <div className='flex flex-col gap-3 items-start max-w-[320px] w-full py-3 px-5 box-border'>
+            {withAvatar && title && (
+                <div className='flex items-center gap-5'>
+                    <Image
+                        className='size-8 rounded-full'
+                        src={avatarUrl}
+                        skeleton={<AvatarByName name={name ?? 'Unknown'} size='sm' />}
+                    />
+                    <Typography as='h2' size='xl' weight='medium'>
+                        {title}
+                    </Typography>
+                </div>
+            )}
+            {!withAvatar && title && (
+                <Typography as='h2' size='xl' weight='medium' className='self-start'>
+                    {title}
+                </Typography>
+            )}
+            {withAvatar && !title && (
+                <Image
+                    className='size-8 rounded-full self-start'
+                    src={avatarUrl}
+                    skeleton={<AvatarByName name={name ?? 'Unknown'} size='sm' />}
+                />
+            )}
+            {React.isValidElement(description) ? description : <Typography as='p'>{description}</Typography>}
+            <div className='flex justify-center gap-2 mt-2 self-end'>
+                <Button
+                    onClick={onCancel}
+                    ripple
+                    variant='ghost'
+                    intent='secondary'
+                    disabled={loading}
+                    className='uppercase'
+                >
                     {onCancelText}
                 </Button>
                 <Button
+                    ripple
                     onClick={onClickConfirm}
                     disabled={loading}
-                    className='min-w-[100px]'
-                    variant={onConfirmButtonVariant}
+                    className='min-w-[100px] uppercase font-semibold'
+                    variant='ghost'
+                    intent={onConfirmButtonIntent}
                 >
                     {loading ? <LoaderIcon className='size-5 animate-loading' /> : onConfirmText}
                 </Button>

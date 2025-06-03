@@ -8,6 +8,7 @@ interface MenuItemProps {
     type: 'ctx' | 'ddm';
     variant?: 'default' | 'destructive';
     text: string;
+    hr?: boolean;
     description?: React.ReactNode;
     icon?: React.ReactNode;
     children?: React.ReactNode;
@@ -19,6 +20,7 @@ interface MenuItemProps {
 export const MenuItem = ({
     type,
     description,
+    hr,
     className,
     children,
     displayChildrenFrom,
@@ -30,28 +32,41 @@ export const MenuItem = ({
     const Item = type === 'ctx' ? ContextMenuItem : DropdownMenuItem;
 
     return (
-        <Item
-            asChild
-            className={cn(
-                'active:scale-95 flex items-center gap-4 px-3 transition-colors ease-in-out duration-200 dark:text-primary-white text-primary-dark-200 rounded-md hover:bg-primary-gray focus:bg-primary-gray',
-                variant === 'destructive' ? 'dark:hover:bg-primary-destructive/10 dark:focus:bg-primary-destructive/10' : 'dark:hover:bg-light-secondary-color dark:focus:bg-light-secondary-color',
-                className
-            )}
-            onClick={onClick}
-        >
-            <li>
-                {children && displayChildrenFrom === 'left' && children}
-                {icon}
-                <Typography
-                    size='sm'
-                    weight='medium'
-                    className={cn('flex items-center whitespace-nowrap', variant === 'destructive' && 'dark:text-primary-destructive')}
-                >
-                    {text}
-                </Typography>
-                {!!description && <Typography variant='secondary' size='xs' weight='medium' className='ml-auto'>{description}</Typography>}
-                {children && displayChildrenFrom === 'right' && children}
-            </li>
-        </Item>
+        <>
+            {hr && <hr className='opacity-20 my-[5px] block' />}
+            <Item
+                asChild
+                className={cn(
+                    'active:scale-95 flex items-center gap-4 px-3 transition-colors ease-in-out duration-200 dark:text-primary-white text-primary-dark-200 rounded-md hover:bg-primary-gray focus:bg-primary-gray',
+                    variant === 'destructive' ? 'dark:hover:bg-primary-destructive/10 dark:focus:bg-primary-destructive/10' : 'dark:hover:bg-light-secondary-color dark:focus:bg-light-secondary-color',
+                    className
+                )}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClick?.(e);
+                }}
+            >
+                <div>
+                    {children && displayChildrenFrom === 'left' && children}
+                    {icon}
+                    <Typography
+                        size='sm'
+                        weight='medium'
+                        className={cn(
+                            'flex items-center whitespace-nowrap',
+                            variant === 'destructive' && 'dark:text-primary-destructive'
+                        )}
+                    >
+                        {text}
+                    </Typography>
+                    {!!description && (
+                        <Typography variant='secondary' size='xs' weight='medium' className='ml-auto'>
+                            {description}
+                        </Typography>
+                    )}
+                    {children && displayChildrenFrom === 'right' && children}
+                </div>
+            </Item>
+        </>
     );
 };

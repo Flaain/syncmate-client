@@ -60,7 +60,7 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(({ children, 
             ref={ref}
             tabIndex={-1}
             className={cn(
-                'duration-200 ease-in-out outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white rounded-lg box-border border border-solid border-primary-gray',
+                'duration-200 rounded-[10px] ease-in-out outline-none flex flex-col gap-5 overflow-auto dark:bg-primary-dark-100 dark:border-primary-dark-200 bg-white box-border border border-solid border-primary-gray',
                 className,
                 disabled && 'pointer-events-none',
                 _shouldRemove ? 'slide-out-to-bottom-5 fade-out animate-out' : 'slide-in-from-bottom-5 fade-in animate-in'

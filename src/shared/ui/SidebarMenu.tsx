@@ -3,6 +3,7 @@ import React from 'react';
 import ArrowLeftIcon from '@/shared/lib/assets/icons/arrow_prev.svg?react';
 
 import { cn } from '../lib/utils/cn';
+import { addEventListenerSelector } from '../model/selectors';
 import { useEvents } from '../model/store';
 
 import { Button } from './button';
@@ -93,7 +94,7 @@ interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 
 export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarContainerProps>(
     ({ children, closable = true, onBack, shouldRemove, hasActiveMenu, className, ...rest }, ref) => {
-        const addEventListener = useEvents((state) => state.addEventListener);
+        const addEventListener = useEvents(addEventListenerSelector);
 
         React.useEffect(() => {
             if (!closable || !onBack) return;
@@ -112,7 +113,7 @@ export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarCont
                 ref={ref}
                 className={cn(
                     className,
-                    'col-start-1 row-start-1 bg-primary-dark-150 duration-300 z-0 overflow-auto',
+                    'col-start-1 row-start-1 bg-primary-dark duration-300 z-0 overflow-auto',
                     shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
                     hasActiveMenu && '-translate-x-20'
                 )}
@@ -129,15 +130,15 @@ export const SidebarMenuSeparator = ({
     className,
     ...rest
 }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-200 my-2 px-8 py-2 box-border dark:text-primary-gray text-sm', className)}>
+    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-150 my-2 px-8 py-2 box-border dark:text-primary-gray text-sm', className)}>
         {children}
     </div>
 );
 
 export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProps) => {
     return (
-        <div className='flex items-center gap-5 px-4 py-2 sticky top-0 dark:bg-primary-dark-150 z-[9999]'>
-            <Button variant='ghost' size='icon' className='size-10 rounded-full p-2' onClick={onBack}>
+        <div className='flex items-center gap-5 px-4 sticky top-0 !bg-inherit z-[9999] min-h-14 box-border'>
+            <Button ripple variant='ghost' size='icon' intent='secondary' onClick={onBack}>
                 <ArrowLeftIcon className='size-6 text-primary-gray' />
             </Button>
             <Typography as='h2' variant='primary' size='xl' weight='medium'>
@@ -178,9 +179,11 @@ export const SidebarMenuButton = ({
     return (
         <Button
             {...rest}
-            variant={active ? 'change_later' : 'ghost'}
+            ripple
+            variant={active ? 'primary' : 'ghost'}
+            intent='secondary'
             className={cn(
-                'flex rounded-[10px] justify-start gap-8 py-1 items-center box-border w-full hover:!bg-primary-gray/10',
+                'flex rounded-[10px] justify-start gap-8 py-1 items-center box-border w-full',
                 description ? 'h-14' : 'h-12',
                 className
             )}
