@@ -22,7 +22,7 @@ export const ConversationItem = ({ feedItem: { item: { recipient, unreadMessages
                 to={`/conversation/${recipient._id}`}
                 className={({ isActive }) =>
                     cn(
-                        'flex items-center gap-5 p-2 rounded-lg transition-colors duration-200 ease-in-out',
+                        'flex items-center gap-5 p-2 rounded-[10px] transition-colors duration-200 ease-in-out',
                         isActive ? 'dark:bg-primary-dark-50 bg-primary-gray/10' : 'dark:hover:bg-primary-dark-50/30 hover:bg-primary-gray/5'
                     )
                 }
@@ -70,7 +70,7 @@ export const ConversationItem = ({ feedItem: { item: { recipient, unreadMessages
                                 <Typography className='break-all dark:text-primary-white/30 text-primary-gray line-clamp-1'>
                                     {lastMessage?.text}
                                 </Typography>
-                                <Typography className='ml-auto' variant='secondary'>
+                                <Typography className='ml-auto dark:text-primary-white/30'>
                                     {new Date(lastMessage.createdAt).toLocaleTimeString(navigator.language, {
                                         hour: 'numeric',
                                         minute: 'numeric'

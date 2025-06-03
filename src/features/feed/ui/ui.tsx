@@ -50,7 +50,7 @@ export const Feed = ({ globalResults, isSearching, searchValue }: FeedProps) => 
                            Global results
                        </Typography>
                        {!isSearching && globalResults?.meta.next_page && (
-                           <Button size='icon' variant='text'>
+                           <Button size='text' variant='link'>
                                show more
                            </Button>
                        )}
