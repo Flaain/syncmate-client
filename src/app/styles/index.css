@@ -20,6 +20,12 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        @apply bg-primary-dark-200
+    }
+}
+
 .hide-password-toggle::-ms-reveal,
 .hide-password-toggle::-ms-clear {
     visibility: hidden;

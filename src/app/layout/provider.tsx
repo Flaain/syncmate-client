@@ -84,7 +84,7 @@ export const LayoutProvider = () => {
             socket.off(LAYOUT_EVENTS.UPDATE_DRAFT);
 
             socket.disconnect();
-
+            
             useSocket.setState({ socket: null!, session_id: null, isConnected: false });
         };
     }, []);
@@ -109,7 +109,7 @@ export const LayoutProvider = () => {
 
     return (
         <ModalProvider>
-            <main className='flex h-dvh dark:bg-primary-dark-200 relative'>
+            <main className='flex h-dvh dark:bg-primary-dark-200 relative overflow-x-hidden max-w-[1680px] w-full mx-auto box-border'>
                 <Toaster />
                 <Sidebar />
                 <Outlet />
