@@ -7,11 +7,11 @@ import { useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
-import { DDM } from '@/shared/ui/DDM';
+import { DropdownMenu } from '@/shared/ui/DDM';
 import { Image } from '@/shared/ui/Image';
 import { Typography } from '@/shared/ui/Typography';
 
-import { OutletHeaderProps } from '../../model/types';
+import { OutletHeaderProps } from '../model/types';
 
 export const DefaultState = ({ name, description, dropdownContent, avatarUrl, isOfficial, ...rest }: OutletHeaderProps) => {
     const isConnected = useSocket((state) => state.isConnected);
@@ -51,9 +51,9 @@ export const DefaultState = ({ name, description, dropdownContent, avatarUrl, is
                 </div>
             </div>
             {dropdownContent && (
-                <DDM sideOffset={15} align='end'>
+                <DropdownMenu sideOffset={15} align='end'>
                     {dropdownContent}
-                </DDM>
+                </DropdownMenu>
             )}
         </div>
     );
