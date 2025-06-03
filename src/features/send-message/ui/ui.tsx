@@ -54,37 +54,34 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                         onChange={handleChange}
                         onKeyDown={onKeyDown}
                         placeholder='Write a message...'
-                        className='overscroll-contain disabled:opacity-50 leading-5 pl-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border w-full transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
+                        className='overscroll-contain disabled:opacity-50 leading-5 pl-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border flex-1 transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
                     ></textarea>
                     {showAnchor && (
                         <Button
                             onClick={() => lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' })}
                             disabled={!showAnchor}
-                            variant='text'
                             type='button'
-                            size='icon'
-                            className='px-4'
+                            size='text'
+                            className='ml-4'
                         >
                             <ArrowDownIcon className='size-6 text-primary-white' />
                         </Button>
                     )}
                     <Button
-                        variant='text'
-                        size='icon'
+                        size='text'
                         type='button'
                         onClick={(e) => (e.stopPropagation(), setIsEmojiPickerOpen(!isEmojiPickerOpen))}
-                        className='pr-5'
+                        className='mx-5'
                     >
-                        <SmileIcon className='size-6' />
+                        <SmileIcon className='size-6 dark:text-primary-white' />
                     </Button>
                     <Button
-                        variant='text'
-                        size='icon'
+                        size='text'
                         type='submit'
                         disabled={!value.trim().length && currentDraft?.state !== 'edit'}
-                        className='pr-5'
+                        className='mr-5'
                     >
-                        <SendIcon className='size-6' />
+                        <SendIcon className='size-6 dark:text-primary-white' />
                     </Button>
                 </form>
             </div>

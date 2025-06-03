@@ -4,6 +4,7 @@ import CloseIcon from '@/shared/lib/assets/icons/close.svg?react';
 import EditIcon from '@/shared/lib/assets/icons/edit.svg?react';
 import ReplyIcon from '@/shared/lib/assets/icons/reply.svg?react';
 
+import { addEventListenerSelector } from '@/shared/model/selectors';
 import { useEvents } from '@/shared/model/store';
 import { MessageFormState } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
@@ -27,7 +28,7 @@ const config: Record<Exclude<MessageFormState, 'send'>, { title: string; icon: R
 export const TopBar = ({ onClose, state, description, preventClose }: MessageTopBarProps) => {
     const settings = config[state as keyof typeof config];
 
-    const addEventListener = useEvents((state) => state.addEventListener);
+    const addEventListener = useEvents(addEventListenerSelector);
 
     React.useEffect(() => {
         const removeEventListener = addEventListener('keydown', (event) => {
@@ -52,8 +53,15 @@ export const TopBar = ({ onClose, state, description, preventClose }: MessageTop
                     </Typography>
                 )}
             </div>
-            <Button variant='text' className='ml-auto pr-0' onClick={preventClose ? undefined : onClose} disabled={preventClose}>
-                <CloseIcon className='size-6' />
+            <Button
+                intent='secondary'
+                variant='ghost'
+                size='icon'
+                className='ml-auto'
+                onClick={preventClose ? undefined : onClose}
+                disabled={preventClose}
+            >
+                <CloseIcon className='size-6 dark:text-primary-gray' />
             </Button>
         </div>
     );

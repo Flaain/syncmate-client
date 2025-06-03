@@ -3,7 +3,7 @@ import React from 'react';
 import { Emoji } from 'frimousse';
 import { useShallow } from 'zustand/shallow';
 
-import { messageApi, endpoints } from '@/entities/message';
+import { messageApi, MESSAGE_ENDPOINTS } from '@/entities/message';
 
 import { getUseSendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
@@ -15,8 +15,8 @@ import { Confirm } from '@/shared/ui/Confirm';
 import { UseMessageParams } from './types';
 
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
-    const { onCloseModal, onOpenModal, onAsyncActionModal } = useModal(selectModalActions);
-    const { params, textareaRef, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
+    const { onOpenModal, onCloseModal, onAsyncActionModal } = useModal(selectModalActions);
+    const { params, textareaRef, chatInfo, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
 
@@ -88,12 +88,12 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         handleTypingStatus?.(currentDraft?.state ?? 'send', true);
         setValue('');
 
-        textareaRef.current?.focus();
+        requestAnimationFrame(() => textareaRef.current?.focus());
     }, [params.id, currentDraft]);
 
     const handleDeleteMessage = React.useCallback(async () => {
-        onAsyncActionModal(() => messageApi.delete({ 
-            endpoint: `${endpoints[params.type]}/delete/${params.id}`, 
+        await onAsyncActionModal(() => messageApi.delete({ 
+            endpoint: `${MESSAGE_ENDPOINTS[params.type]}/delete/${params.id}`, 
             messageIds: [currentDraft!.selectedMessage!._id]
         }), {
             closeOnError: true,
@@ -103,7 +103,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             },
             onReject: () => {
                 toast.error('Cannot delete message');
-                textareaRef.current?.focus();
+                requestAnimationFrame(() => textareaRef.current?.focus());
             }
         })
     }, [currentDraft, params.id]);
@@ -128,33 +128,39 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
 
     const onSendEditedMessage = async (message: string) => {
         if (!message.length) {
+            setTimeout(() => textareaRef.current?.blur(), 0);
+
             return onOpenModal({
                 content: (
                     <Confirm
-                        onCancel={onCloseModal}
+                        withAvatar
+                        avatarUrl={chatInfo.avatar?.url}
+                        title='Delete message'
+                        description='Are you sure you want to delete this message?'
                         onConfirm={handleDeleteMessage}
+                        onCancel={onCloseModal}
+                        name={chatInfo.name}
+                        onConfirmButtonIntent='destructive'
                         onConfirmText='Delete'
-                        text='Are you sure you want to delete this message?'
-                        onConfirmButtonVariant='destructive'
                     />
                 ),
-                withHeader: false,
+                withHeader: false
             });
         }
 
         if (message === currentDraft!.selectedMessage!.text) return setDefaultState();
-        
+
         const { onSuccess, signal, onError } = handleOptimisticUpdate(message);
-        
+
         setDefaultState();
 
         try {
-            const { data } = await messageApi.edit({ 
+            const { data } = await messageApi.edit({
                 signal,
-                endpoint: `${endpoints[params.type]}/edit/${currentDraft!.selectedMessage!._id}`,
-                body: JSON.stringify({ message, ...params.query }),
-             })
-            
+                endpoint: `${MESSAGE_ENDPOINTS[params.type]}/edit/${currentDraft!.selectedMessage!._id}`,
+                body: JSON.stringify({ message, ...params.query })
+            });
+
             onSuccess(data);
         } catch (error) {
             console.error(error);
@@ -172,7 +178,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         try {
             const { data } = await messageApi.send({ 
                 signal, 
-                endpoint: `${endpoints[params.type]}/send/${params.id}`, 
+                endpoint: `${MESSAGE_ENDPOINTS[params.type]}/send/${params.id}`, 
                 body: JSON.stringify({ message, ...params.query })
             });
             
@@ -193,7 +199,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         try {
             const { data } = await messageApi.reply({
                 signal, 
-                endpoint: `${endpoints[params.type]}/reply/${currentDraft!.selectedMessage!._id}`,
+                endpoint: `${MESSAGE_ENDPOINTS[params.type]}/reply/${currentDraft!.selectedMessage!._id}`,
                 body: JSON.stringify({ message, ...params.query })
              })
             
