@@ -76,7 +76,7 @@ export const Forgot = () => {
                     <div className='flex w-full items-center justify-between'>
                         <Button
                             type='button'
-                            variant='secondary'
+                            intent='secondary'
                             className='w-24'
                             onClick={onBack}
                             disabled={isLoading}
@@ -84,7 +84,7 @@ export const Forgot = () => {
                             Back
                         </Button>
                         {step !== 1 && (
-                            <Button className='w-24' disabled={isNextButtonDisabled}>
+                            <Button intent='primary' className='w-24' disabled={isNextButtonDisabled}>
                                 {isLoading ? <LoaderIcon className='size-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
                             </Button>
                         )}
