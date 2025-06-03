@@ -38,15 +38,14 @@ export const SignupForm = () => {
                         <div className='flex w-full items-center justify-between mt-5'>
                             <Button
                                 type='button'
-                                variant='secondary'
-                                className='w-24'
+                                intent='secondary'
                                 onClick={onBack}
                                 disabled={loading}
                             >
                                 Back
                             </Button>
                             {!isLastStep && (
-                                <Button className='w-24' disabled={isNextButtonDisabled}>
+                                <Button intent='primary' size='md' disabled={isNextButtonDisabled}>
                                     {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Next'}
                                 </Button>
                             )}

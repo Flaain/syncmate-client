@@ -36,7 +36,7 @@ export const useSignup = () => {
         shouldFocusError: true
     })
     
-    const isNextButtonDisabled = !form.getValues(steps[step].fields).every(Boolean) || !!Object.keys(form.formState.errors).some((key) => key === 'root' ? Object.keys(form.formState.errors.root!).some((root_key) => root_key === 'server' || steps[step].fields.includes(root_key as FieldPath<SignupSchemaType>)) : steps[step].fields.includes(key as FieldPath<SignupSchemaType>)) || loading;
+    const isNextButtonDisabled = loading || !form.getValues(steps[step].fields).every(Boolean) || !!Object.keys(form.formState.errors).some((key) => key === 'root' ? Object.keys(form.formState.errors.root!).some((root_key) => root_key === 'server' || steps[step].fields.includes(root_key as FieldPath<SignupSchemaType>)) : steps[step].fields.includes(key as FieldPath<SignupSchemaType>));
 
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
 
@@ -86,7 +86,7 @@ export const useSignup = () => {
                 error.response.data.errors.forEach(({ path, message }, i) => {
                    steps[step].fields.includes(path as FieldPath<SignupSchemaType>) && form.setError(`root.${path}`, { message });
 
-                   !i && setTimeout(form.setFocus, 0, path);
+                   !i && requestAnimationFrame(() => form.setFocus(path as FieldPath<SignupSchemaType>));
                 });
             } else {
                 form.setError('root.server', { message: 'Cannot process signup. Please try again' }, { shouldFocus: true });
