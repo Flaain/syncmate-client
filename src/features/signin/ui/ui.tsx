@@ -70,9 +70,10 @@ export const Signin = () => {
                         )}
                         <Button
                             type='button'
+                            size='text'
                             variant='link'
                             onClick={() => changeSigninStage('forgot')}
-                            className='ml-auto p-0 opacity-50 hover:opacity-100 transition-all ease-in-out duration-200'
+                            className='dark:text-primary-white ml-auto'
                         >
                             Forgot password?
                         </Button>
@@ -80,14 +81,14 @@ export const Signin = () => {
                     <div className='flex w-full items-center justify-between'>
                         <Button
                             type='button'
-                            variant='secondary'
+                            intent='secondary'
                             className='w-24'
                             onClick={() => changeAuthStage('welcome')}
                             disabled={loading}
                         >
                             Back
                         </Button>
-                        <Button className='w-24' disabled={isSubmitButtonDisabled}>
+                        <Button intent='primary' className='w-24' disabled={isSubmitButtonDisabled}>
                             {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Submit'}
                         </Button>
                     </div>

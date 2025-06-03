@@ -45,7 +45,7 @@ export const useSignin = () => {
            
             form.setError('root.server', { message: error instanceof ApiException ? error.response.data.message : 'Cannot process signin. Please try again' });
             
-            setTimeout(form.setFocus, 0, 'login');
+            requestAnimationFrame(() => form.setFocus('login'));
         } finally {
             setLoading(false);
         }
