@@ -22,9 +22,9 @@ export const Welcome = () => {
                     What's up?
                 </Typography>
             </div>
-            <div className='max-w-[320px] w-full flex flex-col gap-3'>
-                <Button onClick={() => changeAuthStage('signUp')}>Create new account</Button>
-                <Button variant='secondary' onClick={() => changeAuthStage('signIn')}>
+            <div className='max-w-[320px] w-full flex flex-col gap-2'>
+                <Button intent='primary' onClick={() => changeAuthStage('signUp')}>Create new account</Button>
+                <Button intent='secondary' onClick={() => changeAuthStage('signIn')}>
                     Sign in
                 </Button>
             </div>
