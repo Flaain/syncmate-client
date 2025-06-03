@@ -9,6 +9,7 @@ export default {
             colors: {
                 'light-secondary-color': 'rgba(170, 170, 170, 0.08)',
                 'menu-background-color': 'rgba(33, 33, 33, 0.75)',
+                'primary-dark': '#212121',
                 'primary-white': '#F9F9F9',
                 'primary-blue': '#5181B8',
                 'primary-purple': '#8774e1',
@@ -22,6 +23,7 @@ export default {
                 'primary-dark-200': '#141414',
                 'dark-side-panel': '#161718',
                 'dark-conversation-panel': '#18191B',
+                'ripple-color': 'rgba(255, 255, 255, .08)',
                 modal: 'rgba(0, 0, 0, .5)'
             },
             keyframes: {
@@ -37,6 +39,16 @@ export default {
                 loading: {
                     '0%': { transform: 'rotate(0)' },
                     '100%': { transform: 'rotate(360deg)' }
+                },
+                ripple: {
+                    '0%': {
+                        transform: 'scale(0)',
+                        opacity: '1'
+                    },
+                    '100%': {
+                        transform: 'scale(2.5)',
+                        opacity: '0'
+                    }
                 }
             },
             transitionProperty: {
@@ -44,6 +56,7 @@ export default {
                 width: 'width'
             },
             animation: {
+                ripple: 'ripple .7s ease-in-out forwards',
                 loading: 'loading .5s linear infinite',
                 'caret-blink': 'caret-blink 1.25s ease-out infinite'
             },
