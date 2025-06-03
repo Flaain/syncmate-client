@@ -22,6 +22,7 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
     const chatMode = useChat((state) => state.mode);
     const textareaRef = useChat((state) => state.refs.textareaRef);
 
+    const actionRef = React.useRef<string | null | undefined>(null);
     const ref = React.useRef<HTMLDivElement>(null);
 
     useMenuDistance<HTMLDivElement>({ ref, onClose: () => setShouldRemove(true) })
@@ -33,11 +34,13 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
 
     const copyCallback = () => handleItemClick(handleCopyToClipboard);
     
-    const handleItemClick = (cb?: () => void) => () => {
+    const handleItemClick = (cb?: () => void, action?: string) => () => {
         cb?.();
         setShouldRemove(true);
-    };
 
+        actionRef.current = action;
+    };
+    
     return (
         <ContextMenuContent
             loop
@@ -46,9 +49,9 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
             onInteractOutside={() => setShouldRemove(true)}
             onAnimationEnd={() => shouldRemove && onClose()}
             onEscapeKeyDown={(event) => event.preventDefault()}
-            onCloseAutoFocus={() => textareaRef.current?.focus()}
+            onCloseAutoFocus={() => actionRef.current === 'delete' ? setTimeout(() => textareaRef.current?.blur(), 0) : requestAnimationFrame(() => textareaRef.current?.focus())}
             className={cn(
-                'z-[999] w-[194px] py-2 px-1 dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] bg-primary-white rounded-[10px] flex flex-col',
+                'z-[999] w-[185px] p-1 dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[40px] bg-primary-white rounded-[10px] flex flex-col',
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
             )}
         >

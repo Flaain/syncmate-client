@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 import { getUseMessageSelector, useChat } from '@/shared/lib/providers/chat';
 
 import { messageApi } from '../api';
-import { endpoints } from '../model/constants';
+import { MESSAGE_ENDPOINTS } from '../model/constants';
 import { UseMessageProps } from '../model/types';
 
 export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: UseMessageProps) => {
@@ -24,7 +24,7 @@ export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: Us
 
         observer.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
-                messageApi.read({ endpoint: `${endpoints[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
+                messageApi.read({ endpoint: `${MESSAGE_ENDPOINTS[params.type]}/read/${message._id}`, body: JSON.stringify(params.query) });
 
                 observer.current?.unobserve(entries[0].target);
             }

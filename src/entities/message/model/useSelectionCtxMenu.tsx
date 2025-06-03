@@ -8,10 +8,10 @@ import { Confirm } from "@/shared/ui/Confirm";
 
 import { messageApi } from "../api";
 
-import { endpoints } from "./constants";
+import { MESSAGE_ENDPOINTS } from "./constants";
 
 export const useSelectionCtxMenu = (message: Message) => {
-    const { selectedMessages, params, handleSelectMessage, setChat } = useChat(useShallow(selectionCtxMenuSelector));
+    const { selectedMessages, chatInfo, params, handleSelectMessage, setChat } = useChat(useShallow(selectionCtxMenuSelector));
     const { onOpenModal, onAsyncActionModal, onCloseModal } = useModal(useShallow(selectModalActions));
     
     const isSelected = selectedMessages.has(message._id);
@@ -21,12 +21,23 @@ export const useSelectionCtxMenu = (message: Message) => {
     const handleCopy = () => {
         let str = '';
         
-        const arr = Array.from(selectedMessages.values());
-
-        for (const { text } of arr) str += `${text}\n`;
+        for (const { text } of Array.from(selectedMessages.values())) str += `${text}\n`;
 
         navigator.clipboard.writeText(str.trim());
     }
+
+    const onConfirm = () => onAsyncActionModal(() => messageApi.delete({
+        endpoint: `${MESSAGE_ENDPOINTS[params.type]}/delete/${params.id}`,
+        messageIds: Array.from(selectedMessages.keys())
+    }),
+    {
+        closeOnError: true,
+        onResolve: ({ data }) => {
+            toast.success(`${data.length} ${data.length > 1 ? 'messages' : 'message'} was deleted`);
+            setChat({ mode: 'default', selectedMessages: new Map() });
+        },
+        onReject: () => toast.error('Cannot delete messages')
+    });
 
     const handleDelete = () => {
         const size = selectedMessages.size;
@@ -34,26 +45,19 @@ export const useSelectionCtxMenu = (message: Message) => {
         onOpenModal({
             content: (
                 <Confirm
-                    text={`Are you sure want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
+                    withAvatar
+                    avatarUrl={chatInfo.avatar?.url}
+                    name={chatInfo.name}
+                    title={`Delete ${size > 1 ? `${size} messages` : 'message'}`}
+                    description={`Are you sure want to delete ${size > 1 ? `${size} messages` : 'this message'}?`}
                     onCancel={onCloseModal}
-                    onConfirmButtonVariant='destructive'
+                    onConfirmButtonIntent='destructive'
                     onConfirmText='Delete'
-                    onConfirm={() => onAsyncActionModal(() => messageApi.delete({
-                        endpoint: `${endpoints[params.type]}/delete/${params.id}`,
-                        messageIds: [...selectedMessages.keys()]
-                    }),
-                    {
-                        closeOnError: true,
-                        onResolve: ({ data }) => {
-                            toast.success(`${data.length} ${data.length > 1 ? 'messages' : 'message'} was deleted`);
-                            setChat({ mode: 'default', selectedMessages: new Map() });
-                        },
-                        onReject: () => toast.error('Cannot delete messages')
-                    })}
+                    onConfirm={onConfirm}
                 />
             ),
-            withHeader: false,
-        })
+            withHeader: false
+        });
     }
 
     return { handleCopy, handleDelete, handleClearSelection, handleSelectMessage, isSelected };

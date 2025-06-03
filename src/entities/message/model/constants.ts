@@ -1,6 +1,6 @@
 import { CHAT_TYPE } from "@/shared/model/types";
 
-export const endpoints: Record<CHAT_TYPE, string> = {
+export const MESSAGE_ENDPOINTS: Record<CHAT_TYPE, string> = {
     Conversation: 'message',
 };
 

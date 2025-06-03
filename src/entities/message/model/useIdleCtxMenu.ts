@@ -8,7 +8,7 @@ import { Message } from '@/shared/model/types';
 
 import { messageApi } from '../api';
 
-import { endpoints } from './constants';
+import { MESSAGE_ENDPOINTS } from './constants';
 
 export const useIdleCtxMenu = (message: Message) => {
     const { params, isCtxBlocked, handleSelectMessage } = useChat(useShallow((state) => ({
@@ -19,12 +19,19 @@ export const useIdleCtxMenu = (message: Message) => {
     
     const { onAsyncActionModal } = useModal(useShallow(selectModalActions));
 
-    const handleMessageDelete = async () => {
-        await onAsyncActionModal(() => messageApi.delete({ endpoint: `${endpoints[params.type]}/delete/${params.id}`, messageIds: [message._id] }), {
-            closeOnError: true,
-            onReject: () => toast.error('Cannot delete message')
-        });
-    }
+    const handleDeleteMessage = async () => {
+        await onAsyncActionModal(
+            () =>
+                messageApi.delete({
+                    endpoint: `${MESSAGE_ENDPOINTS[params.type]}/delete/${params.id}`,
+                    messageIds: [message._id]
+                }),
+            {
+                closeOnError: true,
+                onReject: () => toast.error('Cannot delete message')
+            }
+        );
+    };
 
     const handleContextAction = (action: 'reply' | 'edit') => {
         if (isCtxBlocked) return;
@@ -41,6 +48,6 @@ export const useIdleCtxMenu = (message: Message) => {
     return {
         handleSelectMessage,
         handleContextAction,
-        handleMessageDelete,
+        handleDeleteMessage,
     };
 };

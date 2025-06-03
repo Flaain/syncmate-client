@@ -1,6 +1,6 @@
 import { Message, MessageStatus } from "@/shared/model/types";
 
-export type CtxItemClickFunc = (cb?: () => void) => () => void;
+export type CtxItemClickFunc = (cb?: () => void, action?: string) => () => void;
 
 export interface IdleCtxMenuProps {
     isMessageFromMe: boolean;

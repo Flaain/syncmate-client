@@ -1,4 +1,4 @@
 export * from './api'
 export * from './ui/ui'
 
-export { endpoints } from './model/constants'
+export { MESSAGE_ENDPOINTS } from './model/constants'
