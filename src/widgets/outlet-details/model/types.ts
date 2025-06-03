@@ -16,3 +16,5 @@ export interface OutletDetailsProps {
     info?: Array<{ data?: string; type: OutletDetailsButtonType }>;
     tabs?: Array<DETAILS_TABS>;
 }
+
+export type OutletDetailsMenus = 'editContact';
