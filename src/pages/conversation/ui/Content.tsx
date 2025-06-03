@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useShallow } from 'zustand/shallow';
 
 import { MessagesList } from '@/widgets/messages-list';
@@ -6,7 +8,6 @@ import { OutletHeader } from '@/widgets/outlet-header';
 
 import { SendMessage } from '@/features/send-message';
 
-import { showDetailsSelector, useChat } from '@/shared/lib/providers/chat';
 import { OutletContainer } from '@/shared/ui/OutletContainer';
 import { Pattern } from '@/shared/ui/Pattern';
 
@@ -28,7 +29,7 @@ export const Content = () => {
         isRecipientTyping 
     });
 
-    const showDetails = useChat(showDetailsSelector);
+    const getTypingStatus = React.useMemo(() => handleTypingStatus(), []);
 
     return (
         <OutletContainer>
@@ -43,7 +44,7 @@ export const Content = () => {
                 />
                 <MessagesList getPreviousMessages={(id, cursor) => conversationApi.getPreviousMessages(id, cursor)} />
                 <SendMessage
-                    handleTypingStatus={handleTypingStatus()}
+                    handleTypingStatus={getTypingStatus}
                     restrictMessaging={[
                         {
                             reason: !!(isInitiatorBlocked || isRecipientBlocked),
@@ -56,18 +57,16 @@ export const Content = () => {
                     ]}
                 />
             </div>
-            {showDetails && (
-                <OutletDetails
-                    title='User Info'
-                    name={recipient.name}
-                    avatarUrl={recipient.avatar?.url}
-                    description={description}
-                    info={[
-                        { data: recipient.bio, type: 'bio' },
-                        { data: recipient.login, type: 'login' }
-                    ]}
-                />
-            )}
+            <OutletDetails
+                title='User Info'
+                name={recipient.name}
+                avatarUrl={recipient.avatar?.url}
+                description={description}
+                info={[
+                    { data: recipient.bio, type: 'bio' },
+                    { data: recipient.login, type: 'login' }
+                ]}
+            />
         </OutletContainer>
     );
 };

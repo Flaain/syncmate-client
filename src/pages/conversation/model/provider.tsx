@@ -8,7 +8,6 @@ import { MIN_SCROLL_BOTTOM } from '@/widgets/messages-list';
 
 import { useSession } from '@/entities/session';
 
-import { DEFAULT_TITLE } from '@/shared/constants';
 import { conversationProviderSelector, useChat } from '@/shared/lib/providers/chat';
 import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useLayout, useSocket } from '@/shared/model/store';
@@ -36,7 +35,9 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         document.title = `Converstaion with ${conversation.recipient.name}`;
 
         store.setState({ conversation });
+    }, [conversation]);
 
+    React.useEffect(() => {
         socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
 
         socket?.io.on('reconnect', () => socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId }));
@@ -142,8 +143,6 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
         socket?.on(CONVERSATION_EVENTS.TYPING_STOP, () => store.setState({ isRecipientTyping: false }));
         
         return () => {
-            document.title = DEFAULT_TITLE;
-
             setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
 
             socket?.emit(CONVERSATION_EVENTS.LEAVE, { recipientId });
@@ -162,7 +161,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             socket?.off(CONVERSATION_EVENTS.TYPING_START);
             socket?.off(CONVERSATION_EVENTS.TYPING_STOP);
         };
-    }, [recipientId, conversation]);
+    }, [recipientId]);
 
     return (
         <ConversationContext.Provider value={store}>

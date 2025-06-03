@@ -10,6 +10,8 @@ import { View } from './model/view';
 
 const fallback = ChatSkeleton();
 
+export { useConversation } from './model/context';
+
 export const ConversationPage: RouteObject = {
     path: routerList.CONVERSATION,
     element: (
