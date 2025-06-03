@@ -12,6 +12,7 @@ import { ChatStore } from './types';
 export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatStore): ChatStore['actions'] => ({
     setChat: set,
     getChat: get,
+    getChatInfo: () => get().chatInfo,
     handleSelectMessage: (message) => {
         const { selectedMessages } = get();
         const hasMessage = selectedMessages.has(message._id);
@@ -79,7 +80,7 @@ export const chatActions = (set: SetStateInternal<ChatStore>, get: () => ChatSto
 
             isEdit ? newMessages.set(smId!, { ...newMessages.get(smId!)!, status, actions }) : newMessages.set(optMsg._id, optMsg);
             
-            setTimeout(() => get().refs.bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
+            requestAnimationFrame(() => get().refs.bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'smooth' }));
             
             return { messages: { ...messages, data: newMessages } };
         };

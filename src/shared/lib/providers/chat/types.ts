@@ -8,18 +8,20 @@ export interface ChatStore {
     showAnchor: boolean;
     mode: ChatMode;
     showDetails: boolean;
+    chatInfo: any; // TODO: change type
     selectedMessages: Map<string, Message>;
     messages: DataWithCursor<Map<string, Message>>;
     isUpdating: boolean;
     refs: {
-        listRef: React.RefObject<HTMLUListElement | null>;
+        listRef: React.RefObject<HTMLDivElement | null>;
         textareaRef: React.RefObject<HTMLTextAreaElement | null>;
         lastMessageRef: { current: HTMLLIElement | null };
-        bottomPlaceholderRef: { current: HTMLLIElement | null };
+        bottomPlaceholderRef: { current: HTMLDivElement | null };
     };
     actions: {
         setChat: SetStateInternal<ChatStore>;
         getChat: () => ChatStore;
+        getChatInfo: () => any; // TODO: change type
         handleSelectMessage: (message: Message) => void;
         handleOptimisticUpdate: (message: string) => {
             onSuccess: (data: Message) => void;
