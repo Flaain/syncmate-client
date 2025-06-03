@@ -10,13 +10,13 @@ import { Message as IMessage } from '@/shared/model/types';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
 import { Image } from '@/shared/ui/Image';
 
-interface MessageGroupProps {
+export interface MessageGroupProps {
     messages: Array<IMessage>;
     isLastGroup: boolean;
     firstMessageRef: ((node: HTMLDivElement) => void) | null;
 }
 
-export const GroupedMessages = ({ messages, firstMessageRef, isLastGroup }: MessageGroupProps) => {
+export const UserGroup = ({ messages, firstMessageRef, isLastGroup }: MessageGroupProps) => {
     const { params, textareaRef, mode, handleSelectMessage } = useChat(useShallow(groupedMessagesSelector));
 
     const userId = useSession((state) => state.userId);
@@ -39,7 +39,7 @@ export const GroupedMessages = ({ messages, firstMessageRef, isLastGroup }: Mess
     }
 
     return (
-        <li className='flex items-end gap-3 xl:self-start w-full first-of-type:mt-auto'>
+        <div className='flex items-end gap-3 xl:self-start w-full first-of-type:mt-auto'>
             <Image
                 src={message.sender.avatar?.url}
                 skeleton={<AvatarByName name={message.sender.name} className={`${avatarClasses} ${animatedAvatarClasses}`} />}
@@ -60,6 +60,6 @@ export const GroupedMessages = ({ messages, firstMessageRef, isLastGroup }: Mess
                     />
                 ))}
             </ul>
-        </li>
+        </div>
     );
 };
