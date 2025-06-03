@@ -16,4 +16,22 @@ export const settingsSidebarMenuSelector = ({
     handleUploadAvatar
 });
 
-export const sidebarDDMselector = (({ profile: { name, avatar, counts: { archived_chats } } }: ProfileStore) => ({ name, avatar, archived_chats }));
+export const sidebarDDMselector = ({
+    profile: {
+        name,
+        avatar,
+        counts: { archived_chats }
+    }
+}: ProfileStore) => ({ name, avatar, archived_chats });
+
+export const sidebarProfileSelector = ({
+    profile: {
+        counts: { archived_chats },
+        name,
+        avatar
+    }
+}: ProfileStore) => ({
+    name,
+    avatar,
+    archived_chats
+});
