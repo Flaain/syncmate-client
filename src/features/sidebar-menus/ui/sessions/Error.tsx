@@ -14,7 +14,7 @@ export const ActiveSessionsMenuError = ({ onRefetch, isRefetching }: { onRefetch
                 <br />
                 Please try again.
             </Typography>
-            <Button onClick={onRefetch} disabled={isRefetching}>
+            <Button intent='primary' onClick={onRefetch} disabled={isRefetching}>
                 {isRefetching ? <LoaderIcon className='size-6 animate-loading' /> : 'try again'}
             </Button>
         </div>

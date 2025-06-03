@@ -16,14 +16,14 @@ import { ActiveSessionsMenu } from '../sessions';
 
 import { SettingsMenuSkeleton } from './Skeleton';
 
-export const SettingsMenu = ({ onClose: onCloseCallback }: SidebarMenuProps) => {
-    const { handleBack, onAnimationEnd, setActiveMenu, onClose, activeMenu, panelRef, shouldRemove } = useSidebarMenu<SettingMenus, HTMLDivElement>(onCloseCallback);
+export const SettingsMenu = ({ onPrevMenu }: SidebarMenuProps) => {
+    const { handleBack, onAnimationEnd, setActiveMenu, onClose, activeMenu, panelRef, shouldRemove } = useSidebarMenu<SettingMenus, HTMLDivElement>(onPrevMenu);
 
     const menus: Menus<SettingMenus> = {
-        profile: <ProfileMenu onClose={onClose} />,
-        data: <DataStorageMenu onClose={onClose} />,
-        privacy: <PrivacyAndSecuityMenu onClose={onClose}/>,
-        sessions: <ActiveSessionsMenu onClose={onClose} />
+        profile: <ProfileMenu onPrevMenu={onClose} />,
+        data: <DataStorageMenu onPrevMenu={onClose} />,
+        privacy: <PrivacyAndSecuityMenu onPrevMenu={onClose} />,
+        sessions: <ActiveSessionsMenu onPrevMenu={onClose} />
     }
 
     return (
@@ -37,9 +37,11 @@ export const SettingsMenu = ({ onClose: onCloseCallback }: SidebarMenuProps) => 
             >
                 <SidebarMenuHeader title='Settings' onBack={handleBack}>
                     <Button
+                        ripple
                         variant='ghost'
                         size='icon'
-                        className='size-10 ml-auto rounded-full p-2'
+                        intent='secondary'
+                        className='ml-auto'
                         onClick={() => setActiveMenu('profile')}
                     >
                         <EditIcon className='size-6 text-primary-gray' />

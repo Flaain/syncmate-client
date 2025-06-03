@@ -8,8 +8,8 @@ import { DataStorageContent } from '../../model/view';
 
 import { DataStorageMenuSkeleton } from './Skeleton';
 
-export const DataStorageMenu = ({ onClose }: SidebarMenuProps) => {
-    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onClose);
+export const DataStorageMenu = ({ onPrevMenu }: SidebarMenuProps) => {
+    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onPrevMenu);
 
     return (
         <SidebarMenuContainer

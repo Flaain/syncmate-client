@@ -8,8 +8,8 @@ import { ProfileContent } from '../../model/view';
 
 import { ProfileMenuSkeleton } from './ProfileMenuSkeleton';
 
-export const ProfileMenu = ({ onClose }: SidebarMenuProps) => {
-    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onClose);
+export const ProfileMenu = ({ onPrevMenu }: SidebarMenuProps) => {
+    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onPrevMenu);
 
     return (
         <SidebarMenuContainer

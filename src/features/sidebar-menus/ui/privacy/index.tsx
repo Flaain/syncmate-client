@@ -10,11 +10,11 @@ import { ActiveSessionsMenu } from '../sessions';
 
 import { PrivacyAndSecurityMenuSkeleton } from './Skeleton';
 
-export const PrivacyAndSecuityMenu = ({ onClose: onCloseCB }: SidebarMenuProps) => {
-    const { panelRef, shouldRemove, onAnimationEnd, activeMenu, setActiveMenu, onClose, handleBack } = useSidebarMenu<PrivacyAndSecurityMenus, HTMLDivElement>(onCloseCB);
+export const PrivacyAndSecuityMenu = ({ onPrevMenu }: SidebarMenuProps) => {
+    const { panelRef, shouldRemove, onAnimationEnd, activeMenu, setActiveMenu, onClose, handleBack } = useSidebarMenu<PrivacyAndSecurityMenus, HTMLDivElement>(onPrevMenu);
 
     const menus: Menus<PrivacyAndSecurityMenus> = {
-        sessions: <ActiveSessionsMenu onClose={onClose} />
+        sessions: <ActiveSessionsMenu onPrevMenu={onClose} />
     }
 
     return (

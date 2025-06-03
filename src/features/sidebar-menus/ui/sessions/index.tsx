@@ -8,8 +8,8 @@ import { ActiveSessionsMenuContent } from '../../model/view';
 
 import { ActiveSessionsMenuSkeleton } from './Skeleton';
 
-export const ActiveSessionsMenu = ({ onClose }: SidebarMenuProps) => {
-    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onClose);
+export const ActiveSessionsMenu = ({ onPrevMenu }: SidebarMenuProps) => {
+    const { panelRef, shouldRemove, onAnimationEnd, handleBack } = useSidebarMenu<null, HTMLDivElement>(onPrevMenu);
 
     return (
         <SidebarMenuContainer

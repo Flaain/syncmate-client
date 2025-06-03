@@ -15,11 +15,12 @@ export const DataStorageMenuContent = () => {
     const confirmConfig: ModalConfig = {
         content: (
             <Confirm
+                title='Clear cache'
                 onCancel={onCloseModal}
                 onConfirm={handleClearCache}
                 onConfirmText='Clear'
-                text='Are you certain you wish to clear your browser cache? Doing so may result in a longer page load time.'
-                onConfirmButtonVariant='destructive'
+                description='Are you certain you wish to clear your browser cache? Doing so may result in a longer page load time.'
+                onConfirmButtonIntent='destructive'
             />
         ),
         withHeader: false,

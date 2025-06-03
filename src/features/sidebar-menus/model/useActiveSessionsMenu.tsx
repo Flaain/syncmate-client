@@ -45,10 +45,11 @@ export const useActiveSessionsMenu = () => {
     const getModalConfig = React.useCallback((_id?: string): ModalConfig => ({
         content: (
             <Confirm
-                text={`Are you sure you want to terminate ${_id ? 'this session' : 'all other sessions'}?`}
+                title={`Terminate ${_id ? 'Session' : 'Sessions'}`}
+                description={`Are you sure you want to terminate ${_id ? 'this session' : 'all other sessions'}?`}
                 onCancel={onCloseModal}
                 onConfirmText='Terminate'
-                onConfirmButtonVariant='destructive'
+                onConfirmButtonIntent='destructive'
                 onConfirm={() => _id ? handleDrop(_id) : handleTerminate()}
             />
         ),

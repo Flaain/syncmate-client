@@ -61,7 +61,7 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
                     description='Email'
                     onClick={() => handleCopy('Email', email)}
                     icon={<EmailIcon className={iconStyles} />}
-                    />
+                />
                 <SidebarMenuButton
                     title={login.substring(0, 1).toUpperCase() + login.substring(1)}
                     description='Login'

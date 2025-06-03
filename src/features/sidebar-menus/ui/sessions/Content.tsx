@@ -22,13 +22,14 @@ export const ActiveSessionsMenuContent = () => {
                 <Typography as='h2' size='lg' weight='medium' className='px-4 py-2'>
                     This device
                 </Typography>
-                <SidebarMenuButton className='h-14'>
+                <SidebarMenuButton className='h-16'>
                     <Session session={data.currentSession} isCurrent />
                 </SidebarMenuButton>
                 {!!data.sessions.length && (
                     <Button
+                        ripple
                         variant='ghost'
-                        className='dark:text-primary-destructive dark:hover:bg-primary-destructive/10'
+                        intent='destructive'
                         disabled={isTerminating}
                         onClick={() => onOpenModal(getModalConfig())}
                     >
