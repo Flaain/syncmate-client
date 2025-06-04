@@ -1,3 +1,6 @@
+const PRIVATE_IMPORTS_ERROR = 'Private imports are prohibited, use public imports instead';
+const RELATIVE_IMPORTS_ERROR = 'Prefer absolute imports instead of relatives (for root modules)';
+
 module.exports = {
     extends: [
         'plugin:import/errors',
@@ -20,7 +23,7 @@ module.exports = {
         'boundaries/ignore': ['**/*.test.*']
     },
     rules: {
-        "import/no-named-as-default": 1,
+        'import/no-named-as-default': 1,
         'import/order': [
             'error',
             {
@@ -44,62 +47,62 @@ module.exports = {
             'error',
             {
                 patterns: [
-                    { message: 'Private imports are prohibited, use public imports instead', group: ['@/app/**'] },
+                    { message: PRIVATE_IMPORTS_ERROR, group: ['@/app/**'] },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/processes/*/**']
                     },
-                    { message: 'Private imports are prohibited, use public imports instead', group: ['@/pages/*/**'] },
+                    { message: PRIVATE_IMPORTS_ERROR, group: ['@/pages/*/**'] },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/widgets/*/**']
                     },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/features/*/**']
                     },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/entities/*/**']
                     },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/shared/lib/assets/icons/browsers/*/**']
                     },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/shared/lib/providers/*/**']
                     },
                     {
-                        message: 'Private imports are prohibited, use public imports instead',
+                        message: PRIVATE_IMPORTS_ERROR,
                         group: ['@/shared/lib/hooks/*/**']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/app']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/processes']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/pages']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/widgets']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/features']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/entities']
                     },
                     {
-                        message: 'Prefer absolute imports instead of relatives (for root modules)',
+                        message: RELATIVE_IMPORTS_ERROR,
                         group: ['../**/shared']
                     }
                 ]
@@ -122,4 +125,4 @@ module.exports = {
         ]
     },
     overrides: [{ files: ['**/*.test.*'], rules: { 'boundaries/element-types': 'off' } }]
-}
+};
