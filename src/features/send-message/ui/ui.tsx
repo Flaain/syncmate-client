@@ -20,7 +20,7 @@ import { TopBar } from './TopBar';
 
 export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }: UseMessageParams) => {
     const { params, lastMessageRef, textareaRef, showAnchor } = useChat(useShallow(sendMessageSelector))
-    const { handleSubmitMessage, onKeyDown, onBlur, setDefaultState, handleChange, onEmojiSelect, setIsEmojiPickerOpen, isEmojiPickerOpen, value } = useSendMessage({ onChange, handleTypingStatus });
+    const { handleSubmitMessage, onKeyDown, onBlur, onKeyUp, setDefaultState, handleChange, onEmojiSelect, setIsEmojiPickerOpen, isEmojiPickerOpen, value } = useSendMessage({ onChange, handleTypingStatus });
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
     const restrictedIndex = React.useMemo(() => restrictMessaging?.findIndex(({ reason }) => reason), [restrictMessaging]);
@@ -47,14 +47,16 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     onSubmit={handleSubmitMessage}
                 >
                     <textarea
+                        id='message-input'
                         rows={1}
                         ref={textareaRef}
                         value={value}
+                        onKeyUp={onKeyUp}
                         onBlur={onBlur}
                         onChange={handleChange}
                         onKeyDown={onKeyDown}
                         placeholder='Write a message...'
-                        className='overscroll-contain disabled:opacity-50 leading-5 pl-5 py-[25px] min-h-[70px] scrollbar-hide max-h-[120px] overflow-auto flex box-border flex-1 transition-colors duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
+                        className='overscroll-contain disabled:opacity-50 pl-5 py-[15px] min-h-[50px] scrollbar-hide max-h-[120px] overflow-auto flex box-border flex-1 transition-all duration-200 ease-in-out resize-none appearance-none ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus:placeholder:opacity-0 focus:placeholder:translate-x-2 outline-none ring-0 placeholder:transition-all placeholder:duration-300 placeholder:ease-in-out dark:bg-primary-dark-100 border-none text-white dark:placeholder:text-white placeholder:opacity-50'
                     ></textarea>
                     {showAnchor && (
                         <Button

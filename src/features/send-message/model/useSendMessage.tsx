@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { messageApi, MESSAGE_ENDPOINTS } from '@/entities/message';
 
+import { useLatest } from '@/shared/lib/hooks/useLatest';
 import { getUseSendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { selectModalActions, useModal } from '@/shared/lib/providers/modal';
 import { toast } from '@/shared/lib/toast';
@@ -14,17 +15,18 @@ import { Confirm } from '@/shared/ui/Confirm';
 
 import { UseMessageParams } from './types';
 
+const MIN_HEIGHT_TEXTAREA = 50;
+
 export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessageParams, 'restrictMessaging'>) => {
     const { onOpenModal, onCloseModal, onAsyncActionModal } = useModal(selectModalActions);
     const { params, textareaRef, chatInfo, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
-
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
-
-    const valueRef = React.useRef(value);
     
+    const valueRef = useLatest(value, [value]);
+
     const onEmojiSelect = ({ emoji }: Emoji) => {
         if (textareaRef.current instanceof HTMLTextAreaElement) {
             const { selectionStart, selectionEnd } = textareaRef.current, newPos = selectionStart + emoji.length;
@@ -38,8 +40,6 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         }
     };
 
-    React.useInsertionEffect(() => { valueRef.current = value; }, [value]);
-
     React.useEffect(() => {
         requestAnimationFrame(() => {
             if (!textareaRef.current) return;
@@ -51,14 +51,21 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         });
     }, [params.id]);
 
-    React.useEffect(() => { setValue(currentDraft?.value ?? '') }, [currentDraft]);
+    React.useEffect(() => { 
+        setValue(currentDraft?.value ?? '');
+        handleResize();
+    }, [currentDraft]);
 
-    React.useEffect(() => {
-        if (!textareaRef.current) return;
+    const handleResize = () => {
+        requestAnimationFrame(() => {
+            if (!textareaRef.current) return;
 
-        textareaRef.current.style.height = 'inherit';
-        textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 50)}px`;
-    }, [value]);
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, MIN_HEIGHT_TEXTAREA)}px`;
+        });
+    }
+
+    const onKeyUp = (_: React.KeyboardEvent<HTMLTextAreaElement>) => {}
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === 'Enter' && !event.shiftKey && 'form' in event.target) {
@@ -232,6 +239,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         value,
         isEmojiPickerOpen,
         setIsEmojiPickerOpen,
+        onKeyUp,
         onKeyDown,
         onBlur,
         setDefaultState,
