@@ -87,7 +87,7 @@ export const Sidebar = () => {
                     activeMenu && '-translate-x-20'
                 )}
             >
-                <div className='flex items-center justify-between gap-3 sticky top-0 px-4 box-border h-[56px] mb-3'>
+                <div className='flex items-center justify-between gap-3 sticky top-0 px-4 box-border min-h-[56px]'>
                     <DropdownMenu
                         align='start'
                         className='min-w-[200px]'
