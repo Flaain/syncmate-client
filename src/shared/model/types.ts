@@ -24,6 +24,7 @@ export const PRESENCE = {
 
 export const CHAT_TYPE = {
     Conversation: 'Conversation',
+    Group: 'Group'
 } as const;
 
 export type SetStateInternal<T> = {
@@ -38,7 +39,10 @@ export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) 
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 export type EventsEntries = Array<{ type: keyof GlobalEventHandlersEventMap, listener: (event: Event) => void }>;
 
-export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'lastSeenAt' | 'isPrivate' | 'isDeleted' | 'presence' | 'bio' | 'avatar'>;
+export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'isDeleted' | 'presence' | 'bio' | 'avatar' | 'email'> & {
+    lastSeenAt?: string;
+};
+
 export type UserCheckParams = { type: Extract<UserCheckType, 'email'>; email: string } | { type: Extract<UserCheckType, 'login'>; login: string };
 
 export type PRESENCE = keyof typeof PRESENCE;
@@ -114,23 +118,26 @@ export interface Profile {
     presence: PRESENCE;
     bio?: string;
     avatar?: Avatar;
+    lastSeenAt: string;
+    isOfficial: boolean;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
     counts: {
         archived_chats: number;
         active_sessions: number;
     }
-    lastSeenAt: string;
-    isOfficial: boolean;
-    isPrivate: boolean;
-    isDeleted: boolean;
-    createdAt: string;
-    updatedAt: string;
 }
+
+export type MessageUnionFields =
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted'>; sourceRefPath: Extract<CHAT_TYPE, 'Conversation'> }
+    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: Extract<CHAT_TYPE, 'Group'> };
 
 export type Message = {
     _id: string;
     hasBeenEdited: boolean;
     text: string;
-    replyTo?: Pick<Message, '_id' | 'text' | 'sourceRefPath'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; }
+    replyTo?: Pick<Message, '_id' | 'text' | 'sourceRefPath'> & { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted'> };
     inReply?: boolean;
     readedAt?: string;
     hasBeenRead?: boolean;
@@ -143,9 +150,7 @@ export type Message = {
         remove?: () => void;
         resend?: () => void;
     };
-    sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>;
-    sourceRefPath: CHAT_TYPE;
-};
+} & MessageUnionFields;
 
 export interface DataWithCursor<T> {
     data: T;

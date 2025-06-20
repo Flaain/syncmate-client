@@ -3,6 +3,7 @@ import { ChatStore } from './types';
 export const getUseMessageSelector = (state: ChatStore) => ({
     lastMessageRef: state.refs.lastMessageRef,
     params: state.params,
+    isUpdating: state.isUpdating,
     selectedMessages: state.selectedMessages,
     isContextActionsBlocked: state.isContextActionsBlocked,
     setChat: state.actions.setChat
@@ -38,6 +39,7 @@ export const messagesListSelector = (state: ChatStore) => ({
 
 export const groupedMessagesSelector = (state: ChatStore) => ({
     textareaRef: state.refs.textareaRef,
+    chatInfo: state.chatInfo,
     listRef: state.refs.listRef,
     params: state.params,
     mode: state.mode,

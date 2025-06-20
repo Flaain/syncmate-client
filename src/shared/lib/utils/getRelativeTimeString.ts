@@ -18,5 +18,5 @@ export const getRelativeMessageTimeString = (data: Date | number | string, lang 
     const localeTimeString = isDate ? data.toLocaleTimeString(lang, { timeStyle: 'medium' }) : new Date(data).toLocaleTimeString(lang, { timeStyle: 'short' });
     const deltaHours = Math.round((Date.now() - timeMS) / 1000 / 60 / 60);
 
-    return deltaHours <= 24 ? `today at ${localeTimeString}` : deltaHours >= 48 ? `${new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(isDate ? data : new Date(data))}` : `yesterday at ${localeTimeString}`;
+    return deltaHours <= 24 ? `today at ${localeTimeString}` : deltaHours >= 48 ? `${new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(timeMS)}` : `yesterday at ${localeTimeString}`;
 }
