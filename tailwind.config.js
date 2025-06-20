@@ -26,6 +26,9 @@ export default {
                 'ripple-color': 'rgba(255, 255, 255, .08)',
                 modal: 'rgba(0, 0, 0, .5)'
             },
+            boxShadow: {
+                'menu': '0px 0px 10px rgba(0, 0, 0, .15)',
+            },
             keyframes: {
                 shimmer: {
                     '100%': {
@@ -56,7 +59,7 @@ export default {
                 width: 'width'
             },
             animation: {
-                ripple: 'ripple .7s ease-in-out forwards',
+                ripple: 'ripple 1.25s cubic-bezier(0.5, 1, 0.89, 1) forwards',
                 loading: 'loading .5s linear infinite',
                 'caret-blink': 'caret-blink 1.25s ease-out infinite'
             },
