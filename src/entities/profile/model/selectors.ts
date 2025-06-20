@@ -3,7 +3,7 @@ import { ProfileStore } from './types';
 export const selectProfileName = (state: ProfileStore) => state.profile.name;
 
 export const settingsSidebarMenuSelector = ({
-    profile: { email, name, avatar, login, isOfficial },
+    profile: { email, name, avatar, login, isOfficial, counts },
     isUploadingAvatar,
     actions: { handleUploadAvatar }
 }: ProfileStore) => ({
@@ -12,6 +12,7 @@ export const settingsSidebarMenuSelector = ({
     avatar,
     login,
     isOfficial,
+    counts,
     isUploadingAvatar,
     handleUploadAvatar
 });
@@ -35,3 +36,5 @@ export const sidebarProfileSelector = ({
     avatar,
     archived_chats
 });
+
+export const profileSelector = (state: ProfileStore) => state.profile;
