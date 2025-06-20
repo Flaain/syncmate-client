@@ -12,59 +12,16 @@ import { Radio } from '@/shared/ui/Radio';
 import { SidebarMenuButton, SidebarMenuContainer, SidebarMenuHeader, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
+import { settingsMap } from '../../model/constants';
 import { PrivacyAndSecuitySettingProps, PrivacyAndSecurity, PrivacyMode } from '../../model/types';
 import { getPrivacyAndSecurityExceptionButtonDescription } from '../../utils/getPrivacyAndSecurityExceptionButtonDescription';
 import { isCorrectMode } from '../../utils/isCorrectMode';
 
 import { iconStyles } from './Content';
 
-const settingsMap: Record<keyof PrivacyAndSecurity, { title: string; description?: string; setting: string; isViewPermission?: boolean }> = {
-    whoCanSeeMyEmail: {
-        title: 'Email Address',
-        setting: 'Who can see my email address?',
-        isViewPermission: true
-    },
-    whoCanSeeMyLastSeenTime: {
-        title: 'Last Seen & Online',
-        setting: 'Who can see my Last Seen time?',
-        description: 'You won\'t see Last Seen or Online statuses for people with whom you don\'t share yours. Approximate times will be shown instead (recently, within a week, within a month).',
-        isViewPermission: true
-    },
-    whoCanSeeMyProfilePhotos: {
-        title: 'Profile Photos',
-        setting: 'Who can see my profile photos?',
-        description: 'You can restrict who can see your profile photo with granular precision.',
-        isViewPermission: true
-    },
-    whoCanSeeMyBio: {
-        title: 'Bio',
-        setting: 'Who can see my bio?',
-        description: 'You can restrict who can see the bio on your profile with granular precision.',
-        isViewPermission: true
-    },
-    whoCanLinkMyProfileViaForward: {
-        title: 'Forwarded Messages',
-        setting: 'Who can add a link to my account when forwarding my messages?',
-        description: 'You can restrict who can add a link to your account when forwarding your messages.'
-    },
-    whoCanAddMeToGroupChats: {
-        title: 'Group chats',
-        setting: 'Who can add me to group chats?',
-        description: 'You can restrict who can add you to groups and channels with granular precision.'
-    },
-    whoCanSendMeMessages: {
-        title: 'Messages',
-        setting: 'Who can send me messages?',
-        description: 'You can restrict messages from users who are not in your contacts.'
-    }
-}
-
-// THINK: maybe it's overhead but i decided just create reusable setting component instead of doing 7 components (for each privacy setting)
-// however, I believe that for better scalability, it would be better to use a separate component for each setting.
-
 export const PrivacyAndSecuitySetting = ({ data, setData, onPrevMenu, activeSettingMenuRef }: PrivacyAndSecuitySettingProps) => {
     const { title, description, setting } = settingsMap[activeSettingMenuRef.current!];
-    const { panelRef, shouldRemove, onAnimationEnd, activeMenu, setActiveMenu, onClose, handleBack } = useSidebarMenu<null, HTMLDivElement>(onPrevMenu);
+    const { panelRef, shouldRemove, onAnimationEnd, activeMenu, handleBack } = useSidebarMenu<null, HTMLDivElement>(onPrevMenu);
     const { call } = useQuery<ApiBaseSuccessData, { setting: keyof PrivacyAndSecurity, mode: PrivacyMode }>(({ signal, args }) => profileApi.updatePrivacySettingMode(args!, signal), { enabled: false });
 
     const settingData = data[activeSettingMenuRef.current!];

@@ -45,6 +45,15 @@ export const useActiveSessionsMenu = () => {
         await onAsyncActionModal(() => sessionApi.terminateAllSessions(), {
             onResolve: ({ data: { deletedCount } }) => {
                 setData((prevState) => ({ ...prevState, sessions: [] }));
+                useProfile.setState((prevState) => ({
+                    profile: {
+                        ...prevState.profile,
+                        counts: {
+                            ...prevState.profile.counts,
+                            active_sessions: prevState.profile.counts.active_sessions - deletedCount
+                        }
+                    }
+                }));
                 toast.success(`${deletedCount} ${deletedCount > 1 ? 'sessions' : 'session'} was terminated`);
             },
             onReject: () => toast.error('Failed to teriminate session'),
