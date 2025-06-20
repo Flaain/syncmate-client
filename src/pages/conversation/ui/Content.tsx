@@ -51,7 +51,7 @@ export const Content = () => {
                             message: isRecipientBlocked ? `You blocked ${recipient.name}` : `${recipient.name} has restricted incoming messages`
                         },
                         {
-                            reason: !_id && recipient.isPrivate,
+                            reason: !_id && false, // TODO: update later
                             message: `${recipient.name} does not accept new messages`
                         }
                     ]}
@@ -64,7 +64,8 @@ export const Content = () => {
                 description={description}
                 info={[
                     { data: recipient.bio, type: 'bio' },
-                    { data: recipient.login, type: 'login' }
+                    { data: recipient.login, type: 'login' },
+                    { data: recipient.email, type: 'email' }
                 ]}
             />
         </OutletContainer>

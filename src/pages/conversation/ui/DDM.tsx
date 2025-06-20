@@ -22,19 +22,17 @@ export const DDM = () => {
 
     return (
         <>
-            <MenuItem className='mt-1 mx-1' type='ddm' text='Mute' icon={<MuteIcon className='size-5' />} />
-            <MenuItem className='mx-1' type='ddm' text='Call' icon={<PhoneIcon className='size-5' />} />
-            <MenuItem className='mx-1' type='ddm' text='Video Call' icon={<VideoCameraIcon className='size-5' />} />
+            <MenuItem type='ddm' text='Mute' icon={<MuteIcon className='size-5' />} />
+            <MenuItem type='ddm' text='Call' icon={<PhoneIcon className='size-5' />} />
+            <MenuItem type='ddm' text='Video Call' icon={<VideoCameraIcon className='size-5' />} />
             <MenuItem
                 type='ddm'
-                className='mx-1'
                 text={`${chatMode === 'default' ? 'Select Messages' : 'Clear Selection'}`}
                 onClick={handleSelectMessages}
                 icon={<SelectIcon className='size-5' />}
             />
             <MenuItem
                 type='ddm'
-                className='mx-1'
                 onClick={() => handleBlockUnblockRecipient(isRecipientBlocked ? 'unblock' : 'block')}
                 text={isRecipientBlocked ? 'Unblock user' : 'Block user'}
                 icon={<LockIcon className='size-5' />}
@@ -42,7 +40,6 @@ export const DDM = () => {
             {_id && (
                 <MenuItem
                     type='ddm'
-                    className='mx-1 mb-1'
                     variant='destructive'
                     onClick={handleDeleteConversation}
                     icon={<DeleteIcon className='size-5 text-primary-destructive' />}
