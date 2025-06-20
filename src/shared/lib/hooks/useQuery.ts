@@ -4,7 +4,7 @@ import { ApiBaseResult } from '@/shared/api/API';
 import { ApiException } from '@/shared/api/error';
 import { QueryCache } from '@/shared/model/queryCache';
 
-export type UseQueryCallback<T> = (params: { signal: AbortSignal; args?: T }) => Promise<ApiBaseResult<T>>;
+export type UseQueryCallback<T, A> = (params: { signal: AbortSignal; args?: A }) => Promise<ApiBaseResult<T>>;
 
 type UseRunQueryAction = 'init' | 'refetch';
 
@@ -92,7 +92,7 @@ interface UseQueryOptions<T> {
  *
  * @template T - The type of the data being fetched.
  */
-interface UseQueryReturn<T> {
+interface UseQueryReturn<T, A> {
     /**
      * Indicates whether the query is currently loading data for the first time.
      */
@@ -128,7 +128,7 @@ interface UseQueryReturn<T> {
      *
      * @returns A promise that resolves when the query completes.
      */
-    call: (args?: T) => Promise<void>;
+    call: (args?: A) => Promise<void>;
 
     /**
      * Aborts the ongoing query request, if applicable.
@@ -188,7 +188,7 @@ interface UseQueryConfig {
 
 const queryCache = new QueryCache();
 
-export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T> => {
+export const useQuery = <T, A = T>(callback: UseQueryCallback<T, A>, options?: Partial<UseQueryOptions<T>>): UseQueryReturn<T, A> => {
     const [isError, setIsError] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(options?.enabled ?? true);
     const [isSuccess, setIsSuccess] = React.useState(false);
@@ -240,13 +240,13 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         }
     };
 
-    const runQuery = async (action: UseRunQueryAction, d?: T) => {
+    const runQuery = async (action: UseRunQueryAction, args?: A) => {
         try {
             abort();
 
             action === 'init' ? setIsLoading(true) : setIsRefetching(true);
 
-            const { data, authentic } = await callback({ signal: config.current.abortController.signal, args: d });
+            const { data, authentic } = await callback({ signal: config.current.abortController.signal, args });
 
             setIsSuccess(true);
             setIsLoading(false);
@@ -357,7 +357,7 @@ export const useQuery = <T>(callback: UseQueryCallback<T>, options?: Partial<Use
         error,
         setData,
         abort,
-        call: (args?: T) => runQuery('init', args),
+        call: (args?: A) => runQuery('init', args),
         refetch: () => runQuery('refetch')
     };
 };
