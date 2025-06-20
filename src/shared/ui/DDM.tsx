@@ -24,7 +24,7 @@ export const DropdownMenu = ({ children, trigger, className, ...rest }: DDMProps
         <DDM open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
                 {trigger || (
-                    <Button intent='secondary' variant='ghost' size='icon'>
+                    <Button ripple intent='secondary' variant='ghost' size='icon'>
                         <MoreIcon className='text-primary-gray' />
                     </Button>
                 )}
@@ -32,15 +32,14 @@ export const DropdownMenu = ({ children, trigger, className, ...rest }: DDMProps
             <DropdownMenuContent
                 {...rest}
                 className={cn(
-                    'border-none p-0 rounded-lg h-auto box-border backdrop-blur-[50px] dark:bg-menu-background-color z-[999]',
+                    '!shadow-menu border-none p-1 rounded-lg h-auto box-border backdrop-blur-[50px] dark:bg-menu-background-color z-[999]',
                     className
                 )}
-                asChild
                 loop
                 ref={ref}
                 onEscapeKeyDown={(event) => event.stopPropagation()}
             >
-                <div>{children}</div>
+                {children}
             </DropdownMenuContent>
         </DDM>
     );

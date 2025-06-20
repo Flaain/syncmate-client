@@ -115,7 +115,7 @@ export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarCont
                     className,
                     'col-start-1 row-start-1 bg-primary-dark duration-300 z-0 overflow-auto',
                     shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
-                    hasActiveMenu && '-translate-x-20'
+                    hasActiveMenu ? '-translate-x-20' : 'translate-x-0'
                 )}
                 {...rest}
             >
@@ -130,7 +130,7 @@ export const SidebarMenuSeparator = ({
     className,
     ...rest
 }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-150 my-2 px-8 py-2 box-border dark:text-primary-gray text-sm', className)}>
+    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-150 my-2 px-6 py-2 box-border dark:text-primary-gray text-sm', className)}>
         {children}
     </div>
 );
@@ -192,17 +192,17 @@ export const SidebarMenuButton = ({
             {children || (
                 <>
                     {description ? (
-                        <div className='flex flex-col items-start'>
+                        <span className='flex flex-col items-start'>
                             <Typography weight='medium'>{title}</Typography>
                             {description &&
                                 (React.isValidElement(description) ? (
                                     description
                                 ) : (
-                                    <Typography as='p' variant='secondary' size='sm'>
+                                    <Typography variant='secondary' size='sm'>
                                         {description}
                                     </Typography>
                                 ))}
-                        </div>
+                        </span>
                     ) : (
                         <Typography weight='medium'>{title}</Typography>
                     )}

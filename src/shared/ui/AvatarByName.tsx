@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 
 import { cn } from '../lib/utils/cn';
 
-import { ProfileIndicator } from './ProfileIndicator';
+import { OnlineIndicator } from './OnlineIndicator';
 
 export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement> {
     name: string;
@@ -11,7 +11,7 @@ export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement>
 }
 
 const avatarVariants = cva(
-    'flex flex-grow-0 leading-none flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
+    'relative flex flex-grow-0 leading-none flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
     {
         variants: {
             size: {
@@ -37,14 +37,14 @@ export const AvatarByName = ({ name, className, children, size, isOnline, ...res
     const lastNameInitial = nameParts[1] ? nameParts[1][0] : '';
 
     return (
-        <span {...rest} className={cn('relative', avatarVariants({ size, className }))}>
+        <span {...rest} className={cn(avatarVariants({ size, className }))}>
             {children || (
                 <>
                     {firstNameInitial.toUpperCase()}
                     {lastNameInitial.toUpperCase()}
                 </>
             )}
-            {isOnline && <ProfileIndicator />}
+            {isOnline && <OnlineIndicator />}
         </span>
     );
 };

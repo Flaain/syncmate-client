@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils/cn';
-import { PreAnimatedSkeleton } from '@/shared/ui/PreAnimatedSkeleton';
+import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
 
 import { ESTIMATED_MESSAGE_SIZE } from '../constants';
 
@@ -9,14 +9,14 @@ export const MessageSkeleton = ({ key }: { key?: number }) => {
 
     return (
         <li className='flex gap-2' key={key}>
-            <PreAnimatedSkeleton className='max-xl:hidden self-end dark:bg-primary-dark-50 min-w-[40px] max-w-[40px] h-10 space-y-5 rounded-full' />
+            <AnimatedSkeleton className='max-xl:hidden self-end dark:bg-primary-dark-50 min-w-[40px] max-w-[40px] h-10 space-y-5 rounded-full' />
             <div
                 className={cn(
                     'flex items-center w-full gap-5 relative',
                     index % 2 ? 'xl:justify-start justify-end' : 'justify-start'
                 )}
             >
-                <PreAnimatedSkeleton
+                <AnimatedSkeleton
                     style={{ 
                         height: `${Math.floor(Math.random() * (100 - ESTIMATED_MESSAGE_SIZE + 1) + ESTIMATED_MESSAGE_SIZE)}px`, 
                         width: `${Math.floor(Math.random() * 101) + 120}px` 

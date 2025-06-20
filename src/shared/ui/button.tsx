@@ -104,7 +104,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, ri
                 ></div>
             ];
         })
-    }
+    };
 
     const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         props.onMouseDown?.(event);
