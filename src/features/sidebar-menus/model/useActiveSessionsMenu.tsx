@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useProfile } from "@/entities/profile";
 import { sessionApi } from "@/entities/session";
 
 import { useQuery } from "@/shared/lib/hooks/useQuery";
@@ -9,8 +10,20 @@ import { Confirm } from "@/shared/ui/Confirm";
 
 export const useActiveSessionsMenu = () => {
     const [isTerminating, setIsTerminating] = React.useState(false);
-
-    const { data, isLoading, isError, isRefetching, refetch, setData, } = useQuery(({ signal }) => sessionApi.getSessions(signal), { prefix: 'sidebar/sessions' });
+    
+    const { data, isLoading, isError, isRefetching, refetch, setData, } = useQuery(({ signal }) => sessionApi.getSessions(signal), { 
+        prefix: 'sidebar/sessions',
+        onSuccess: (data, isCached) => {
+            const l = data.sessions.length + 1;
+            
+            !isCached && useProfile.getState().profile.counts.active_sessions !== l && useProfile.setState((prevState) => ({ 
+                profile: { 
+                    ...prevState.profile, 
+                    counts: { ...prevState.profile.counts, active_sessions: l } 
+                } 
+            }))
+        }
+    });
 
     const { onAsyncActionModal, onOpenModal, onCloseModal } = useModal(selectModalActions);
 

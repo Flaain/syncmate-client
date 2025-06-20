@@ -18,7 +18,7 @@ export const ActiveSessionsMenuContent = () => {
 
     return (
         <>
-            <div className='flex flex-col px-4'>
+            <div className='flex flex-col px-2'>
                 <Typography as='h2' size='lg' weight='medium' className='px-4 py-2'>
                     This device
                 </Typography>
@@ -42,7 +42,7 @@ export const ActiveSessionsMenuContent = () => {
                     <SidebarMenuSeparator className='h-10'>
                         Logs out all devices except for this one.
                     </SidebarMenuSeparator>
-                    <ul className='px-4 pb-2 overflow-auto h-fill-available box-border'>
+                    <ul className='px-2 pb-2 overflow-auto h-fill-available box-border'>
                         {data.sessions.map((session) => (
                             <li key={session._id}>
                                 <SidebarMenuButton

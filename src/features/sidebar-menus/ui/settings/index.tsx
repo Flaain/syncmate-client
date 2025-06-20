@@ -17,7 +17,7 @@ import { ActiveSessionsMenu } from '../sessions';
 import { SettingsMenuSkeleton } from './Skeleton';
 
 export const SettingsMenu = ({ onPrevMenu }: SidebarMenuProps) => {
-    const { handleBack, onAnimationEnd, setActiveMenu, onClose, activeMenu, panelRef, shouldRemove } = useSidebarMenu<SettingMenus, HTMLDivElement>(onPrevMenu);
+    const { handleBack, onAnimationEnd, changeMenu, onClose, activeMenu, panelRef, shouldRemove } = useSidebarMenu<SettingMenus, HTMLDivElement>(onPrevMenu);
 
     const menus: Menus<SettingMenus> = {
         profile: <ProfileMenu onPrevMenu={onClose} />,
@@ -42,13 +42,13 @@ export const SettingsMenu = ({ onPrevMenu }: SidebarMenuProps) => {
                         size='icon'
                         intent='secondary'
                         className='ml-auto'
-                        onClick={() => setActiveMenu('profile')}
+                        onClick={() => changeMenu('profile')}
                     >
                         <EditIcon className='size-6 text-primary-gray' />
                     </Button>
                 </SidebarMenuHeader>
                 <React.Suspense fallback={<SettingsMenuSkeleton />}>
-                    <SettingsContent changeMenu={setActiveMenu} />
+                    <SettingsContent changeMenu={changeMenu} />
                 </React.Suspense>
             </SidebarMenuContainer>
             {!!activeMenu && menus[activeMenu]}

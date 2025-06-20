@@ -1,8 +1,8 @@
 import { useShallow } from "zustand/shallow";
 
 import { ModalConfig, selectModalActions, useModal } from "@/shared/lib/providers/modal";
+import { AnimatedSkeleton } from "@/shared/ui/AnimatedSkeleton";
 import { Confirm } from "@/shared/ui/Confirm";
-import { PreAnimatedSkeleton } from "@/shared/ui/PreAnimatedSkeleton";
 import { SidebarMenuButton } from "@/shared/ui/SidebarMenu";
 import { Typography } from "@/shared/ui/Typography";
 
@@ -27,7 +27,7 @@ export const DataStorageMenuContent = () => {
     };
     
     return (
-        <div className='px-4 pt-3 flex flex-col gap-2'>
+        <div className='px-2 pt-3 flex flex-col gap-2'>
             <Typography as='h2' title='Automatic cached files' className='px-4' weight='medium' size='lg'>
                 Automatic cached files
             </Typography>
@@ -37,15 +37,14 @@ export const DataStorageMenuContent = () => {
                 title='Cache storage usage'
                 description={
                     <Typography
-                        as='p'
                         variant='secondary'
                         size='sm'
                         className='flex items-center gap-1 whitespace-nowrap'
                     >
                         {usage === 0 ? 'Your cache is currently clear' : (
                             <>
-                                Consumed {usage ?? <PreAnimatedSkeleton className='flex w-8 h-3 rounded-full bg-primary-dark-50' />} of&nbsp;
-                                {quota ?? <PreAnimatedSkeleton className='flex w-16 h-3 rounded-full bg-primary-dark-50' />}
+                                Consumed {usage ?? <AnimatedSkeleton className='flex w-8 h-3 rounded-full bg-primary-dark-50' />} of&nbsp;
+                                {quota ?? <AnimatedSkeleton className='flex w-16 h-3 rounded-full bg-primary-dark-50' />}
                             </>
                     )}
                     </Typography>

@@ -4,6 +4,7 @@ import { settingsSidebarMenuSelector, useProfile } from '@/entities/profile';
 
 import CameraAddIcon from '@/shared/lib/assets/icons/cameraadd.svg?react';
 import DataIcon from '@/shared/lib/assets/icons/data.svg?react';
+import SessionsIcon from '@/shared/lib/assets/icons/devices.svg?react';
 import EmailIcon from '@/shared/lib/assets/icons/email.svg?react';
 import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
@@ -20,12 +21,12 @@ import { Label } from '@/shared/ui/label';
 import { SidebarMenuButton, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
-import { SettingMenus } from '../../model/types';
+import { SettingMenus, SidebarMenuContentProps } from '../../model/types';
 
 const iconStyles = 'size-6 text-primary-white/60';
 
-export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenus) => void }) => {
-    const { email, name, avatar, login, isUploadingAvatar, isOfficial, handleUploadAvatar } = useProfile(useShallow(settingsSidebarMenuSelector));
+export const SettingsContent = ({ changeMenu }: SidebarMenuContentProps<SettingMenus>) => {
+    const { email, name, avatar, login, isUploadingAvatar, isOfficial, counts, handleUploadAvatar } = useProfile(useShallow(settingsSidebarMenuSelector));
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     const isSocketConnected = useSocket((state) => state.isConnected);
@@ -37,7 +38,7 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
 
     return (
         <>
-            <div className='px-4 flex flex-col relative'>
+            <div className='px-2 flex flex-col relative'>
                 <div className='flex flex-col items-center mb-5'>
                     <Image
                         className='size-32 rounded-full self-center border border-solid border-primary-blue'
@@ -89,22 +90,24 @@ export const SettingsContent = ({ changeMenu }: { changeMenu: (menu: SettingMenu
                 </Label>
             </div>
             <SidebarMenuSeparator />
-            <ul className='px-4 flex flex-col'>
-                <li>
-                    <SidebarMenuButton
-                        title='Data ans Storage'
-                        onClick={() => changeMenu('data')}
-                        icon={<DataIcon className={iconStyles} />}
-                    />
-                </li>
-                <li>
-                    <SidebarMenuButton
-                        title='Privacy and Security'
-                        onClick={() => changeMenu('privacy')}
-                        icon={<LockIcon className={iconStyles} />}
-                    />
-                </li>
-            </ul>
+            <div className='px-2 flex flex-col'>
+                <SidebarMenuButton
+                    title='Data ans Storage'
+                    onClick={() => changeMenu('data')}
+                    icon={<DataIcon className={iconStyles} />}
+                />
+                <SidebarMenuButton
+                    title='Privacy and Security'
+                    onClick={() => changeMenu('privacy')}
+                    icon={<LockIcon className={iconStyles} />}
+                />
+                <SidebarMenuButton
+                    title='Devices'
+                    count={counts.active_sessions}
+                    onClick={() => changeMenu('sessions')}
+                    icon={<SessionsIcon className={iconStyles} />}
+                />
+            </div>
         </>
     );
 };
