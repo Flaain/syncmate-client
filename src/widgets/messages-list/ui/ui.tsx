@@ -52,7 +52,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
                     size='text'
                     className='dark:text-primary-white/30 text-primary-white justify-center items-center my-auto min-h-min'
                     disabled={isLoading || isRefetching}
-                    onClick={isError ? refetch : call}
+                    onClick={isError ? refetch : call as () => Promise<void>}
                 >
                     {isError ? isRefetching ? <LoaderIcon className='size-6 animate-loading' /> : 'try again' : 'Load previous messages'}
                 </Button>
