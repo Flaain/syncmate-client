@@ -1,5 +1,6 @@
 import { useShallow } from 'zustand/shallow';
 
+import CheckCheckIcon from '@/shared/lib/assets/icons/checkcheck.svg?react';
 import CopyIcon from '@/shared/lib/assets/icons/copy.svg?react';
 import DeleteIcon from '@/shared/lib/assets/icons/delete.svg?react';
 import EditIcon from '@/shared/lib/assets/icons/edit.svg?react';
@@ -8,8 +9,10 @@ import SelectIcon from '@/shared/lib/assets/icons/select.svg?react';
 
 import { useChat } from '@/shared/lib/providers/chat';
 import { ModalConfig, selectModalActions, useModal } from '@/shared/lib/providers/modal';
+import { getRelativeMessageTimeString } from '@/shared/lib/utils/getRelativeTimeString';
 import { Confirm } from '@/shared/ui/Confirm';
 import { MenuItem } from '@/shared/ui/MenuItem';
+import { Typography } from '@/shared/ui/Typography';
 
 import { ctxMenuIconStyles } from '../model/constants';
 import { IdleCtxMenuProps } from '../model/types';
@@ -40,6 +43,15 @@ export const IdleContextMenu = ({ isMessageFromMe, message, onCopy, onItemClick 
 
     return (
         <>
+            {isMessageFromMe && message.hasBeenRead && (
+                <>
+                    <div className='flex items-center gap-2 px-2 pt-1'>
+                        <CheckCheckIcon className='size-5' />
+                        <Typography size='sm'>{getRelativeMessageTimeString(message.readedAt!)}</Typography>
+                    </div>
+                    <hr className='dark:bg-primary-dark-50 h-1 -mx-1 opacity-20 my-1' />
+                </>
+            )}
             <MenuItem
                 type='ctx'
                 text='Reply'

@@ -11,14 +11,14 @@ import { UseMessageProps } from '../model/types';
 export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: UseMessageProps) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false);
 
-    const { params, selectedMessages, lastMessageRef } = useChat(useShallow(getUseMessageSelector));
+    const { params, selectedMessages, isUpdating, lastMessageRef } = useChat(useShallow(getUseMessageSelector));
 
     const observer = React.useRef<IntersectionObserver | null>(null);
 
     const ref = React.useCallback((node: HTMLLIElement) => {
         isLastGroup && isLast && (lastMessageRef.current = node);
 
-        if (isMessageFromMe || message.alreadyRead) return;
+        if (isMessageFromMe || message.alreadyRead || isUpdating) return; // So if get chat but it's cached (isUpdating) first wait until it's updated
 
         observer.current?.disconnect();
 
