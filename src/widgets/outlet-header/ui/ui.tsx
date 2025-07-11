@@ -31,7 +31,7 @@ export const OutletHeader = (props: OutletHeaderProps) => {
         <div
             {...(chatMode === 'default' && { onClick: () => setChat({ showDetails: true }) })}
             className={cn(
-                'flex items-center max-md:gap-4 self-start size-full max-h-[56px] px-3 box-border dark:bg-primary-dark bg-primary-white sticky top-0 z-[999]',
+                'flex items-center self-start size-full max-h-[56px] px-3 box-border dark:bg-primary-dark bg-primary-white sticky top-0 z-[999]',
                 chatMode === 'default' && 'cursor-pointer'
             )}
         >
