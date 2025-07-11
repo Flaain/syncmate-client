@@ -19,6 +19,8 @@ const components = {
 export const SignupForm = () => {
     const { form, step, loading, isLastStep, onSubmit, onBack, isNextButtonDisabled } = useSignup();
 
+    const rootMessage = form.formState.errors.root?.server?.message;
+
     return (
         <AuthFormContainer
             title={isLastStep ? 'Verify your email' : 'Sign up'}
@@ -35,20 +37,22 @@ export const SignupForm = () => {
                             Step {step + 1} of {steps.length}
                         </Typography>
                         {isLastStep ? <FormOTP onSubmit={onSubmit} /> : components[step as keyof typeof components]}
-                        <div className='flex w-full items-center justify-between mt-5'>
-                            <Button
-                                type='button'
-                                intent='secondary'
-                                onClick={onBack}
-                                disabled={loading}
-                            >
-                                Back
-                            </Button>
-                            {!isLastStep && (
-                                <Button intent='primary' size='md' disabled={isNextButtonDisabled}>
-                                    {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Next'}
-                                </Button>
+                        <div className='flex flex-col'>
+                            {rootMessage && (
+                                <Typography variant='error' className='text-sm max-md:text-xs'>
+                                    {rootMessage}
+                                </Typography>
                             )}
+                            <div className='flex w-full items-center justify-between mt-5'>
+                                <Button type='button' intent='secondary' onClick={onBack} disabled={loading}>
+                                    Back
+                                </Button>
+                                {!isLastStep && (
+                                    <Button intent='primary' size='md' disabled={isNextButtonDisabled}>
+                                        {loading ? <LoaderIcon className='size-5 animate-loading' /> : 'Next'}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </div>
