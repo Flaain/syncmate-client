@@ -2,10 +2,10 @@ export const getBubblesStyles = ({ isMessageFromMe, isFirst, isLast }: { isMessa
     if (isMessageFromMe) {
         return {
             ['dark:bg-primary-white bg-primary-dark-50']: true,
-            ['rounded-se-[15px] rounded-es-[15px] rounded-ee-[5px] rounded-ss-[15px] xl:rounded-ee-[15px] xl:rounded-es-[5px]']: isFirst,
-            ['rounded-se-[5px] rounded-ss-[15px] rounded-es-[15px] rounded-ee-[0px] xl:rounded-ee-[15px] xl:rounded-es-[0px] xl:rounded-ss-[5px] xl:rounded-se-[15px]']: isLast,
-            ['rounded-se-[5px] rounded-ee-[5px] rounded-ss-[15px] rounded-es-[15px] xl:rounded-es-[5px] xl:rounded-se-[15px] xl:rounded-ee-[15px] xl:rounded-ss-[5px]']: !isFirst && !isLast,
-            ['rounded-se-[15px] rounded-ee-[0px] xl:rounded-ss-[15px] xl:rounded-es-[0px]']: isFirst && isLast,
+            ['rounded-se-[15px] rounded-es-[15px] rounded-ee-[5px] rounded-ss-[15px]']: isFirst,
+            ['rounded-se-[5px] rounded-ss-[15px] rounded-es-[15px] rounded-ee-[0px]']: isLast,
+            ['rounded-se-[5px] rounded-ee-[5px] rounded-ss-[15px] rounded-es-[15px]']: !isFirst && !isLast,
+            ['rounded-se-[15px] rounded-ee-[0px]']: isFirst && isLast,
         }
     } else {
         return {

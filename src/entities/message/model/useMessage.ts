@@ -31,7 +31,7 @@ export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: Us
         });
         
         node && observer.current.observe(node);
-    }, []);
+    }, [isUpdating]);
 
     const isSelected = selectedMessages.has(message._id);
     const createTime = new Date(message.createdAt);

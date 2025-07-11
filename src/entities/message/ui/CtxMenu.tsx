@@ -42,6 +42,7 @@ export const CtxMenu = ({ message, isMessageFromMe, onClose }: ContextMenuProps)
         <ContextMenuContent
             loop
             ref={ref}
+            collisionPadding={{ bottom: 16 }}
             onInteractOutside={() => setShouldRemove(true)}
             onAnimationEnd={() => shouldRemove && onClose()}
             onEscapeKeyDown={(event) => event.preventDefault()}

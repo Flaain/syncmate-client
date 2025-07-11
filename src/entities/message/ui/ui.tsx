@@ -6,6 +6,7 @@ import CheckIcon from '@/shared/lib/assets/icons/check.svg?react';
 import CheckCheckIcon from '@/shared/lib/assets/icons/checkcheck.svg?react';
 import SendingIcon from '@/shared/lib/assets/icons/sending.svg?react';
 import SendingErrorIcon from '@/shared/lib/assets/icons/sendingerror.svg?react';
+import MessageTail from '@/shared/lib/assets/message-tail.svg?react';
 
 import { messageSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
@@ -39,41 +40,27 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                     {...rest}
                     ref={ref}
                     className={cn(
-                        'flex gap-2 relative z-10 items-start',
-                        // message.shouldAnimate && 'animate-out fill-mode-forwards scale-75 opacity-0 duration-300',
+                        'w-full flex gap-2 relative z-10 items-start',
                         !isMessageFromMe && isFirst && 'flex-col',
-                        isSelected && 'xl:after:-left-full after:-right-5 after:w-svw after:z-[-1] after:absolute after:-top-1 after:-bottom-1 after:dark:bg-primary-dark-50',
+                        isMessageFromMe && 'justify-end after:left-1/2 after:block after:right-0 after:w-screen after:-translate-x-1/2 after:z-[-1] after:absolute after:-top-[1.5px] after:-bottom-[1.5px] after:dark:bg-primary-dark-50/50 after:opacity-0 after:transition-opacity after:duration-200 after:ease-in-out',
+                        isSelected && 'after:opacity-100',
                         className
                     )}
                 >
                     {isLast && (
-                        <svg
-                            width='11'
-                            height='20'
-                            viewBox='0 0 11 20'
-                            fill='currentColor'
+                        <MessageTail
                             className={cn('absolute z-10 bottom-0 w-[11px] h-5', {
-                                ['-right-[11px] xl:-left-[11px] dark:text-primary-white text-primary-gray max-xl:scale-x-[-1]']: isMessageFromMe,
-                                ['dark:text-primary-dark-50 text-primary-gray -left-[11px]']: !isMessageFromMe
+                                ['-right-[10px] dark:text-primary-white text-primary-gray -scale-x-100']: isMessageFromMe,
+                                ['dark:text-primary-dark-50 text-primary-gray -left-[10px]']: !isMessageFromMe
                             })}
-                            xmlns='http://www.w3.org/2000/svg'
-                        >
-                            <path
-                                d='M11 0C11 6.42858 7.76471 15.3571 1.29412 17.1429C1.29412 17.1429 0 17.1429 0 18.5714C0 20 1.29412 20 1.29412 20L11 20V0Z'
-                                fill='currentColor'
-                            />
-                        </svg>
+                        />
                     )}
                     <div
                         ref={firstMessageRef}
                         className={cn(
                             'px-2 py-1 xl:m-0 relative max-w-[480px] box-border',
                             inReply && 'flex flex-col gap-2 py-1.5',
-                            getBubblesStyles({
-                                isFirst,
-                                isLast,
-                                isMessageFromMe
-                            })
+                            getBubblesStyles({ isFirst, isLast, isMessageFromMe })
                         )}
                     >
                         {inReply && (
