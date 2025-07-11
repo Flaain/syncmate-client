@@ -8,12 +8,15 @@ export const conversationActions = ({ get }: Pick<ActionsProvider<ConversationSt
         const ctx: { isTyping: boolean; typingTimeout: ReturnType<typeof setTimeout> | null } = { isTyping: false, typingTimeout: null };
 
         return (action: MessageFormState, reset?: boolean) => {
-            if (action === 'edit' || reset) {
+            const { conversation: { _id, recipient } } = get();
+
+            // if we don't have conversation id it means there is no conversation between this users so we don't need to send typing status
+            if (!_id || action === 'edit' || reset) {
                 reset && ((ctx.isTyping = false), clearTimeout(ctx.typingTimeout!));
                 return;
             };
             
-            const { conversation: { _id, recipient } } = get(), { socket } = useSocket.getState();
+            const { socket } = useSocket.getState();
             
             const typingData = { conversationId: _id, recipientId: recipient._id };
             
