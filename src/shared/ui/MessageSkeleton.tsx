@@ -8,7 +8,7 @@ export const MessageSkeleton = ({ key }: { key?: number }) => {
     const isEven = !(index % 2);
 
     return (
-        <li className='flex gap-2' key={key}>
+        <div className='flex gap-2 my-1' key={key}>
             <AnimatedSkeleton className='max-xl:hidden self-end dark:bg-primary-dark-50 min-w-[40px] max-w-[40px] h-10 space-y-5 rounded-full' />
             <div
                 className={cn(
@@ -45,6 +45,6 @@ export const MessageSkeleton = ({ key }: { key?: number }) => {
                     />
                 </svg>
             </div>
-        </li>
+        </div>
     );
 };

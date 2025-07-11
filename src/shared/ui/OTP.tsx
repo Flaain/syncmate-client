@@ -69,7 +69,7 @@ export const OTP = React.forwardRef<HTMLInputElement, OtpProps>(({ onComplete, o
                     disabled={isResending}
                     size='text'
                     variant='link'
-                    className='self-start'
+                    className='self-start dark:text-primary-white text-primary-dark-100'
                     onClick={handleResend}
                 >
                     {isResending ? (

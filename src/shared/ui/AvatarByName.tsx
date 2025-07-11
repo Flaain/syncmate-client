@@ -11,7 +11,7 @@ export interface AvatarByNameProps extends React.HTMLAttributes<HTMLSpanElement>
 }
 
 const avatarVariants = cva(
-    'relative flex flex-grow-0 leading-none flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
+    'select-none relative flex flex-grow-0 leading-none flex-shrink-0 basis-auto justify-center items-center rounded-full dark:bg-primary-white bg-primary-dark-100 font-bold dark:text-primary-dark-200 text-primary-white',
     {
         variants: {
             size: {
