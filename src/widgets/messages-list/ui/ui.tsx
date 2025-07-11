@@ -38,19 +38,19 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
     return (
         <div
             ref={listRef}
-            className='hoverable-scroll overscroll-contain relative flex flex-col size-full px-4 py-2 box-border max-xl:gap-5 gap-3 overflow-auto overflow-x-hidden outline-none'
+            className='hoverable-scroll relative overscroll-contain pt-2 box-border max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
         >
             {isLoading && (
-                <>
+                <div className='max-w-3xl w-full mx-auto'>
                     <MessageSkeleton />
                     <MessageSkeleton />
                     <MessageSkeleton />
-                </>
+                </div>
             )}
             {!!canFetch && (
                 <Button
                     size='text'
-                    className='dark:text-primary-white/30 text-primary-white justify-center items-center my-auto min-h-min'
+                    className='dark:text-primary-white/30 text-primary-white justify-center w-full items-center my-auto min-h-min'
                     disabled={isLoading || isRefetching}
                     onClick={isError ? refetch : call as () => Promise<void>}
                 >
@@ -68,7 +68,7 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
             ))}
             <div
                 ref={bottomPlaceholderRef}
-                className='w-full h-[1px] p-0 max-xl:-m-5 -m-3 opacity-0 pointer-events-none'
+                className='w-full h-[1px] p-0 opacity-0 pointer-events-none'
             ></div>
         </div>
     );
