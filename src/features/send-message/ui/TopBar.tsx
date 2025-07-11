@@ -12,7 +12,7 @@ import { Typography } from '@/shared/ui/Typography';
 
 import { MessageTopBarProps } from '../model/types';
 
-const iconStyles = 'dark:text-primary-white text-primary-gray min-w-5 h-5';
+const iconStyles = 'dark:text-primary-white text-primary-gray min-w-6 h-6 max-w-6 w-full';
 
 const config: Record<Exclude<MessageFormState, 'send'>, { title: string; icon: React.ReactNode }> = {
     edit: {
@@ -41,14 +41,14 @@ export const TopBar = ({ onClose, state, description, preventClose }: MessageTop
     }, []);
 
     return (
-        <div className='overscroll-contain border-b border-solid dark:border-primary-dark-50 border-primary-gray w-full flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out py-3 px-4 gap-4 box-border'>
+        <div className='overscroll-contain rounded-t-[16px] dark:border-primary-dark-50 border-primary-gray w-full flex items-center dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out pt-2 px-4 gap-4 box-border'>
             {settings.icon}
-            <div className='flex flex-col w-full'>
-                <Typography size='md' weight='medium' variant='primary'>
+            <div className='flex flex-col w-full dark:bg-primary-gray/10 pl-2 p-1 rounded border-l-4 border-primary-gray'>
+                <Typography size='sm' weight='medium' variant='primary'>
                     {settings.title}
                 </Typography>
                 {description && (
-                    <Typography as='p' variant='secondary' className='line-clamp-1'>
+                    <Typography as='p' size='sm' variant='secondary' className='line-clamp-1'>
                         {description}
                     </Typography>
                 )}
@@ -61,7 +61,7 @@ export const TopBar = ({ onClose, state, description, preventClose }: MessageTop
                 onClick={preventClose ? undefined : onClose}
                 disabled={preventClose}
             >
-                <CloseIcon className='size-6 dark:text-primary-gray' />
+                <CloseIcon className='dark:text-primary-gray' />
             </Button>
         </div>
     );

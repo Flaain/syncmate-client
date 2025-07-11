@@ -65,7 +65,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
         });
     }
 
-    const onKeyUp = (_: React.KeyboardEvent<HTMLTextAreaElement>) => {}
+    const onKeyUp = (_: React.KeyboardEvent<HTMLTextAreaElement>) => handleResize();
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === 'Enter' && !event.shiftKey && 'form' in event.target) {
