@@ -339,7 +339,7 @@ export const useQuery = <T, A = T>(callback: UseQueryCallback<T, A>, options?: P
     React.useEffect(() => {
         if (!options?.refetchOnReconnect) return;
         
-        const handleRefetch = () => runQuery('init');
+        const handleRefetch = () => runQuery('refetch');
 
         window.addEventListener('online', handleRefetch);
 
