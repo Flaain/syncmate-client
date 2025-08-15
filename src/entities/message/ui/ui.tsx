@@ -6,11 +6,11 @@ import CheckIcon from '@/shared/lib/assets/icons/check.svg?react';
 import CheckCheckIcon from '@/shared/lib/assets/icons/checkcheck.svg?react';
 import SendingIcon from '@/shared/lib/assets/icons/sending.svg?react';
 import SendingErrorIcon from '@/shared/lib/assets/icons/sendingerror.svg?react';
-import MessageTail from '@/shared/lib/assets/message-tail.svg?react';
 
 import { messageSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { ContextMenu, ContextMenuTrigger } from '@/shared/ui/context-menu';
+import { MessageTail } from '@/shared/ui/MessageTail';
 import { Typography } from '@/shared/ui/Typography';
 
 import { MessageProps } from '../model/types';
@@ -25,7 +25,7 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
     
     const { isContextActionsBlocked } = useChat(useShallow(messageSelector));
    
-    const stylesForBottomIcon = cn('size-5 mt-0.5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
+    const stylesForBottomIcon = cn('size-5', isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-200');
     
     const statusIcons: Record<'idle' | 'pending' | 'error', React.ReactNode> = React.useMemo(() => ({
         idle: hasBeenRead ? <CheckCheckIcon className={stylesForBottomIcon} /> : <CheckIcon className={stylesForBottomIcon} />,
@@ -49,10 +49,8 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                 >
                     {isLast && (
                         <MessageTail
-                            className={cn('absolute z-10 bottom-0 w-[11px] h-5', {
-                                ['-right-[10px] dark:text-primary-white text-primary-gray -scale-x-100']: isMessageFromMe,
-                                ['dark:text-primary-dark-50 text-primary-gray -left-[10px]']: !isMessageFromMe
-                            })}
+                            position={isMessageFromMe ? 'right' : 'left'}
+                            className={cn(isMessageFromMe ? 'dark:text-primary-white text-primary-gray' : 'dark:text-primary-dark-50 text-primary-gray')}
                         />
                     )}
                     <div
@@ -66,6 +64,7 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                         {inReply && (
                             <Typography
                                 as='p'
+                                onClick={() => console.log('replyTo', replyTo)}
                                 weight='semibold'
                                 className={cn(
                                     'min-w-full w-[120px] dark:text-primary-blue flex flex-col text-xs py-1 px-2 rounded bg-primary-blue/10 border-l-4 border-solid border-primary-blue'
@@ -77,7 +76,9 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                                         as='q'
                                         className={cn(
                                             'quotes-none text-xs overflow-hidden text-ellipsis whitespace-nowrap',
-                                            isMessageFromMe ? 'dark:text-primary-dark-200 text-primary-white' : 'dark:text-primary-white text-primary-dark-50'
+                                            isMessageFromMe
+                                                ? 'dark:text-primary-dark-200 text-primary-white'
+                                                : 'dark:text-primary-white text-primary-dark-50'
                                         )}
                                     >
                                         {replyTo.text}
@@ -94,10 +95,12 @@ export const Message = ({ message, isFirst, firstMessageRef, isLast, isLastGroup
                         >
                             {text}
                             <Typography
-                                size='sm'
+                                size='xs'
                                 className={cn(
-                                    'ml-auto flex items-center gap-2 self-end',
-                                    isMessageFromMe ? 'dark:text-primary-dark-50/20 text-primary-white' : 'dark:text-primary-white/20'
+                                    'ml-auto select-none flex items-center gap-2 self-end',
+                                    isMessageFromMe
+                                        ? 'dark:text-primary-dark-50/20 text-primary-white'
+                                        : 'dark:text-primary-white/20'
                                 )}
                                 title={`${createTime.toLocaleString()}${hasBeenEdited ? `\nEdited: ${new Date(updatedAt).toLocaleString()}` : ''}`}
                             >
