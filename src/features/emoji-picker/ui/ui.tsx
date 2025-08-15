@@ -52,7 +52,7 @@ export const EmojiPicker = ({ onClose, onEmojiSelect }: { onClose: () => void; o
             onAnimationEnd={() => shouldRemove && onClose()}
             onEmojiSelect={onEmojiSelect}
             className={cn(
-                'absolute pointer-events-auto max-w-[300px] overflow-hidden bottom-[calc(100%+5px)] right-4 z-[999] isolate flex h-[368px] w-fit flex-col bg-white dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] rounded-[15px]',
+                'absolute pointer-events-auto max-w-[300px] overflow-hidden bottom-[calc(100%+5px)] right-[23px] z-[999] isolate flex h-[368px] w-fit flex-col bg-white dark:border-none border-none dark:bg-menu-background-color backdrop-blur-[50px] rounded-[16px]',
                 shouldRemove ? 'fill-mode-forwards animate-out fade-out-0 zoom-out-95' : 'animate-in fade-in-80 zoom-in-95'
             )}
         >
