@@ -43,12 +43,6 @@ export const useMessagesList = (getPreviousMessages: MessagesListProps['getPrevi
         
         return acc;
     }, {})), [messages]);
-
-    React.useEffect(() => {
-        if (!bottomPlaceholderRef.current || !listRef.current) return;
-
-        requestAnimationFrame(() => bottomPlaceholderRef.current?.scrollIntoView({ behavior: 'instant' }));
-    }, [isUpdating]);
     
     React.useEffect(() => {
         if (!bottomPlaceholderRef.current) return;

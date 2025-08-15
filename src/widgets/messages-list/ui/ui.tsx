@@ -2,6 +2,7 @@ import { DateGroup } from '@/features/grouped-messages';
 
 import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
+import { useChat } from '@/shared/lib/providers/chat';
 import { Button } from '@/shared/ui/button';
 import { MessageSkeleton } from '@/shared/ui/MessageSkeleton';
 import { Typography } from '@/shared/ui/Typography';
@@ -22,6 +23,8 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
         call,
         refetch
     } = useMessagesList(getPreviousMessages);
+    
+    const type = useChat((state) => state.params.type);
 
     if (!groupedMessages.length) {
         return (
@@ -41,10 +44,10 @@ export const MessagesList = ({ getPreviousMessages }: MessagesListProps) => {
             className='hoverable-scroll relative overscroll-contain pt-2 box-border max-xl:gap-5 gap-3 overflow-x-hidden overflow-y-auto outline-none'
         >
             {isLoading && (
-                <div className='max-w-3xl w-full mx-auto'>
-                    <MessageSkeleton />
-                    <MessageSkeleton />
-                    <MessageSkeleton />
+                <div className='max-w-3xl w-full mx-auto px-5'>
+                    <MessageSkeleton type={type} />
+                    <MessageSkeleton type={type} />
+                    <MessageSkeleton type={type} />
                 </div>
             )}
             {!!canFetch && (
