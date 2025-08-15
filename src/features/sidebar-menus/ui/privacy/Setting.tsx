@@ -67,7 +67,7 @@ export const PrivacyAndSecuitySetting = ({ data, setData, onPrevMenu, activeSett
                         />
                     </div>
                     <SidebarMenuSeparator className='h-auto'>
-                        You can add users as exception that will ovveride the settings above.
+                        You can add users as exception that will overide the settings above.
                     </SidebarMenuSeparator>
                 </React.Suspense>
             </SidebarMenuContainer>
