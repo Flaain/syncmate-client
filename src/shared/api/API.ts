@@ -20,7 +20,7 @@ export interface ApiBaseResult<T> {
     status: Response['status'];
     statusText: Response['statusText'];
     url: URL;
-    data: T
+    data: T;
 }
 
 export interface ApiBaseSuccessData {
@@ -32,6 +32,7 @@ export interface ApiBaseFailureData {
     timestamp: string;
     errorCode?: ApiExceptionCode;
     errors?: Array<{ path: string; message: string }>;
+    statusCode: number;
 }
 
 export interface ApiResponseFailureResult extends ApiBaseResult<ApiBaseFailureData> {
