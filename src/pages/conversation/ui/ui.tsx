@@ -44,7 +44,7 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
         onError: (error) => error instanceof ApiException && error.response.status === 404 && navigate('/')
     });
 
-    if (!data && isLoading) return fallback ?? <ChatSkeleton />;
+    if (!data && isLoading) return fallback ?? <ChatSkeleton type='Conversation' />;
 
     if (isError) {
         return (
