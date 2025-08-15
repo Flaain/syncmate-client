@@ -1,3 +1,4 @@
+import { OTPInputProps } from 'input-otp';
 import { Socket } from 'socket.io-client';
 import { z } from 'zod';
 
@@ -27,16 +28,22 @@ export const CHAT_TYPE = {
     Group: 'Group'
 } as const;
 
+export const TFA_TYPE = {
+    0: 'APP',
+    1: 'EMAIL',
+} as const;
+
 export type SetStateInternal<T> = {
     _(partial: T | Partial<T> | {  _(state: T): T | Partial<T>; }['_'], replace?: false): void;
     _(state: T | { _(state: T): T }['_'], replace: true): void;
 }['_'];
 
 export type LayoutUpdateArgs = ({ type: 'delete', messageIds: Array<string> } | { type: 'edit', _id: string; text: string; updatedAt: string }) & { recipientId: string }
-
 export type SchemaNameType = z.infer<typeof nameSchema>;
 export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
+export type TfaType = keyof typeof TFA_TYPE;
 export type EventsEntries = Array<{ type: keyof GlobalEventHandlersEventMap, listener: (event: Event) => void }>;
 
 export type Recipient = Pick<Profile, '_id' | 'isOfficial' | 'name' | 'login' | 'isDeleted' | 'presence' | 'bio' | 'avatar' | 'email'> & {
@@ -51,7 +58,7 @@ export type CHAT_TYPE = keyof typeof CHAT_TYPE;
 export type INTERNAL_SOUNDS = 'new_message';
 export type RequestStatuses = 'idle' | 'loading' | 'error';
 export type MessageFormState = 'send' | 'edit' | 'reply';
-export type OtpType = 'email_verification' | 'password_reset';
+export type OtpType = 'email_verification' | 'password_reset' | 'tfa_signin';
 export type OutletDetailsButtonType = 'email' | 'link' | 'bio' | 'login';
 export type UserCheckType = 'email' | 'login';
 export type MessageStatus = 'pending' | 'error' | 'idle';
@@ -89,16 +96,16 @@ export interface Otp {
 }
 
 export interface OtpStore {
-    otp: Otp;
-    isResending: boolean;
-    onResend: () => Promise<void>;
+    target: string;
+    retryDelay: number;
+    type: OtpType;
 }
 
-export interface OtpProps extends Omit<React.HTMLAttributes<HTMLInputElement>, 'onChange'> {
-    disabled?: boolean;
-    onResendCB?: () => void;
-    onComplete: (event?: React.FormEvent<HTMLFormElement>) => void;
-}
+export type OtpProps = Omit<OTPInputProps, 'render' | 'maxLength'> & {
+    withResend?: boolean;
+    containerClassName?: string;
+    onResend?: () => void | Promise<void>;
+};
 
 export interface SidebarMenuProps { 
     onPrevMenu: (shouldRemove?: boolean) => void;

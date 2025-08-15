@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 
-import { otpApi } from '../api';
 import messageNotificationSound from '../lib/assets/sounds/message-notification.mp3';
 
 import { layoutActions } from './actions';
@@ -45,21 +44,4 @@ export const useSocket = create<SocketStore>(() => ({
     isConnected: false,
 }));
 
-export const useOtp = create<OtpStore>((set, get) => ({
-    otp: null!,
-    isResending: false,
-    onResend: async () => {
-        try {
-            set({ isResending: true });
-
-            const { otp } = get();
-            const { data: { retryDelay } } = await otpApi.create({ email: otp.targetEmail, type: otp.type });
-
-            set({ otp: { ...otp, retryDelay } });
-        } catch (error) {
-            console.error(error);
-        } finally {
-            set({ isResending: false });
-        }
-    }
-}));
+export const useOtp = create<OtpStore>(() => null!);
