@@ -6,11 +6,14 @@ import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useF
 
 import { cn } from '@/shared/lib/utils/cn';
 
+import { OtpProps } from '../model/types';
+
 import { Label } from './label';
 import { OTP } from './OTP';
 
 type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> = { name: TName };
 type FormItemContextValue = { id: string };
+type FormOtpProps = OtpProps & { label?: string; };
 
 const Form = FormProvider;
 
@@ -100,13 +103,15 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
     );
 });
 
-const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElement>) => void }) => {
+const FormOTP = ({ onComplete, label, onResend, ...rest }: FormOtpProps) => {
     const form = useFormContext();
-    
-    const onResend = () => {
+
+    const handleResend = async () => {
         form.clearErrors('root.otp');
         form.setValue('otp', '');
-    }
+
+        await onResend?.();
+    };
 
     if (!form) throw new Error('FormOTP should be used within <Form>');
 
@@ -116,9 +121,9 @@ const FormOTP = ({ onSubmit }: { onSubmit: (event?: React.FormEvent<HTMLFormElem
             control={form.control}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel className='text-white'>Enter verification code</FormLabel>
+                    {label && <FormLabel className='text-white'>{label}</FormLabel>}
                     <FormControl>
-                        <OTP {...field} onResendCB={onResend} onComplete={onSubmit} />
+                        <OTP {...rest} {...field} onResend={handleResend} onComplete={onComplete} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.root?.otp?.message}</FormMessage>
                 </FormItem>
@@ -132,6 +137,7 @@ FormLabel.displayName = 'FormLabel';
 FormControl.displayName = 'FormControl';
 FormDescription.displayName = 'FormDescription';
 FormMessage.displayName = 'FormMessage';
+FormOTP.displayName = 'FormOTP';
 
 export { Form, FormOTP, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, useFormField };
 
