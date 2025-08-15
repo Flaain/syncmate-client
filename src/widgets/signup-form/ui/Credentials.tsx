@@ -8,9 +8,10 @@ import { SignupSchemaType } from '../model/types';
 
 export const Credentials = () => {
     const form = useFormContext<SignupSchemaType>();
-    const emailErrors = form.formState.errors.email?.message || form.formState.errors.root?.email?.message;
-    const passwordErrors = form.formState.errors.password?.message;
-    const confirmPasswordErrros = form.formState.errors.confirmPassword?.message;
+    
+    const emailErrors = form.formState.dirtyFields.email ? (form.formState.errors.email?.message || form.formState.errors.root?.email?.message) : undefined;
+    const passwordErrors = form.formState.dirtyFields.password ? form.formState.errors.password?.message : undefined;
+    const confirmPasswordErrros = form.formState.dirtyFields.confirmPassword ? form.formState.errors.confirmPassword?.message : undefined;
 
     return (
         <>
@@ -22,7 +23,6 @@ export const Credentials = () => {
                         <FormControl>
                             <Input
                                 {...field}
-                                autoFocus
                                 labelClassName='dark:bg-primary-dark-200'
                                 label={emailErrors || 'Enter your email address'}
                                 variant={emailErrors ? 'destructive' : 'secondary'}

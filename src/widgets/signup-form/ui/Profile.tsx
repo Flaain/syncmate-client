@@ -22,7 +22,6 @@ export const Profile = () => {
                         <FormControl>
                             <Input
                                 {...field}
-                                autoFocus
                                 labelClassName='dark:bg-primary-dark-200'
                                 label={nameErrors || 'Enter your name'}
                                 variant={nameErrors ? 'destructive' : 'secondary'}
