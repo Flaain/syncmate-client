@@ -1,5 +1,6 @@
 import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 
+import { AuthFormContainer } from '@/shared/ui/AuthFormContainer';
 import { Button } from '@/shared/ui/button';
 import { Form, FormControl, FormField, FormItem, FormOTP } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
@@ -11,8 +12,8 @@ export const Forgot = () => {
     const { form, isNextButtonDisabled, isLoading, onSubmit, onBack, step } = useForgot();
 
     return (
-        <Form {...form}>
-            <div className='flex max-md:justify-center flex-1 md:pl-5 md:border-l md:border-solid md:border-primary-dark-50 md:h-full'>
+        <AuthFormContainer title='Forgot password' description={"Let's get your password reset!"}>
+            <Form {...form}>
                 <form
                     onSubmit={onSubmit}
                     className='flex flex-col gap-4 h-full justify-center md:min-w-[400px] max-w-[560px] w-full'
@@ -74,23 +75,23 @@ export const Forgot = () => {
                         </>
                     )}
                     <div className='flex w-full items-center justify-between'>
-                        <Button
-                            type='button'
-                            intent='secondary'
-                            className='w-24'
-                            onClick={onBack}
-                            disabled={isLoading}
-                        >
+                        <Button type='button' intent='secondary' className='w-24' onClick={onBack} disabled={isLoading}>
                             Back
                         </Button>
                         {step !== 1 && (
                             <Button intent='primary' className='w-24' disabled={isNextButtonDisabled}>
-                                {isLoading ? <LoaderIcon className='size-5 animate-loading' /> : !step ? 'Send email' : 'Reset'}
+                                {isLoading ? (
+                                    <LoaderIcon className='size-5 animate-loading' />
+                                ) : !step ? (
+                                    'Send email'
+                                ) : (
+                                    'Reset'
+                                )}
                             </Button>
                         )}
                     </div>
                 </form>
-            </div>
-        </Form>
+            </Form>
+        </AuthFormContainer>
     );
 };

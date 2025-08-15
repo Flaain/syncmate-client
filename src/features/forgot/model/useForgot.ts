@@ -42,7 +42,7 @@ export const useForgot = () => {
     const createPasswordResetOtp = async ({ email }: Omit<ForgotSchemaType, 'confirmPassword'>) => {
         const { data: { retryDelay } } = await otpApi.create({ email, type: 'password_reset' });
 
-        useOtp.setState({ otp: { targetEmail: email, type: 'password_reset', retryDelay } });
+        useOtp.setState({ target: email, type: 'password_reset', retryDelay });
         
         setStep((prevState) => prevState + 1);
     };
