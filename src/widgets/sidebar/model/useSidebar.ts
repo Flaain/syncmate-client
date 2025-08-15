@@ -30,6 +30,8 @@ export const useSidebar = () => {
         setValue('');
         setGlobalResults(null);
         setIsSearching(false);
+
+        delayedSearch.clear();
     };
 
     const handleSearch = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
