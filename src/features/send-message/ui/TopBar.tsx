@@ -54,10 +54,11 @@ export const TopBar = ({ onClose, state, description, preventClose }: MessageTop
                 )}
             </div>
             <Button
+                ripple
                 intent='secondary'
                 variant='ghost'
                 size='icon'
-                className='ml-auto'
+                className='ml-auto min-w-10 max-w-10'
                 onClick={preventClose ? undefined : onClose}
                 disabled={preventClose}
             >

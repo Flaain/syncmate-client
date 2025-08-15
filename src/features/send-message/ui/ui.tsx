@@ -12,6 +12,7 @@ import { sendMessageSelector, useChat } from '@/shared/lib/providers/chat';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout } from '@/shared/model/store';
 import { Button } from '@/shared/ui/button';
+import { MessageTail } from '@/shared/ui/MessageTail';
 
 import { UseMessageParams } from '../model/types';
 import { useSendMessage } from '../model/useSendMessage';
@@ -42,7 +43,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
     }
 
     return (
-        <div className='z-[999] pointer-events-auto max-w-[792px] mx-auto w-full box-border pb-4 pt-1 px-3 relative'>
+        <div className='z-[999] pointer-events-auto max-w-[803px] mx-auto w-full box-border pb-4 pt-1 pl-3 pr-[23px] relative'>
             {isEmojiPickerOpen && (
                 <EmojiPicker onClose={() => setIsEmojiPickerOpen(false)} onEmojiSelect={onEmojiSelect} />
             )}
@@ -54,7 +55,8 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                 />
             )}
             <form
-                className={cn('w-full max-h-[120px] rounded-[16px] overflow-hidden relative flex items-end dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border', 
+                className={cn(
+                    'w-full max-h-[120px] rounded-tl-[16px] rounded-tr-[16px] rounded-bl-[16px] overflow-hidden relative flex items-end dark:bg-primary-dark-100 bg-primary-white transition-colors duration-200 ease-in-out box-border',
                     currentDraft?.state && currentDraft.state !== 'send' && 'rounded-t-none'
                 )}
                 onSubmit={handleSubmitMessage}
@@ -76,17 +78,20 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     disabled={!showAnchor}
                     type='button'
                     size='text'
-                    className={cn('ml-4 mb-[15px] !opacity-0 transition-all duration-200 ease-in-out', showAnchor ? '!opacity-100 animate-in slide-in-from-top-2' : 'translate-y-2')}
+                    className={cn(
+                        'ml-4 mb-[15px] !opacity-0 transition-all duration-200 ease-in-out',
+                        showAnchor ? '!opacity-100 animate-in slide-in-from-top-2' : 'translate-y-2'
+                    )}
                 >
                     <ArrowDownIcon className='size-6 text-primary-white' />
                 </Button>
                 <Button
                     size='text'
                     type='button'
-                    onClick={(e) => (e.stopPropagation(), setIsEmojiPickerOpen(!isEmojiPickerOpen))}
+                    onClick={(e) => (e.stopPropagation(), !isEmojiPickerOpen && setIsEmojiPickerOpen(true))}
                     className='mx-5 mb-[15px]'
                 >
-                    <SmileIcon className='size-6 dark:text-primary-white' />
+                    <SmileIcon className='size-6 dark:text-primary-white pointer-events-none' />
                 </Button>
                 <Button
                     size='text'
@@ -97,6 +102,7 @@ export const SendMessage = ({ onChange, handleTypingStatus, restrictMessaging }:
                     <SendIcon className='size-6 dark:text-primary-white' />
                 </Button>
             </form>
+            <MessageTail position='right' className='dark:text-primary-dark-100 text-primary-gray bottom-4 right-3' />
         </div>
     );
 };
