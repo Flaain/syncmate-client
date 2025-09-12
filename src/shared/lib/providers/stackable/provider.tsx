@@ -32,9 +32,9 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
 
         prevNode.classList.remove('hidden');
             
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             prevNode.classList.remove('-translate-x-24');
-        }, 0);
+        }) // first delete hidden class so we can see animation
         
         setClasses(tab.node, 'out');
 
@@ -67,7 +67,10 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
         if (index !== 0 && !nodesRef.current?.[id]) { // prevent from animating base and old tabs
             element.classList.add('translate-x-full');
                 
-            requestAnimationFrame(() => setClasses(element, 'in'));
+            requestAnimationFrame(() => {
+                setClasses(element, 'in');
+                addOpenTimeout(id);
+            });
         }
 
         nodesRef.current = {
@@ -129,8 +132,6 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
         });
 
         historyTabIds.current.push(newTab.id);
-
-        requestAnimationFrame(() => addOpenTimeout(newTab.id));
     }
 
     const value = React.useMemo(() => ({
