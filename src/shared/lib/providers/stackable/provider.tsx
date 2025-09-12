@@ -27,14 +27,14 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
             console.warn('Missing previous node');
             return;
         }
-        
+
         tab.openTimeoutId && (clearTimeout(tab.openTimeoutId), (tab.openTimeoutId = null));
 
         prevNode.classList.remove('hidden');
             
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             prevNode.classList.remove('-translate-x-24');
-        }) // first delete hidden class so we can see animation
+        }, 0) // if using rAF sometimes it doesn't work
         
         setClasses(tab.node, 'out');
 
@@ -105,23 +105,34 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
     }
 
     const open = (newTab: StackableItemProps) => {
-        const tab = nodesRef.current?.[newTab.id];
+        const possibleTab = nodesRef.current?.[newTab.id];
+        const currentTab = nodesRef.current?.[historyTabIds.current[historyTabIds.current.length - 1]];
 
-        if (tab) {
-            if (tab.isClosing) {
-                tab.closeTimeoutId && (clearTimeout(tab.closeTimeoutId), (tab.closeTimeoutId = null));
+        if (possibleTab) {
+            if (possibleTab.isClosing) {
+                possibleTab.closeTimeoutId && (clearTimeout(possibleTab.closeTimeoutId), (possibleTab.closeTimeoutId = null));
 
-                tab.isClosing = false;
+                possibleTab.isClosing = false;
                 isClosing.current = false;
                 
-                tab.node.previousElementSibling?.classList.add('-translate-x-24');
+                possibleTab.node.previousElementSibling?.classList.add('-translate-x-24');
                 
-                setClasses(tab.node, 'in');
+                setClasses(possibleTab.node, 'in');
                 addOpenTimeout(newTab.id);
             }
 
             return;
         };
+
+        if (currentTab?.isClosing) {
+            const prevNode = currentTab.node.previousElementSibling;
+
+            prevNode?.classList.remove('translate-x-0');
+            prevNode?.classList.add('-translate-x-24');
+        } else {
+            currentTab?.node.classList.remove('translate-x-0');
+            currentTab?.node.classList.add('-translate-x-24');
+        }
 
         setTabs((prevState) => {
             const newMap = new Map(prevState);
@@ -130,9 +141,15 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
 
             return newMap;
         });
-
+        
         historyTabIds.current.push(newTab.id);
     }
+
+    const closeAll = () => {};
+
+    const getCurrentTabNode = () => {};
+
+    const getTabNodeById = (id: string) => {};
 
     const value = React.useMemo(() => ({
         open,

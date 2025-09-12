@@ -42,7 +42,7 @@ interface StackableItemProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const StackableItem = React.forwardRef<HTMLDivElement, StackableItemProps>(
-    ({ children, onBack, title, headerContent, hasActiveMenu, className, ...rest }, ref) => {
+    ({ children, onBack, title, headerContent, className, hasActiveMenu, ...rest }, ref) => {
         const addEventListener = useEvents(addEventListenerSelector);
 
         React.useEffect(() => {
@@ -62,13 +62,12 @@ export const StackableItem = React.forwardRef<HTMLDivElement, StackableItemProps
                 ref={ref}
                 className={cn(
                     'col-start-1 row-start-1 transition-transform ease-in-out duration-300 bg-primary-dark z-0 overflow-auto will-change-transform',
-                    hasActiveMenu && '-translate-x-24',
                     className
                 )}
                 {...rest}
             >
                 {title && (
-                    <div className='flex items-center gap-5 px-4 sticky top-0 !bg-inherit z-[9999] min-h-14 box-border'>
+                    <div className='flex items-center gap-5 px-4 sticky top-0 !bg-inherit z-[9999] min-h-14 box-border border-none'>
                         <Button ripple variant='ghost' size='icon' intent='secondary' onClick={() => onBack?.()}>
                             <ArrowLeftIcon className='size-6 text-primary-gray' />
                         </Button>
