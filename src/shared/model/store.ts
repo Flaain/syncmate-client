@@ -40,7 +40,6 @@ export const useEvents = create<EventsStore>((set) => ({
 
 export const useSocket = create<SocketStore>(() => ({
     socket: null!,
-    session_id: null,
     isConnected: false,
 }));
 

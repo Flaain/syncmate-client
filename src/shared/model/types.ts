@@ -5,8 +5,6 @@ import { z } from 'zod';
 import { nameSchema } from '../constants';
 import { ChatStore } from '../lib/providers/chat/types';
 
-// you might be wondering why not use enum instead of "as const" so i readed this post - https://t.me/temaProg/49. And decided to use as const instea, maybe im wrong.
-
 export const USER_EVENTS = {
     PRESENCE: 'user.presence',
     ONLINE: 'user.online',
@@ -16,7 +14,6 @@ export const USER_EVENTS = {
 export const LAYOUT_EVENTS = {
     UPDATE_DRAFT: 'layout.draft.update'
 } as const;
-
 
 export const PRESENCE = {
     online: 'online',
@@ -33,11 +30,16 @@ export const TFA_TYPE = {
     1: 'EMAIL',
 } as const;
 
+export const SOCKET_ERROR_CODE = {
+    TOKEN_EXPIRED: 'TOKEN_EXPIRED'
+} as const;
+
 export type SetStateInternal<T> = {
     _(partial: T | Partial<T> | {  _(state: T): T | Partial<T>; }['_'], replace?: false): void;
     _(state: T | { _(state: T): T }['_'], replace: true): void;
 }['_'];
 
+export type TimeoutType = ReturnType<typeof setTimeout>;
 export type LayoutUpdateArgs = ({ type: 'delete', messageIds: Array<string> } | { type: 'edit', _id: string; text: string; updatedAt: string }) & { recipientId: string }
 export type SchemaNameType = z.infer<typeof nameSchema>;
 export type Listeners = Map<keyof GlobalEventHandlersEventMap, Set<(event: any) => void>>
@@ -85,7 +87,6 @@ export interface EventsStore {
 
 export interface SocketStore {
     socket: Socket;
-    session_id: string | null;
     isConnected: boolean;
 }
 
@@ -106,10 +107,6 @@ export type OtpProps = Omit<OTPInputProps, 'render' | 'maxLength'> & {
     containerClassName?: string;
     onResend?: () => void | Promise<void>;
 };
-
-export interface SidebarMenuProps { 
-    onPrevMenu: (shouldRemove?: boolean) => void;
-}
 
 export interface Avatar {
     _id: string;
@@ -137,7 +134,7 @@ export interface Profile {
 }
 
 export type MessageUnionFields =
-    | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted'>; sourceRefPath: Extract<CHAT_TYPE, 'Conversation'> }
+    | { sender: Pick<Recipient, '_id'>; sourceRefPath: Extract<CHAT_TYPE, 'Conversation'> }
     | { sender: Pick<Recipient, '_id' | 'name' | 'isDeleted' | 'avatar'>; sourceRefPath: Extract<CHAT_TYPE, 'Group'> };
 
 export type Message = {
