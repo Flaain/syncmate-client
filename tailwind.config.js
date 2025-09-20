@@ -35,6 +35,22 @@ export default {
                         transform: 'translateX(100%)'
                     }
                 },
+                'out-to-right': {
+                    '0%': {
+                        transform: 'translate3d(0, 0, 0)'
+                    },
+                    '100%': {
+                        transform: 'translate3d(100%, 0, 0)'
+                    }
+                },
+                'in-from-right': {
+                    '0%': {
+                        transform: 'translate3d(100%, 0, 0)'
+                    },
+                    '100%': {
+                        transform: 'translate3d(0, 0, 0)'
+                    }
+                },
                 'caret-blink': {
                     '0%,70%,100%': { opacity: '1' },
                     '20%,50%': { opacity: '0' }
@@ -59,6 +75,8 @@ export default {
                 width: 'width'
             },
             animation: {
+                'in-from-right': 'in-from-right 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                'out-to-right': 'out-to-right 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
                 ripple: 'ripple 1.25s cubic-bezier(0.5, 1, 0.89, 1) forwards',
                 loading: 'loading .5s linear infinite',
                 'caret-blink': 'caret-blink 1.25s ease-out infinite'
