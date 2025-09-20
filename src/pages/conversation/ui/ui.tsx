@@ -6,7 +6,6 @@ import LoaderIcon from '@/shared/lib/assets/icons/loader.svg?react';
 import { ApiException } from '@/shared/api';
 import { useQuery } from '@/shared/lib/hooks/useQuery';
 import { setChatSelector, useChat } from '@/shared/lib/providers/chat';
-import { useSocket } from '@/shared/model/store';
 import { CHAT_TYPE } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { ChatSkeleton } from '@/shared/ui/ChatSkeleton';
@@ -37,7 +36,7 @@ export const Conversation = ({ fallback }: { fallback?: React.ReactNode }) => {
                 params: {
                     id,
                     type: CHAT_TYPE.Conversation,
-                    query: { recipientId: id, session_id: useSocket.getState().session_id }
+                    query: { recipientId: id }
                 }
             });
         },

@@ -9,6 +9,7 @@ import { MIN_SCROLL_BOTTOM } from '@/widgets/messages-list';
 import { useSession } from '@/entities/session';
 
 import { conversationProviderSelector, useChat } from '@/shared/lib/providers/chat';
+import { emitWithAck } from '@/shared/lib/utils/emitWithAck';
 import { getScrollBottom } from '@/shared/lib/utils/getScrollBottom';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { Message, PRESENCE } from '@/shared/model/types';
@@ -38,11 +39,21 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
     }, [conversation]);
 
     React.useEffect(() => {
-        socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId });
+        emitWithAck(CONVERSATION_EVENTS.JOIN, { recipientId })
 
-        socket?.io.on('reconnect', () => socket?.emit(CONVERSATION_EVENTS.JOIN, { recipientId }));
+        socket?.io.on('reconnect', () => {
+            emitWithAck(CONVERSATION_EVENTS.JOIN, { recipientId })
+        });
 
-        socket?.on(CONVERSATION_EVENTS.USER_PRESENCE, ({ presence, lastSeenAt }: { presence: PRESENCE; lastSeenAt?: string }) => {
+        return () => {
+            emitWithAck(CONVERSATION_EVENTS.LEAVE, { recipientId })
+        };
+    }, [recipientId]);
+
+    React.useEffect(() => {
+        if (!socket) return;
+
+        socket.on(CONVERSATION_EVENTS.USER_PRESENCE, ({ presence, lastSeenAt }: { presence: PRESENCE; lastSeenAt?: string }) => {
             store.setState((prevState) => ({
                 conversation: {
                     ...prevState.conversation,
@@ -55,7 +66,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             }));
         });
 
-        socket?.on(CONVERSATION_EVENTS.USER_BLOCK, (id: string) => {
+        socket.on(CONVERSATION_EVENTS.USER_BLOCK, (id: string) => {
             store.setState((prevState) => ({
                 conversation: {
                     ...prevState.conversation,
@@ -66,10 +77,10 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             setChat({ isContextActionsBlocked: true });
         });
 
-        socket?.on(CONVERSATION_EVENTS.USER_UNBLOCK, (id: string) => {
+        socket.on(CONVERSATION_EVENTS.USER_UNBLOCK, (id: string) => {
             store.setState((prevState) => {
                 const isInitiatorBlocked = id === userId ? false : prevState.conversation.isInitiatorBlocked;
-                const isRecipientBlocked = id === recipientId ? false : prevState.conversation.isRecipientBlocked;
+                const isRecipientBlocked = id === prevState.conversation.recipient._id ? false : prevState.conversation.isRecipientBlocked;
 
                 setChat({ isContextActionsBlocked: isInitiatorBlocked || isRecipientBlocked });
 
@@ -83,7 +94,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
+        socket.on(CONVERSATION_EVENTS.MESSAGE_READ, ({ _id, readedAt }: { _id: string; readedAt: string }) => {
             setChat(({ messages }) => {
                 const newMessages = new Map(messages.data), msg = newMessages.get(_id);
 
@@ -97,7 +108,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             });
         })
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
+        socket.on(CONVERSATION_EVENTS.MESSAGE_SEND, (message: Message) => {
             setChat(({ messages }) => {
                 const newMessages = new Map(messages.data);
 
@@ -115,7 +126,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             }
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
+        socket.on(CONVERSATION_EVENTS.MESSAGE_EDIT, ({ _id, text, updatedAt }: Pick<Message, '_id' | 'text' | 'updatedAt'>) => {
             setChat(({ messages }) => {
                 const newMessages = new Map(messages.data), editedMsg = newMessages.get(_id);
 
@@ -127,7 +138,7 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
+        socket.on(CONVERSATION_EVENTS.MESSAGE_DELETE, (messageIds: Array<string>) => {
             setChat(({ messages }) => {
                 const newMessages = new Map(messages.data);
                 
@@ -137,31 +148,29 @@ export const ConversationProvider = ({ conversation, children }: { conversation:
             });
         });
 
-        socket?.on(CONVERSATION_EVENTS.CREATED, (_id: string) => { store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } })); });
-        socket?.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
-        socket?.on(CONVERSATION_EVENTS.TYPING_START, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
-        socket?.on(CONVERSATION_EVENTS.TYPING_STOP, () => store.setState({ isRecipientTyping: false }));
+        socket.on(CONVERSATION_EVENTS.CREATED, (_id: string) => store.setState((prevState) => ({ conversation: { ...prevState.conversation, _id } })));
+        socket.on(CONVERSATION_EVENTS.DELETED, () => navigate('/'));
+        socket.on(CONVERSATION_EVENTS.TYPING_START, (id: string) => store.setState({ isRecipientTyping: id === recipientId }));
+        socket.on(CONVERSATION_EVENTS.TYPING_STOP, () => store.setState({ isRecipientTyping: false }));
         
         return () => {
             setChat({ mode: 'default', selectedMessages: new Map(), showAnchor: false });
 
-            socket?.emit(CONVERSATION_EVENTS.LEAVE, { recipientId });
+            socket.off(CONVERSATION_EVENTS.USER_PRESENCE);
+            socket.off(CONVERSATION_EVENTS.USER_BLOCK);
+            socket.off(CONVERSATION_EVENTS.USER_UNBLOCK);
 
-            socket?.off(CONVERSATION_EVENTS.USER_PRESENCE);
-            socket?.off(CONVERSATION_EVENTS.USER_BLOCK);
-            socket?.off(CONVERSATION_EVENTS.USER_UNBLOCK);
+            socket.off(CONVERSATION_EVENTS.MESSAGE_SEND);
+            socket.off(CONVERSATION_EVENTS.MESSAGE_EDIT);
+            socket.off(CONVERSATION_EVENTS.MESSAGE_DELETE);
 
-            socket?.off(CONVERSATION_EVENTS.MESSAGE_SEND);
-            socket?.off(CONVERSATION_EVENTS.MESSAGE_EDIT);
-            socket?.off(CONVERSATION_EVENTS.MESSAGE_DELETE);
+            socket.off(CONVERSATION_EVENTS.CREATED);
+            socket.off(CONVERSATION_EVENTS.DELETED);
 
-            socket?.off(CONVERSATION_EVENTS.CREATED);
-            socket?.off(CONVERSATION_EVENTS.DELETED);
-
-            socket?.off(CONVERSATION_EVENTS.TYPING_START);
-            socket?.off(CONVERSATION_EVENTS.TYPING_STOP);
+            socket.off(CONVERSATION_EVENTS.TYPING_START);
+            socket.off(CONVERSATION_EVENTS.TYPING_STOP);
         };
-    }, [recipientId]);
+    }, []);
 
     return (
         <ConversationContext.Provider value={store}>

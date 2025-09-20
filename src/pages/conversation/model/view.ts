@@ -1,3 +1,3 @@
-import React from 'react';
+import { lazyWithRetries } from '@/shared/lib/utils/lazyWithRetries';
 
-export const View = React.lazy(() => import('../ui/ui').then((module) => ({ default: module.Conversation })));
+export const View = lazyWithRetries('Conversation', (() => import('../ui/ui').then((module) => ({ default: module.Conversation }))));
