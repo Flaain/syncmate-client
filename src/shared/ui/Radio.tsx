@@ -47,7 +47,7 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(({ ripple, c
         ripple && createRipple(event);
 
         props.onMouseDown?.(event);
-    }; // THINK: we can also just set pointer-events: none for input to not create own onMouseDown func for input but i think it's not a good idea
+    };
     
     return (
         <Label onMouseDown={handleLabelMouseDown} className='min-h-12 relative overflow-hidden box-border flex items-center justify-start cursor-pointer gap-5 px-4 py-1 dark:hover:bg-primary-dark-50/30 rounded-[10px] transition-colors duration-200 ease-in-out'>

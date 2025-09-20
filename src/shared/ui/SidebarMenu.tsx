@@ -1,66 +1,9 @@
 import React from 'react';
 
-import ArrowLeftIcon from '@/shared/lib/assets/icons/arrow_prev.svg?react';
-
 import { cn } from '../lib/utils/cn';
-import { addEventListenerSelector } from '../model/selectors';
-import { useEvents } from '../model/store';
 
 import { Button } from './button';
 import { Typography } from './Typography';
-
-interface SidebarHeaderProps {
-    /**
-     * The title to display in the sidebar header.
-     */
-    title: string;
-
-    /**
-     * Callback function triggered when the back button is clicked.
-     */
-    onBack: () => void;
-
-    /**
-     * Optional. Additional content to render in the header.
-     */
-    children?: React.ReactNode;
-}
-
-/**
- * Props for the SidebarContainer component, which represents a sidebar menu with optional features.
- */
-interface SidebarContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-    /**
-     * Determines whether the sidebar can be closed.
-     * If true, a close button or mechanism should be provided.
-     * @default true
-     */
-    closable?: boolean;
-
-    /**
-     * Indicates whether the sidebar should be removed from the DOM when closed.
-     * If true, the sidebar will be unmounted instead of hidden.
-     * @default false
-     */
-    shouldRemove?: boolean;
-
-    /**
-     * The content to be displayed inside the sidebar.
-     */
-    children: React.ReactNode;
-
-    /**
-     * Indicates whether the sidebar contains an active menu item.
-     * Can be used to apply specific styles or behaviors when a menu item is active.
-     * @default false
-     */
-    hasActiveMenu?: boolean;
-
-    /**
-     * Callback function triggered when the escape key is clicked.
-     */
-    onBack?: () => void;
-}
 
 /**
  * Props for the SidebarMenuButton component, which represents a button in the sidebar menu.
@@ -70,7 +13,7 @@ interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
      * The title of the button, typically displayed as the main label.
      */
     title?: string;
-    
+
     count?: number;
 
     /**
@@ -92,62 +35,21 @@ interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
     icon?: React.ReactNode;
 }
 
-export const SidebarMenuContainer = React.forwardRef<HTMLDivElement, SidebarContainerProps>(
-    ({ children, closable = true, onBack, shouldRemove, hasActiveMenu, className, ...rest }, ref) => {
-        const addEventListener = useEvents(addEventListenerSelector);
-
-        React.useEffect(() => {
-            if (!closable || !onBack) return;
-
-            const removeEventListener = addEventListener('keydown', (event) => {
-                event.key === 'Escape' && !shouldRemove && onBack();
-            });
-
-            return () => {
-                removeEventListener();
-            };
-        }, []);
-
-        return (
-            <div
-                ref={ref}
-                className={cn(
-                    className,
-                    'col-start-1 row-start-1 bg-primary-dark duration-300 z-0 overflow-auto',
-                    shouldRemove ? 'slide-out-to-right-full fill-mode-forwards animate-out' : 'slide-in-from-right-full animate-in',
-                    hasActiveMenu ? '-translate-x-20' : 'translate-x-0'
-                )}
-                {...rest}
-            >
-                {children}
-            </div>
-        );
-    }
-);
-
 export const SidebarMenuSeparator = ({
     children,
     className,
     ...rest
 }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div {...rest} className={cn('w-full h-[15px] dark:bg-primary-dark-150 my-2 px-6 py-2 box-border dark:text-primary-gray text-sm', className)}>
+    <div
+        {...rest}
+        className={cn(
+            'w-full h-[15px] dark:bg-primary-dark-150 my-2 px-6 py-2 box-border dark:text-primary-gray text-sm',
+            className
+        )}
+    >
         {children}
     </div>
 );
-
-export const SidebarMenuHeader = ({ children, onBack, title }: SidebarHeaderProps) => {
-    return (
-        <div className='flex items-center gap-5 px-4 sticky top-0 !bg-inherit z-[9999] min-h-14 box-border'>
-            <Button ripple variant='ghost' size='icon' intent='secondary' onClick={onBack}>
-                <ArrowLeftIcon className='size-6 text-primary-gray' />
-            </Button>
-            <Typography as='h2' variant='primary' size='xl' weight='medium'>
-                {title}
-            </Typography>
-            {children}
-        </div>
-    );
-};
 
 export const SidebarMenuError = ({
     children,
@@ -156,10 +58,8 @@ export const SidebarMenuError = ({
     bgSkeleton: React.ReactNode;
     children: React.ReactNode;
 }) => (
-    <div className='relative'>
-        <div className='absolute flex items-center justify-center inset-0 z-10 bg-primary-dark-150/80'>
-            {children}
-        </div>
+    <div className='relative h-[calc(100%-56px)]'>
+        <div className='absolute flex items-center justify-center inset-0 z-10 bg-primary-dark-150/80'>{children}</div>
         {bgSkeleton}
     </div>
 );
