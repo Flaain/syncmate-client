@@ -22,12 +22,13 @@ export const UserGroup = ({ messages, firstMessageRef, isLastGroup }: MessageGro
     const { params, mode, handleSelectMessage } = useChat(useShallow(groupedMessagesSelector));
     
     const userId = useSession((state) => state.userId);
+    
+    const isConversation = params.type === CHAT_TYPE.Conversation;
 
     const message = messages[0];
     const isMessageFromMe = message.sender._id === userId;
     const isSelecting = mode === 'selecting';
     const animatedAvatarClasses = isSelecting && isMessageFromMe ? 'scale-[80%] translate-y-1' : 'scale-100';
-    const isConversation = params.type === CHAT_TYPE.Conversation;
 
     const handleDoubleClick = (message: IMessage) => {
         useLayout.setState((prevState) => {
