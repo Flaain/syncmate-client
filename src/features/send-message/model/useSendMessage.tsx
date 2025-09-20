@@ -22,6 +22,7 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
     const { params, textareaRef, chatInfo, handleOptimisticUpdate } = useChat(useShallow(getUseSendMessageSelector))
     
     const currentDraft = useLayout((state) => state.drafts).get(params.id);
+
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = React.useState(false);
     const [value, setValue] = React.useState(currentDraft?.value ?? '');
     
@@ -190,6 +191,8 @@ export const useSendMessage = ({ onChange, handleTypingStatus }: Omit<UseMessage
             });
             
             onSuccess(data);
+
+            // const data = await emitWithAck()
         } catch (error) {
             console.error(error);
             onError(error, 'Cannot send message');
