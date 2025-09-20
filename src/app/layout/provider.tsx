@@ -3,11 +3,11 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
-import { Sidebar } from '@/widgets/sidebar';
+import { SidebarBase } from '@/features/sidebar-menus';
 
 import { ModalProvider } from '@/shared/lib/providers/modal';
+import { StackableProvider } from '@/shared/lib/providers/stackable';
 import { Toaster } from '@/shared/lib/toast';
-import { uuidv4 } from '@/shared/lib/utils/uuidv4';
 import { useEvents, useLayout, useSocket } from '@/shared/model/store';
 import { LAYOUT_EVENTS, LayoutUpdateArgs, PRESENCE, USER_EVENTS } from '@/shared/model/types';
 
@@ -15,8 +15,7 @@ export const LayoutProvider = () => {
     const listeners = useEvents((state) => state.listeners);
 
     React.useEffect(() => {
-        const session_id = uuidv4();
-        const socket = io(import.meta.env.VITE_BACKEND_URL, { withCredentials: true, query: { session_id } });
+        const socket = io(import.meta.env.VITE_BACKEND_URL, { withCredentials: true });
         const abortController = new AbortController();
 
         socket.on('connect', () => {
@@ -73,7 +72,7 @@ export const LayoutProvider = () => {
             }
         });
 
-        useSocket.setState({ socket, session_id });
+        useSocket.setState({ socket });
 
         window.addEventListener('online', () => useLayout.setState({ connectedToNetwork: true }), { signal: abortController.signal });
         window.addEventListener('offline', () => useLayout.setState({ connectedToNetwork: false }), { signal: abortController.signal });
@@ -85,7 +84,7 @@ export const LayoutProvider = () => {
 
             socket.disconnect();
             
-            useSocket.setState({ socket: null!, session_id: null, isConnected: false });
+            useSocket.setState({ socket: null!, isConnected: false });
         };
     }, []);
 
@@ -111,7 +110,10 @@ export const LayoutProvider = () => {
         <ModalProvider>
             <main className='flex h-dvh dark:bg-primary-dark-200 relative overflow-x-hidden max-w-[1680px] w-full mx-auto box-border'>
                 <Toaster />
-                <Sidebar />
+                <StackableProvider
+                    base={{ content: <SidebarBase />, id: 'base', containerClassName: 'flex flex-col overflow-hidden' }}
+                    containerClassName='md:border-r md:border-r-primary-dark-200 md:border-solid max-lg:fixed dark:bg-primary-dark bg-primary-white lg:max-w-[420px]'
+                />
                 <Outlet />
             </main>
         </ModalProvider>
