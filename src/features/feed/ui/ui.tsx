@@ -23,7 +23,7 @@ export const Feed = ({ globalResults, isSearching, searchValue }: FeedProps) => 
 
     if (!isSearching && !filteredLocalResults?.length && !filteredGlobalResults?.length) {
         return !searchValue.trim().length ? (
-            <FeedSkeleton skeletonsCount={3} animate={isLoading} className='pt-4' />
+            <FeedSkeleton animate={isLoading} className='pt-4' />
         ) : (
             <>
                 <DeleteUserIcon className='mx-auto size-12 dark:text-primary-dark-50 mb-2' />
