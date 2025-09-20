@@ -4,10 +4,10 @@ import { Button } from '@/shared/ui/button';
 import { SidebarMenuError } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
-import { ActiveSessionsMenuSkeleton } from './Skeleton';
+import { SessionsSkeleton } from './Skeletons/SessionsSkeleton';
 
-export const ActiveSessionsMenuError = ({ onRefetch, isRefetching }: { onRefetch: () => void; isRefetching: boolean }) => (
-    <SidebarMenuError bgSkeleton={<ActiveSessionsMenuSkeleton />}>
+export const SessionsError = ({ onRefetch, isRefetching }: { onRefetch: () => void; isRefetching: boolean }) => (
+    <SidebarMenuError bgSkeleton={<SessionsSkeleton />}>
         <div className='px-4 flex flex-1 flex-col gap-5'>
             <Typography align='center' weight='medium'>
                 An error occurred while receiving the sessions.

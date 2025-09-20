@@ -8,7 +8,7 @@ import { ModalConfig, selectModalActions, useModal } from "@/shared/lib/provider
 import { toast } from "@/shared/lib/toast";
 import { Confirm } from "@/shared/ui/Confirm";
 
-export const useActiveSessionsMenu = () => {
+export const useSessionsMenu = () => {
     const [isTerminating, setIsTerminating] = React.useState(false);
     
     const { data, isLoading, isError, isRefetching, refetch, setData, } = useQuery(({ signal }) => sessionApi.getSessions(signal), { 

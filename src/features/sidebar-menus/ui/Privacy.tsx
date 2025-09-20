@@ -1,23 +1,72 @@
-import { useProfile } from '@/entities/profile';
+import React from 'react';
+
+import { profileApi, useProfile } from '@/entities/profile';
 
 import DeleteUserIcon from '@/shared/lib/assets/icons/deleteuser.svg?react';
 import SessionsIcon from '@/shared/lib/assets/icons/devices.svg?react';
 import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
 
+import { useQuery } from '@/shared/lib/hooks/useQuery';
+import { useStackable } from '@/shared/lib/providers/stackable';
 import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 import { SidebarMenuButton, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 
-import { PrivacyAndSecurity, PrivacyAndSecurityMenuContentProps, PrivacyAndSecurityMenus } from '../../model/types';
-import { getPrivacyAndSecurityMenuButtonDescription } from '../../utils/getPrivacyAndSecurityMenuButtonDescription';
+import { settingsMap } from '../model/constants';
+import { PrivacyAndSecurity, PrivacyAndSecurityActiveSetting } from '../model/types';
+import { PrivacySetting, Sessions } from '../model/view';
+import { getPrivacyAndSecurityMenuButtonDescription } from '../utils/getPrivacyAndSecurityMenuButtonDescription';
+
+import { PrivacySettingSkeleton } from './Skeletons/PrivacySettingSkeleton';
+import { SessionsSkeleton } from './Skeletons/SessionsSkeleton';
+import { SuspenseError } from './SuspenseError';
 
 export const iconStyles = 'text-primary-gray';
 
-export const PrivacyAndSecurityMenuContent = ({ changeMenu, data, isError, isLoading, activeSettingMenuRef }: PrivacyAndSecurityMenuContentProps<PrivacyAndSecurityMenus>) => {
+export const Privacy = () => {
+    const { data, setData, isLoading, isError } = useQuery(({ signal }) => profileApi.getPrivacySettings<PrivacyAndSecurity>(signal), {
+        prefix: '/user/settings/privacy'
+    });
+
+    const { open } = useStackable();
+
     const active_sessions = useProfile((state) => state.profile.counts.active_sessions);
 
-    const handleSettingClick = (setting: keyof PrivacyAndSecurity) => {
-        changeMenu('setting');
+    const activeSettingMenuRef = React.useRef<keyof PrivacyAndSecurity | null>(null);
+
+    const handleSettingClick = (setting: NonNullable<PrivacyAndSecurityActiveSetting>) => {
         activeSettingMenuRef.current = setting;
+        
+        const title = settingsMap[setting].title, label = settingsMap[setting].label;
+
+        open({
+            id: `privacy-and-security-${setting}`,
+            title,
+            content: (
+                <ErrorBoundary fallback={<SuspenseError name={`${title} setting`} skeleton={<PrivacySettingSkeleton label={label} />} />}>
+                    <React.Suspense fallback={<PrivacySettingSkeleton label={label} />}>
+                        <PrivacySetting
+                            onModeChange={(mode) => setData((data) => ({ ...data, [setting]: { ...data[setting], mode } }))}
+                            initialSettingData={data[setting]}
+                            activeSetting={setting}
+                        />
+                    </React.Suspense>
+                </ErrorBoundary>
+            ),
+            onClose: () => (activeSettingMenuRef.current = null)
+        });
+    }
+
+    const handleOpenMenu = (menu: 'sessions') => {
+        open({
+            id: `privacy-and-security-sessions`,
+            title: 'Active Sessions',
+            content: (
+                <React.Suspense fallback={<SessionsSkeleton />}>
+                    <Sessions />
+                </React.Suspense>
+            ),
+        });
     }
 
     return (
@@ -34,7 +83,7 @@ export const PrivacyAndSecurityMenuContent = ({ changeMenu, data, isError, isLoa
                     description='off'
                 />
                 <SidebarMenuButton
-                    onClick={() => changeMenu('sessions')}
+                    onClick={() => handleOpenMenu('sessions')}
                     icon={<SessionsIcon className={iconStyles} />}
                     title='Active Sessions'
                     description={`${active_sessions} ${active_sessions > 1 ? 'devices' : 'device'}`}

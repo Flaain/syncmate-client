@@ -4,17 +4,17 @@ import { Button } from '@/shared/ui/button';
 import { SidebarMenuButton, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
-import { useActiveSessionsMenu } from '../../model/useActiveSessionsMenu';
+import { useSessionsMenu } from '../model/useActiveSessionsMenu';
 
-import { ActiveSessionsMenuError } from './Error';
-import { ActiveSessionsMenuSkeleton } from './Skeleton';
+import { SessionsError } from './SessionsError';
+import { SessionsSkeleton } from './Skeletons/SessionsSkeleton';
 
-export const ActiveSessionsMenuContent = () => {
-    const { isLoading, isError, isRefetching, isTerminating, data, refetch, onOpenModal, getModalConfig } = useActiveSessionsMenu();
+export const Sessions = () => {
+    const { isLoading, isError, isRefetching, isTerminating, data, refetch, onOpenModal, getModalConfig } = useSessionsMenu();
 
-    if (isLoading) return <ActiveSessionsMenuSkeleton />;
+    if (isLoading) return <SessionsSkeleton />;
 
-    if (isError) return <ActiveSessionsMenuError onRefetch={refetch} isRefetching={isRefetching} />;
+    if (isError) return <SessionsError onRefetch={refetch} isRefetching={isRefetching} />;
 
     return (
         <>
@@ -42,7 +42,7 @@ export const ActiveSessionsMenuContent = () => {
                     <SidebarMenuSeparator className='h-10'>
                         Logs out all devices except for this one.
                     </SidebarMenuSeparator>
-                    <ul className='px-2 pb-2 overflow-auto h-fill-available box-border'>
+                    <ul className='px-2 pb-2 overflow-auto box-border'>
                         {data.sessions.map((session) => (
                             <li key={session._id}>
                                 <SidebarMenuButton

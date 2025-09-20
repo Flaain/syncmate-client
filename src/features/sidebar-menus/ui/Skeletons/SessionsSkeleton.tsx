@@ -2,8 +2,8 @@ import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
 import { SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
-export const ActiveSessionsMenuSkeleton = () => (
-    <>
+export const SessionsSkeleton = () => (
+    <div className='flex flex-col'>
         <div className='flex flex-col px-4'>
             <Typography as='h2' size='lg' weight='medium' className='px-4 py-2'>
                 This device
@@ -23,5 +23,5 @@ export const ActiveSessionsMenuSkeleton = () => (
                 ))}
             </ul>
         </>
-    </>
+    </div>
 );

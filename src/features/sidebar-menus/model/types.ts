@@ -1,15 +1,12 @@
-import { SidebarMenuProps } from '@/shared/model/types';
-
-export const PrivacyModeMap = {
+export const PRIVACY_MODE = {
     0: 'nobody',
     1: 'everybody'
 } as const;
 
-export type SettingMenus = 'privacy' | 'sessions' | 'profile' | 'data';
-export type PrivacyAndSecurityMenus = Extract<SettingMenus, 'sessions'> | 'setting';
+export type SettingsSubmenu = 'data' | 'privacy' | 'sessions';
 export type Menus<T extends string> = Record<T, React.ReactNode>;
 export type PrivacyAndSecurityFieldWithChoose = { mode: 0; allow?: number } | { mode: 1; deny?: number };
-export type PrivacyMode = keyof typeof PrivacyModeMap;
+export type PrivacyMode = keyof typeof PRIVACY_MODE;
 export type PrivacyAndSecurityActiveSetting = keyof PrivacyAndSecurity | null;
 
 export interface _StorageEstimate {
@@ -31,19 +28,12 @@ export interface PrivacyAndSecurity {
     whoCanSendMeMessages: PrivacyAndSecurityFieldWithChoose;
 }
 
-export interface PrivacyAndSecuitySettingProps extends SidebarMenuProps {
-    setData: React.Dispatch<React.SetStateAction<PrivacyAndSecurity>>;
-    activeSettingMenuRef: React.RefObject<PrivacyAndSecurityActiveSetting>;
-    data: PrivacyAndSecurity;
+export interface PrivacyAndSecuitySettingProps {
+    onModeChange: (mode: number) => void;
+    activeSetting: NonNullable<PrivacyAndSecurityActiveSetting>;
+    initialSettingData: PrivacyAndSecurityFieldWithChoose;
 }
 
 export interface SidebarMenuContentProps<T> {
     changeMenu: (menu: T) => void 
-}
-
-export interface PrivacyAndSecurityMenuContentProps<T> extends SidebarMenuContentProps<T> {
-    isLoading: boolean;
-    isError: boolean;
-    data: PrivacyAndSecurity;
-    activeSettingMenuRef: React.RefObject<PrivacyAndSecurityActiveSetting>;
 }

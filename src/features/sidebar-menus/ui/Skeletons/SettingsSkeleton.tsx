@@ -1,6 +1,6 @@
 import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
 
-export const SettingsMenuSkeleton = () => (
+export const SettingsSkeleton = () => (
     <>
         <div className='px-4 pt-4 pb-2 flex flex-col border-b-[12px] border-solid border-primary-dark-200 relative'>
             <div className='flex flex-col mb-5'>

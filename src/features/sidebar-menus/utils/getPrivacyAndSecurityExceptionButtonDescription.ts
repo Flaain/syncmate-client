@@ -1,13 +1,7 @@
 import { PrivacyAndSecurityFieldWithChoose } from '../model/types';
 
 export const getPrivacyAndSecurityExceptionButtonDescription = (setting: PrivacyAndSecurityFieldWithChoose) => {
-    const isEverybody = setting.mode === 1;
+    const value = setting.mode === 1 ? setting.deny : setting.allow;
 
-    return isEverybody
-        ? setting.deny
-            ? `${setting.deny} ${setting.deny > 1 ? 'users' : 'user'}`
-            : 'Add users'
-        : setting.allow
-          ? `${setting.allow} ${setting.allow > 1 ? 'users' : 'user'}`
-          : 'Add users';
+    return value ? `${value} ${value > 1 ? 'users' : 'user'}` : 'Add users';
 };

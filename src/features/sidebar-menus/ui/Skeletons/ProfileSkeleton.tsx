@@ -2,7 +2,7 @@ import { MIN_LOGIN_LENGTH } from '@/shared/constants';
 import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
 import { SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 
-export const ProfileMenuSkeleton = () => (
+export const ProfileSkeleton = () => (
     <>
         <div className='px-4 pt-4 flex flex-col relative'>
             <AnimatedSkeleton className='size-32 rounded-full self-center bg-primary-dark-50 mb-5' />

@@ -18,7 +18,7 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 
-export const ProfileContent = () => {
+export const Profile = () => {
     const profile = useProfile((state) => state.profile);
     
     const { name, avatar, login, isUploadingAvatar, handleUploadAvatar } = useProfile(useShallow(settingsSidebarMenuSelector));

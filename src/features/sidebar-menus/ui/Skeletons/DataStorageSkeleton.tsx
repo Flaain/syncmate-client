@@ -1,7 +1,7 @@
 import { AnimatedSkeleton } from '@/shared/ui/AnimatedSkeleton';
 import { Typography } from '@/shared/ui/Typography';
 
-export const DataStorageMenuSkeleton = () => (
+export const DataStorageSkeleton = () => (
     <div className='px-4 pt-4 flex flex-col relative'>
         <Typography as='h2' title='Automatic cached files' className='px-4 mb-5' weight='medium' size='lg'>
             Automatic cached files

@@ -1,1 +1,1 @@
-export * from './ui/settings';
+export * from './ui/Base';

@@ -6,9 +6,9 @@ import { Confirm } from "@/shared/ui/Confirm";
 import { SidebarMenuButton } from "@/shared/ui/SidebarMenu";
 import { Typography } from "@/shared/ui/Typography";
 
-import { useDataStorageMenu } from "../../model/useDataStorageMenu";
+import { useDataStorageMenu } from "../model/useDataStorageMenu";
 
-export const DataStorageMenuContent = () => {
+export const DataStorage = () => {
     const { onOpenModal, onCloseModal } = useModal(useShallow(selectModalActions));
     const { handleClearCache, quota, usage } = useDataStorageMenu();
 

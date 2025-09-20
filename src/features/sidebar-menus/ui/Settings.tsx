@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useShallow } from 'zustand/shallow';
 
 import { settingsSidebarMenuSelector, useProfile } from '@/entities/profile';
@@ -11,22 +13,49 @@ import LockIcon from '@/shared/lib/assets/icons/lock.svg?react';
 import MentionIcon from '@/shared/lib/assets/icons/mention.svg?react';
 import VerifiedIcon from '@/shared/lib/assets/icons/verified.svg?react';
 
+import { useStackable } from '@/shared/lib/providers/stackable';
 import { toast } from '@/shared/lib/toast';
 import { cn } from '@/shared/lib/utils/cn';
 import { useLayout, useSocket } from '@/shared/model/store';
 import { AvatarByName } from '@/shared/ui/AvatarByName';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 import { Image } from '@/shared/ui/Image';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { SidebarMenuButton, SidebarMenuSeparator } from '@/shared/ui/SidebarMenu';
 import { Typography } from '@/shared/ui/Typography';
 
-import { SettingMenus, SidebarMenuContentProps } from '../../model/types';
+import { SettingsSubmenu } from '../model/types';
+import { DataStorage, Privacy, Sessions } from '../model/view';
+
+import { DataStorageSkeleton } from './Skeletons/DataStorageSkeleton';
+import { PrivacySkeleton } from './Skeletons/PrivacySkeleton';
+import { SessionsSkeleton } from './Skeletons/SessionsSkeleton';
+import { SuspenseError } from './SuspenseError';
 
 const iconStyles = 'size-6 text-primary-white/60';
 
-export const SettingsContent = ({ changeMenu }: SidebarMenuContentProps<SettingMenus>) => {
+const settingsSubmenus: Record<SettingsSubmenu, { title: string; content: React.ReactNode; fallback?: React.ReactNode }> = {
+    data: {
+        title: 'Data and Storage',
+        content: <DataStorage />,
+        fallback: <DataStorageSkeleton />,
+    },
+    privacy: {
+        title: 'Privacy and Security',
+        content: <Privacy />,
+        fallback: <PrivacySkeleton />,
+    },
+    sessions: {
+        title: 'Devices',
+        content: <Sessions />,
+        fallback: <SessionsSkeleton />,
+    },
+}
+
+export const Settings = () => {
     const { email, name, avatar, login, isUploadingAvatar, isOfficial, counts, handleUploadAvatar } = useProfile(useShallow(settingsSidebarMenuSelector));
+    const { open } = useStackable();
 
     const connectedToNetwork = useLayout((state) => state.connectedToNetwork);
     const isSocketConnected = useSocket((state) => state.isConnected);
@@ -35,6 +64,22 @@ export const SettingsContent = ({ changeMenu }: SidebarMenuContentProps<SettingM
         navigator.clipboard.writeText(value);
         toast.success(`${type} copied to clipboard`);
     };
+
+    const handleOpenMenu = (menu: SettingsSubmenu) => {
+        const { title, content, fallback } = settingsSubmenus[menu];
+
+        open({
+            id: `settings-${menu}`,
+            title,
+            content: (
+                <ErrorBoundary fallback={<SuspenseError name={title.toLowerCase()} skeleton={fallback} />}>
+                    <React.Suspense fallback={fallback}>
+                        {content}
+                    </React.Suspense>
+                </ErrorBoundary>
+            )
+        });
+    }
 
     return (
         <>
@@ -93,18 +138,18 @@ export const SettingsContent = ({ changeMenu }: SidebarMenuContentProps<SettingM
             <div className='px-2 flex flex-col'>
                 <SidebarMenuButton
                     title='Data ans Storage'
-                    onClick={() => changeMenu('data')}
+                    onClick={() => handleOpenMenu('data')}
                     icon={<DataIcon className={iconStyles} />}
                 />
                 <SidebarMenuButton
                     title='Privacy and Security'
-                    onClick={() => changeMenu('privacy')}
+                    onClick={() => handleOpenMenu('privacy')}
                     icon={<LockIcon className={iconStyles} />}
                 />
                 <SidebarMenuButton
                     title='Devices'
                     count={counts.active_sessions}
-                    onClick={() => changeMenu('sessions')}
+                    onClick={() => handleOpenMenu('sessions')}
                     icon={<SessionsIcon className={iconStyles} />}
                 />
             </div>
