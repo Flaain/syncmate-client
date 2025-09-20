@@ -1,12 +1,8 @@
 import React from 'react';
 
-import { StackableItemProps, StackableNodesRef } from './types';
+import { StackableItemProps } from './types';
 
-export const StackableContext = React.createContext<{
-    open: (menu: StackableItemProps) => void;
-    nodesRef: React.RefObject<Record<string, StackableNodesRef> | null>;
-    isClosing: React.RefObject<boolean>;
-}>(null!);
+export const StackableContext = React.createContext<{ open: (menu: StackableItemProps) => void; closeAll: () => void }>(null!);
 
 export const useStackable = () => {
     const store = React.useContext(StackableContext);

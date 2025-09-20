@@ -2,29 +2,49 @@ import React from 'react';
 
 import { StackableItem } from '@/shared/ui/StackableItem';
 
+import { cn } from '../../utils/cn';
+
 import { StackableContext } from './context';
 import { StackableItemProps, StackableNodesRef } from './types';
 
 const TRANSITION_DELAY = 300;
 
-export const StackableProvider = React.memo(({ base }: { base: StackableItemProps }) => {
+interface StackableConfig {
+    historyTabIds: Array<string>;
+    nodes: Record<string, StackableNodesRef> | null;
+    isClosing: boolean;
+    isClosingAll: boolean;
+    containerNode: HTMLDivElement | null;
+}
+
+export const StackableProvider = React.memo(({ base, containerClassName, children }: { base: Omit<StackableItemProps, 'onClose'>, containerClassName?: string; children?: React.ReactNode }) => {
     const { 0: tabs, 1: setTabs } = React.useState<Map<string, StackableItemProps>>(new Map([[base.id, base]]));
 
-    const historyTabIds = React.useRef<Array<string>>([base.id]);
-    const nodesRef = React.useRef<Record<string, StackableNodesRef>>(null);
-    const isClosing = React.useRef(false);
+    const config = React.useRef<StackableConfig>({
+        historyTabIds: [base.id],
+        nodes: null,
+        isClosing: false,
+        isClosingAll: false,
+        containerNode: null
+    })
 
     const close = () => {
-        if (isClosing.current) return;
+        if (config.current.isClosing || config.current.isClosingAll) return;
 
-        isClosing.current = true;
+        config.current.isClosing = true;
 
-        const tabId = historyTabIds.current[historyTabIds.current.length - 1];
-        const tab = nodesRef.current![tabId];
+        const tabId = getCurrentTabId();
+        const tab = config.current.nodes?.[tabId];
+
+        if (!tab) {
+            console.warn('Cannot process closing. Current tab not found');
+            return;
+        }
+
         const prevNode = tab.node.previousElementSibling;
 
         if (!prevNode) {
-            console.warn('Missing previous node');
+            console.warn('Cannot process closing. Missing previous node');
             return;
         }
 
@@ -36,55 +56,37 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
             prevNode.classList.remove('-translate-x-24');
         }, 0) // if using rAF sometimes it doesn't work
         
-        setClasses(tab.node, 'out');
+        setTabClasses(tab.node, 'out');
 
         tab.isClosing = true;
 
-        tab.closeTimeoutId = setTimeout(() => {
-            setTabs((prevState) => {
-                const newMap = new Map(prevState);
-                
-                prevState.get(tabId)?.onClose?.();
-                
-                newMap.delete(tabId);
-                
-                return newMap;
-            });
-            
-            isClosing.current = false;
-            
-            historyTabIds.current = historyTabIds.current.filter((id) => id !== tabId);
-            
-            const { [tabId]: _, ...rest } = nodesRef.current!
-            
-            nodesRef.current = rest;
-        }, TRANSITION_DELAY + 30);
+        tab.closeTimeoutId = setTimeout(removeTabAfterTimeout, TRANSITION_DELAY + 30, tabId);
     };
 
-    const handleRef = (element: HTMLDivElement | null, id: string, index: number) => {
+    const handleTabRef = (element: HTMLDivElement | null, id: string, index: number) => {
         if (!element) return;
         
-        if (index !== 0 && !nodesRef.current?.[id]) { // prevent from animating base and old tabs
+        if (index !== 0 && !config.current.nodes?.[id]) { // prevent from animating base and old tabs
             element.classList.add('translate-x-full');
                 
             requestAnimationFrame(() => {
-                setClasses(element, 'in');
+                setTabClasses(element, 'in');
                 addOpenTimeout(id);
             });
         }
 
-        nodesRef.current = {
-            ...nodesRef.current,
+        config.current.nodes = {
+            ...config.current.nodes,
             [id]: {
                 openTimeoutId: null,
                 closeTimeoutId: null,
-                ...nodesRef.current?.[id],
+                ...config.current.nodes?.[id],
                 node: element
             }
         };
     };
 
-    const setClasses = (node: HTMLDivElement, action: 'in' | 'out') => {
+    const setTabClasses = (node: HTMLDivElement, action: 'in' | 'out') => {
         if (action === 'in') {
             node.classList.add('translate-x-0');
             node.classList.remove('translate-x-full');
@@ -94,8 +96,12 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
         }
     }
 
+    const setContainerNode = (node: HTMLDivElement | null) => {
+        config.current.containerNode = node;
+    }
+
     const addOpenTimeout = (tabId: string) => {
-        const tab = nodesRef.current![tabId];
+        const tab = config.current.nodes![tabId];
 
         tab.openTimeoutId = setTimeout(() => {
             tab.node.previousElementSibling?.classList.add('hidden');
@@ -105,19 +111,21 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
     }
 
     const open = (newTab: StackableItemProps) => {
-        const possibleTab = nodesRef.current?.[newTab.id];
-        const currentTab = nodesRef.current?.[historyTabIds.current[historyTabIds.current.length - 1]];
+        if (config.current.isClosingAll) return;
+
+        const possibleTab = config.current.nodes?.[newTab.id];
+        const currentTab = config.current.nodes?.[getCurrentTabId()];
 
         if (possibleTab) {
             if (possibleTab.isClosing) {
                 possibleTab.closeTimeoutId && (clearTimeout(possibleTab.closeTimeoutId), (possibleTab.closeTimeoutId = null));
 
                 possibleTab.isClosing = false;
-                isClosing.current = false;
+                config.current.isClosing = false;
                 
                 possibleTab.node.previousElementSibling?.classList.add('-translate-x-24');
                 
-                setClasses(possibleTab.node, 'in');
+                setTabClasses(possibleTab.node, 'in');
                 addOpenTimeout(newTab.id);
             }
 
@@ -142,36 +150,104 @@ export const StackableProvider = React.memo(({ base }: { base: StackableItemProp
             return newMap;
         });
         
-        historyTabIds.current.push(newTab.id);
+        config.current.historyTabIds.push(newTab.id);
     }
 
-    const closeAll = () => {};
+    const removeTabAfterTimeout = (tabId: string) => {
+        setTabs((prevState) => {
+            const newMap = new Map(prevState);
+            
+            prevState.get(tabId)?.onClose?.();
+            
+            newMap.delete(tabId);
+            
+            return newMap;
+        });
+        
+        config.current.isClosing = false;
+        
+        config.current.historyTabIds = config.current.historyTabIds.filter((id) => id !== tabId);
+        
+        const { [tabId]: _, ...rest } = config.current.nodes!
+        
+        config.current.nodes = rest;
+    }
 
-    const getCurrentTabNode = () => {};
+    const closeAll = () => {
+        if (config.current.isClosingAll) return;
 
-    const getTabNodeById = (id: string) => {};
+        config.current.isClosingAll = true;
+
+        const tab = config.current.nodes?.[getCurrentTabId()];
+
+        if (!tab) {
+            console.warn('Cannot process closing. Current tab not found');
+            return;
+        }
+
+        tab.openTimeoutId && (clearTimeout(tab.openTimeoutId), (tab.openTimeoutId = null));
+
+        const baseNode = config.current.nodes?.[base.id]?.node;
+
+        if (!baseNode) {
+            console.warn('Cannot process closing. Missing base node');
+            return;
+        }
+
+        baseNode.classList.remove('hidden');
+
+        setTimeout(() => {
+            baseNode.classList.remove('-translate-x-24');
+        }, 0);
+
+        setTabClasses(tab.node, 'out');
+
+        tab.isClosing = true;
+
+        tab.closeTimeoutId = setTimeout(() => {
+            setTabs((prevState) => {
+                const values = Array.from(prevState.values());
+    
+                values.forEach(({ onClose }) => onClose?.());
+    
+                const newMap = new Map([[base.id, base]]);
+    
+                return newMap;
+            });
+
+            const { [base.id]: baseRef } = config.current.nodes!
+
+            config.current.isClosingAll = false;
+            config.current.historyTabIds = [base.id];
+            config.current.nodes = { [base.id]: baseRef };
+        }, TRANSITION_DELAY + 30);
+    };
+
+    const getCurrentTabId = () => config.current.historyTabIds[config.current.historyTabIds.length - 1];
 
     const value = React.useMemo(() => ({
         open,
-        nodesRef,
-        isClosing
+        closeAll,
     }), []);
 
     return (
         <StackableContext.Provider value={value}>
-            {Array.from(tabs.values()).map(({ content, id, title, containerClassName, headerContent }, index, array) => (
-                <StackableItem
-                    key={id}
-                    title={title}
-                    headerContent={headerContent}
-                    ref={(e) => handleRef(e, id, index)}
-                    hasActiveMenu={id !== array[array.length - 1].id}
-                    className={containerClassName}
-                    onBack={index ? close : undefined}
-                >
-                    {content}
-                </StackableItem>
-            ))}
+            <div ref={setContainerNode} className={cn('grid grid-cols-1 overflow-hidden size-full', containerClassName)}>
+                {Array.from(tabs.values()).map(({ content, id, title, containerClassName, headerContent }, index, array) => (
+                    <StackableItem
+                        key={id}
+                        title={title}
+                        headerContent={headerContent}
+                        ref={(e) => handleTabRef(e, id, index)}
+                        hasActiveMenu={id !== array[array.length - 1].id}
+                        className={containerClassName}
+                        onBack={index ? close : undefined}
+                    >
+                        {content}
+                    </StackableItem>
+                ))}
+            </div>
+            {children}
         </StackableContext.Provider>
     );
 }, () => true);
