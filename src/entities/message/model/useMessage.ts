@@ -18,7 +18,7 @@ export const useMessage = ({ message, isMessageFromMe, isLast, isLastGroup }: Us
     const ref = React.useCallback((node: HTMLLIElement) => {
         isLastGroup && isLast && (lastMessageRef.current = node);
 
-        if (isMessageFromMe || message.alreadyRead || isUpdating) return; // So if get chat but it's cached (isUpdating) first wait until it's updated
+        if (isMessageFromMe || message.alreadyRead || isUpdating) return; // So if we get chat but it's cached (isUpdating) first wait until it's updated
 
         observer.current?.disconnect();
 
