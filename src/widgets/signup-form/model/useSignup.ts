@@ -60,6 +60,8 @@ export const useSignup = () => {
     const isNextButtonDisabled = loading || !form.getValues(steps[step].fields).every(Boolean) || !!Object.keys(form.formState.errors).some((key) => key === 'root' ? Object.keys(form.formState.errors.root!).some((root_key) => steps[step].fields.includes(root_key as FieldPath<SignupSchemaType>)) : steps[step].fields.includes(key as FieldPath<SignupSchemaType>));
 
     const onFormChange = (event: React.ChangeEvent<HTMLFormElement>) => {
+        form.clearErrors('root.server');
+        
         if (event.target instanceof HTMLElement && form.formState.errors.root?.[event.target.name]) {
             const fieldName = event.target.name;
             
@@ -69,7 +71,11 @@ export const useSignup = () => {
 
     const changeAuthStage = useAuth((state) => state.changeAuthStage);
 
-    const setGlobalError = () => form.setError('root.server', { message: 'Cannot process signup. Please try again' }, { shouldFocus: true });
+    const setGlobalError = (message?: string) => form.setError(
+        'root.server',
+        { message: message || 'Cannot process signup. Please try again' },
+        { shouldFocus: true }
+    );
 
     const checkEmail = async ({ email }: SignupSchemaType) => {
         await signupApi.check({ type: 'email', email: email.toLowerCase().trim() });
@@ -117,7 +123,7 @@ export const useSignup = () => {
     const onSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
         try {
             event?.preventDefault?.();
-            
+
             setLoading(true);
 
             const isValid = await form.trigger(steps[step].fields, { shouldFocus: true });
@@ -126,27 +132,35 @@ export const useSignup = () => {
 
             const data = form.getValues();
 
-            const formActions: Record<number, (data: SignupSchemaType) => Promise<void>> = { 0: checkEmail, 1: checkLogin, 2: signUp };
+            const formActions: Record<number, (data: SignupSchemaType) => Promise<void>> = {
+                0: checkEmail,
+                1: checkLogin,
+                2: signUp
+            };
 
             await formActions[step](data);
         } catch (error) {
             console.error(error);
-            if (error instanceof ApiException && error.response.data.errors) {
-                const fields = steps[step].fields;
-                
-                let atleastOneErrorWasSet = false;
+            if (error instanceof ApiException) {
+                if (error.response.data.errors) {
+                    const fields = steps[step].fields;
 
-                error.response.data.errors.forEach(({ path, message }, i) => {
-                    if (fields.includes(path as FieldPath<SignupSchemaType>)) {
-                        form.setError(`root.${path}`, { message });
+                    let atleastOneErrorWasSet = false;
 
-                        atleastOneErrorWasSet = true;
+                    error.response.data.errors.forEach(({ path, message }, i) => {
+                        if (fields.includes(path as FieldPath<SignupSchemaType>)) {
+                            form.setError(`root.${path}`, { message });
 
-                        !i && requestAnimationFrame(() => form.setFocus(path as FieldPath<SignupSchemaType>));
-                    }
-                });
+                            atleastOneErrorWasSet = true;
 
-                !atleastOneErrorWasSet && setGlobalError();
+                            !i && requestAnimationFrame(() => form.setFocus(path as FieldPath<SignupSchemaType>));
+                        }
+                    });
+
+                    !atleastOneErrorWasSet && setGlobalError();
+                } else {
+                    setGlobalError(error.response.data.message);
+                }
             } else {
                 setGlobalError();
             }
