@@ -5,6 +5,9 @@ import { version } from "../../../package.json";
 export const APP_VERSION = version;
 export const DEFAULT_TITLE = 'Syncmate - Sync Your Chats, Sync Your Life.'
 
+// @ts-ignore
+export const IS_TOUCH_SUPPORTED = ('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch)
+
 export const noRefreshPaths = ['/auth/refresh', '/auth/signin'];
 
 export const routerList = {
