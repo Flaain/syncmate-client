@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import { useMenuDistance } from '@/shared/lib/hooks/useMenuDistance';
 import { useChat } from '@/shared/lib/providers/chat';
 import { toast } from '@/shared/lib/toast';

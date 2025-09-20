@@ -17,21 +17,21 @@ export const WithStatusCtxMenu = ({ actions, onCopy, onItemClick, status }: With
             onClick={onItemClick(onCopy)}
         />
         {status === 'error' && (
-            <MenuItem
-                type='ctx'
-                text='Resend'
-                icon={<Send className={ctxMenuIconStyles} />}
-                onClick={onItemClick(actions?.resend)}
-            />
-        )}
-        {status === 'error' && (
-            <MenuItem
-                type='ctx'
-                variant='destructive'
-                text='Delete'
-                icon={<Delete className={`${ctxMenuIconStyles} text-primary-destructive`} />}
-                onClick={onItemClick(actions?.remove)}
-            />
+            <>
+                <MenuItem
+                    type='ctx'
+                    text='Resend'
+                    icon={<Send className={ctxMenuIconStyles} />}
+                    onClick={onItemClick(actions?.resend)}
+                />
+                <MenuItem
+                    type='ctx'
+                    variant='destructive'
+                    text='Delete'
+                    icon={<Delete className={`${ctxMenuIconStyles} text-primary-destructive`} />}
+                    onClick={onItemClick(actions?.remove)}
+                />
+            </>
         )}
         {status === 'pending' && (
             <MenuItem
