@@ -27,7 +27,6 @@ api.interceptors.response.use(undefined, async (error) => {
             return api.call(error.config!);
         } catch (error) {
             useSession.getState().actions.onSignout();
-            useProfile.setState({ profile: null! });
         }
     }
 
